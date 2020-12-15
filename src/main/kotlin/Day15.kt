@@ -12,13 +12,13 @@ fun main() {
     println("took $diff ms")
 }
 
-fun findLastNumber(input: String, goal: Long): Long {
+fun findLastNumber(input: String, goal: Int): Int {
     val mem = Mem(input)
 
     while (mem.turn < goal) {
         mem.turn++
         if (mem.isNew) {
-            step(mem, 0L)
+            step(mem, 0)
         } else {
             step(mem, mem.age)
         }
@@ -26,7 +26,7 @@ fun findLastNumber(input: String, goal: Long): Long {
     return mem.last
 }
 
-fun step(mem: Mem, value: Long) {
+fun step(mem: Mem, value: Int) {
     mem.last = value
     if (mem.past.containsKey(value)) {
         mem.isNew = false
@@ -38,23 +38,23 @@ fun step(mem: Mem, value: Long) {
 }
 
 class Mem(input: String) {
-    val past = HashMap<Long, Long>()
+    val past = HashMap<Int, Int>()
     var isNew: Boolean = true
-    var last: Long = 0
-    var turn: Long = 0
-    var age: Long = 0
+    var last: Int = 0
+    var turn: Int = 0
+    var age: Int = 0
 
     init {
         input.split(",")
-            .map { s -> s.toLong() }
-            .forEach { l ->
+            .map { s -> s.toInt() }
+            .forEach { i ->
                 run {
                     this.turn++
-                    if (this.past.containsKey(l)) {
+                    if (this.past.containsKey(i)) {
                         this.isNew = false
                     }
-                    this.past[l] = this.turn
-                    this.last = l
+                    this.past[i] = this.turn
+                    this.last = i
                 }
             }
     }

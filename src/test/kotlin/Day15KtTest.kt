@@ -14,6 +14,6 @@ internal class Day15KtTest {
         assertEquals(findLastNumber("3,2,1", 2020), 438)
         assertEquals(findLastNumber("3,1,2", 2020), 1836)
 
-        assertEquals(findLastNumber("0,3,6", 30000000L), 175594)
+        assertEquals(findLastNumber("0,3,6", 30000000), 175594)
     }
 }
