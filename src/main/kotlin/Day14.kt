@@ -1,19 +1,13 @@
 import java.io.File
 import java.util.*
+import java.util.concurrent.Callable
 import kotlin.collections.HashMap
 
 fun main() {
     val lines = File("aoc2020/day14.txt").readLines()
 
-    var start = System.currentTimeMillis()
-    var result = day14part1(lines)
-    var diff = System.currentTimeMillis() - start
-    println("result=%d%n%dms".format(result, diff))
-
-    start = System.currentTimeMillis()
-    result = day14part2(lines)
-    diff = System.currentTimeMillis() - start
-    println("result=%d%n%dms".format(result, diff))
+    println("day14part1=${micros(Callable { day14part1(lines) })}")
+    println("day14part2=${micros(Callable { day14part2(lines) })}")
 }
 
 fun day14part1(lines: List<String>): Long {

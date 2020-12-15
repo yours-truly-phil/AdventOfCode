@@ -1,15 +1,10 @@
+import java.util.concurrent.Callable
+
 fun main() {
     val input = "0,1,5,10,3,12,19"
 
-    var start = System.currentTimeMillis()
-    println("part1: %d".format(findLastNumber(input, 2020)))
-    var diff = System.currentTimeMillis() - start
-    println("took $diff ms")
-
-    start = System.currentTimeMillis()
-    println("part2: %d".format(findLastNumber(input, 30000000)))
-    diff = System.currentTimeMillis() - start
-    println("took $diff ms")
+    println("day15part1=${micros(Callable { findLastNumber(input, 2020) })}")
+    println("day15part2=${micros(Callable { findLastNumber(input, 30000000) })}")
 }
 
 fun findLastNumber(input: String, goal: Int): Int {

@@ -3,6 +3,7 @@ import java.util.concurrent.Callable
 
 fun main() {
     val lines = File("aoc2020/day3.txt").readLines()
+
     println("day3part1=${micros(Callable { day3part1(lines) })}")
     println("day3part2=${micros(Callable { day3part2(lines) })}")
 }
