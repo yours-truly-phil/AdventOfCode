@@ -13,17 +13,17 @@ fun main() {
     println("Parsing and sorting input: ${diff / 1000}µs")
 
     start = nanoTime()
-    println("part1=${part1(arr, 2020)}")
+    println("part1=${day1part1(arr, 2020)}")
     diff = nanoTime() - start
     println("Finished part 1 in ${diff / 1000}µs")
 
     start = nanoTime()
-    println("part2=${part2(arr, 2020)}")
+    println("part2=${day1part2(arr, 2020)}")
     diff = nanoTime() - start
     println("Finished part 2 in ${diff / 1000}µs")
 }
 
-fun part1(arr: IntArray, total: Int): Int {
+fun day1part1(arr: IntArray, total: Int): Int {
     var i = 0
     while (arr[i] < total / 2) {
         val rest = total - arr[i]
@@ -35,7 +35,7 @@ fun part1(arr: IntArray, total: Int): Int {
     return -1
 }
 
-fun part2(arr: IntArray, total: Int): Int {
+fun day1part2(arr: IntArray, total: Int): Int {
     var i = 0
     while (i < arr.size && arr[i] < total / 3) {
         val diff = total - arr[i]

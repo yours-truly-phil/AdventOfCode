@@ -10,7 +10,7 @@ internal class Day14KtTest {
             mem[8] = 11
             mem[7] = 101
             mem[8] = 0""".trimIndent();
-        assertEquals(part1(input.lines()), 165)
+        assertEquals(day14part1(input.lines()), 165)
     }
 
     @Test
@@ -20,6 +20,6 @@ internal class Day14KtTest {
             mem[42] = 100
             mask = 00000000000000000000000000000000X0XX
             mem[26] = 1""".trimIndent()
-        assertEquals(part2(input.lines()), 208)
+        assertEquals(day14part2(input.lines()), 208)
     }
 }

@@ -6,17 +6,17 @@ fun main() {
     val lines = File("aoc2020/day14.txt").readLines()
 
     var start = System.currentTimeMillis()
-    var result = part1(lines)
+    var result = day14part1(lines)
     var diff = System.currentTimeMillis() - start
     println("result=%d%n%dms".format(result, diff))
 
     start = System.currentTimeMillis()
-    result = part2(lines)
+    result = day14part2(lines)
     diff = System.currentTimeMillis() - start
     println("result=%d%n%dms".format(result, diff))
 }
 
-fun part1(lines: List<String>): Long {
+fun day14part1(lines: List<String>): Long {
     val mem = HashMap<Int, Long>()
     var ones = 0L
     var zeros = Long.MAX_VALUE
@@ -34,7 +34,7 @@ fun part1(lines: List<String>): Long {
     return mem.values.sum()
 }
 
-fun part2(lines: List<String>): Long {
+fun day14part2(lines: List<String>): Long {
     val result = HashMap<Long, Long>()
     var mask = "000000000000000000000000000000000000"
     for (line in lines) {
