@@ -4,15 +4,15 @@ import java.util.concurrent.Callable
 fun main() {
     val lines = File("aoc2020/day5.txt").readLines()
 
-    println("day4part1=${micros(Callable { part1(lines) })}")
-    println("day4part2=${micros(Callable { part2(lines, 12, 858) })}")
+    println("day5part1=${micros(Callable { day5part1(lines) })}")
+    println("day5part2=${micros(Callable { day5part2(lines, 12, 858) })}")
 }
 
-fun part1(lines: List<String>):Int {
-    return lines.map { seatIdOf(it) }.max()!!
+fun day5part1(lines: List<String>):Int {
+    return lines.map { seatIdOf(it) }.maxOrNull()!!
 }
 
-fun part2(lines: List<String>, low: Int, high: Int):Int {
+fun day5part2(lines: List<String>, low: Int, high: Int):Int {
     val sorted = lines.map { seatIdOf(it) }.sorted()
     for (it in low..high) when {
         sorted[it-low] != it -> return it
