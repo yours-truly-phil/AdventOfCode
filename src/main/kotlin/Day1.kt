@@ -6,7 +6,7 @@ fun main() {
     val start = nanoTime()
     val arr = File("aoc2020/day1.txt")
         .readLines()
-        .map { s -> s.toInt() }
+        .map { it.toInt() }
         .sorted()
         .toIntArray()
     val diff = nanoTime() - start

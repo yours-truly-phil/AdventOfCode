@@ -37,7 +37,7 @@ fun day3part2(lines: List<String>): Long {
             }
         }
     }
-    return actors.map { actor -> actor.count.toLong() }
+    return actors.map { it.count.toLong() }
         .reduce { acc, i -> acc * i }
 }
 

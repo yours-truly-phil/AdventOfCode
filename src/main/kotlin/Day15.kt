@@ -41,15 +41,15 @@ class Mem(input: String) {
 
     init {
         input.split(",")
-            .map { s -> s.toInt() }
-            .forEach { i ->
+            .map { it.toInt() }
+            .forEach {
                 run {
                     this.turn++
-                    if (this.past.containsKey(i)) {
+                    if (this.past.containsKey(it)) {
                         this.isNew = false
                     }
-                    this.past[i] = this.turn
-                    this.last = i
+                    this.past[it] = this.turn
+                    this.last = it
                 }
             }
     }
