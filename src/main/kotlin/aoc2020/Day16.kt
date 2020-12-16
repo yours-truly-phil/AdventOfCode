@@ -1,7 +1,14 @@
+package aoc2020
+
+import micros
 import java.io.File
 import java.util.concurrent.Callable
 
 fun main() {
+    runDay16()
+}
+
+fun runDay16() {
     val content = File("aoc2020/day16.txt").readText()
 
     val day16 = Day16(content)

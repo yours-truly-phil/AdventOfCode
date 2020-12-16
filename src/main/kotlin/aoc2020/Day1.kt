@@ -1,8 +1,15 @@
+package aoc2020
+
+import micros
 import java.io.File
 import java.lang.System.nanoTime
 import java.util.concurrent.Callable
 
 fun main() {
+    runDay1()
+}
+
+fun runDay1() {
     val start = nanoTime()
     val arr = File("aoc2020/day1.txt")
         .readLines()

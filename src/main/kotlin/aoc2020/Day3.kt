@@ -1,7 +1,14 @@
+package aoc2020
+
+import micros
 import java.io.File
 import java.util.concurrent.Callable
 
 fun main() {
+    runDay3()
+}
+
+fun runDay3() {
     val lines = File("aoc2020/day3.txt").readLines()
 
     println("day3part1=${micros(Callable { day3part1(lines) })}")

@@ -1,8 +1,15 @@
+package aoc2020
+
+import micros
 import java.io.File
 import java.util.concurrent.Callable
 import java.util.function.Predicate
 
 fun main() {
+    runDay4()
+}
+
+fun runDay4() {
     val lines = File("aoc2020/day4.txt").readLines()
 
     println("day4part1=${micros(Callable { day4part1(lines) })}")

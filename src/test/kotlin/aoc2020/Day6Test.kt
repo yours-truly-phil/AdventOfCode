@@ -1,8 +1,10 @@
+package aoc2020
+
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 
-internal class Day6KtTest {
+internal class Day6Test {
 
     @Test
     fun getCommonChars() {

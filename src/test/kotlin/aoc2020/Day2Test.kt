@@ -1,7 +1,9 @@
+package aoc2020
+
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-internal class Day2KtTest {
+internal class Day2Test {
 
     @Test
     fun day2part1() {
