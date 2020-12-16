@@ -56,8 +56,7 @@ class Day16(input: String) {
 
         return identifyIndexForConstraints(unIdentified)
             .filter { it.name.startsWith("departure") }
-            .map { it.indices.toIntArray()[0] }
-            .map { it.toLong() }
+            .map { it.indices.elementAt(0).toLong() }
             .fold(1L) { acc, l -> acc * myTicket.nums[l.toInt()] }
     }
 
@@ -66,7 +65,7 @@ class Day16(input: String) {
         while (unIdentified.size > 0) {
             for (constraint in unIdentified) {
                 if (constraint.indices.size == 1) {
-                    val idx = constraint.indices.toArray()[0]
+                    val idx = constraint.indices.elementAt(0)
                     identified.add(constraint)
                     unIdentified.remove(constraint)
                     unIdentified.forEach { it.indices.remove(idx) }
