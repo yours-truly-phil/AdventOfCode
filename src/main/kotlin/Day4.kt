@@ -9,7 +9,7 @@ fun main() {
     println("day4part2=${micros(Callable { day4part2(lines) })}")
 }
 
-val MANDATORY = hashMapOf<String, Predicate<String>>(
+val passportChecks = listOf<Pair<String, Predicate<String>>>(
     "byr" to Predicate { it.length == 4 && it.toInt() in 1920..2002 },
     "iyr" to Predicate { it.length == 4 && it.toInt() in 2010..2020 },
     "eyr" to Predicate { it.length == 4 && it.toInt() in 2020..2030 },
@@ -40,17 +40,17 @@ fun day4part2(lines: List<String>): Long {
 }
 
 private fun isValidPassport(passport: Passport): Boolean {
-    for (key in MANDATORY.keys) when {
-        !passport.fields.containsKey(key) -> return false
+    for (check in passportChecks) when {
+        !passport.fields.containsKey(check.first) -> return false
     }
     return true
 }
 
 private fun isValidPassport2(passport: Passport): Boolean {
-    for (man in MANDATORY.entries) when {
-        !passport.fields.containsKey(man.key) -> return false
-        passport.fields[man.key].isNullOrBlank() -> return false
-        !man.value.test(passport.fields[man.key]!!) -> return false
+    for (check in passportChecks) when {
+        !passport.fields.containsKey(check.first) -> return false
+        passport.fields[check.first].isNullOrBlank() -> return false
+        !check.second.test(passport.fields[check.first]!!) -> return false
     }
     return true
 }
