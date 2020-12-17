@@ -32,11 +32,11 @@ fun day17part1(world: World, cycles: Int): Int {
 
 private fun printWorld(world: World) {
 
-    for(z in 0 until world.depth) {
+    for (z in 0 until world.depth) {
         println("z$z")
-        for(y in 0 until world.width) {
-            for(x in 0 until world.width) {
-                if(world.world[z][y][x].state[world.idx]) {
+        for (y in 0 until world.width) {
+            for (x in 0 until world.width) {
+                if (world.world[z][y][x].state[world.idx]) {
                     print("#")
                 } else {
                     print(".")
@@ -100,9 +100,6 @@ class World(val lines: List<String>, cycles: Int) {
                 && point.z in 1 until depth - 1
             ) {
                 val count = countActiveNeighbors(point)
-//                if(entry.value.state[idx]) {
-//                    println("Point${point.z},${point.y},${point.x}: $count active neighbors")
-//                }
                 entry.value.state[nextIdx] = ((!entry.value.state[idx] && count == 3)
                         || (entry.value.state[idx] && count in 2..3))
             }
@@ -115,7 +112,7 @@ class World(val lines: List<String>, cycles: Int) {
         for (z in p.z - 1..p.z + 1) {
             for (y in p.y - 1..p.y + 1) {
                 for (x in p.x - 1..p.x + 1) {
-                    val neighbor = Point3D(z,y,x)
+                    val neighbor = Point3D(z, y, x)
                     if (p != neighbor
                         && x in 0 until width
                         && y in 0 until height
@@ -133,31 +130,7 @@ class World(val lines: List<String>, cycles: Int) {
     }
 }
 
-class Point3D(val z: Int, val y: Int, val x: Int) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Point3D
-
-        if (z != other.z) return false
-        if (y != other.y) return false
-        if (x != other.x) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = z
-        result = 31 * result + y
-        result = 31 * result + x
-        return result
-    }
-
-    override fun toString(): String {
-        return "Point3D(z=$z, y=$y, x=$x)"
-    }
-}
+data class Point3D(val z: Int, val y: Int, val x: Int) {}
 
 class Element {
     var state = booleanArrayOf(false, false)

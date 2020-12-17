@@ -116,30 +116,4 @@ class World4D(val lines: List<String>, cycles: Int) {
     }
 }
 
-class Point4D(val w: Int, val z: Int, val y: Int, val x: Int) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Point4D
-
-        if (w != other.w) return false
-        if (z != other.z) return false
-        if (y != other.y) return false
-        if (x != other.x) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = w
-        result = 31 * result + z
-        result = 31 * result + y
-        result = 31 * result + x
-        return result
-    }
-
-    override fun toString(): String {
-        return "Point4D(w=$w, z=$z, y=$y, x=$x)"
-    }
-}
+data class Point4D(val w: Int, val z: Int, val y: Int, val x: Int) {}
