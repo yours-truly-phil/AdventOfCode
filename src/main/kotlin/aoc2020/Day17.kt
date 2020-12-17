@@ -17,7 +17,7 @@ fun runDay17() {
     val dur = System.nanoTime() - start
     println("parsed world in ${dur / 1000}µs")
 
-    printWorld(world)
+//    printWorld(world)
 
     println("day17part1=${micros(Callable { day17part1(world, cycles) })}")
 }
@@ -25,7 +25,7 @@ fun runDay17() {
 fun day17part1(world: World, cycles: Int): Int {
     for (i in 0 until cycles) {
         world.step()
-        printWorld(world)
+//        printWorld(world)
     }
     return world.worldMap.entries.filter { it.value.state[world.idx] }.count()
 }
@@ -119,7 +119,6 @@ class World(val lines: List<String>, cycles: Int) {
                         && z in 0 until depth
                     ) {
                         if (worldMap[neighbor]!!.state[idx]) {
-//                            println("active neighbor for $p=$neighbor")
                             count++
                         }
                     }
