@@ -14,6 +14,7 @@ fun main() {
     runDay11()
     runDay11Part2()
     runDay12()
+    runDay13()
     runDay14()
     runDay15()
     runDay16()
