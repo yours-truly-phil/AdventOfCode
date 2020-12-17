@@ -28,13 +28,13 @@ fun day17part2(world: World4D, cycles: Int): Int {
 }
 
 class World4D(val lines: List<String>, cycles: Int) {
-    val world = ArrayList<ArrayList<ArrayList<ArrayList<Element>>>>()
+    private val world = ArrayList<ArrayList<ArrayList<ArrayList<Element>>>>()
     val worldMap = HashMap<Point4D, Element>()
 
-    val fourth: Int
-    val depth: Int
-    val height: Int
-    val width: Int
+    private val fourth: Int
+    private val depth: Int
+    private val height: Int
+    private val width: Int
 
     var idx = 0
 
@@ -48,13 +48,13 @@ class World4D(val lines: List<String>, cycles: Int) {
         depth = inDepth + 2 * cycles + 2
         fourth = inFourth + 2 * cycles + 2
 
-        for (w in 0 until fourth) {
+        (0 until fourth).forEach { w ->
             world.add(ArrayList())
-            for (z in 0 until depth) {
+            (0 until depth).forEach { z ->
                 world[w].add(ArrayList())
-                for (y in 0 until height) {
+                (0 until height).forEach { y ->
                     world[w][z].add(ArrayList())
-                    for (x in 0 until width) {
+                    (0 until width).forEach { x ->
                         if (w == fourth / 2 && z == depth / 2
                             && y in (cycles + 1)..(cycles + inHeight)
                             && x in (cycles + 1)..(cycles + inWidth)
@@ -76,16 +76,17 @@ class World4D(val lines: List<String>, cycles: Int) {
 
     fun step() {
         val nextIdx = (idx + 1) % 2
-        for (entry in worldMap.entries) {
-            val point = entry.key
-            if (point.w in 1 until fourth - 1
-                && point.z in 1 until depth - 1
-                && point.y in 1 until height - 1
-                && point.x in 1 until width - 1
-            ) {
-                val count = countActiveNeighbors(point)
-                entry.value.state[nextIdx] = ((!entry.value.state[idx] && count == 3)
-                        || (entry.value.state[idx] && count in 2..3))
+        worldMap.entries.forEach {
+            val point = it.key
+            when {
+                point.w in 1 until fourth - 1
+                        && point.z in 1 until depth - 1
+                        && point.y in 1 until height - 1
+                        && point.x in 1 until width - 1 -> {
+                    val count = countActiveNeighbors(point)
+                    it.value.state[nextIdx] = ((!it.value.state[idx] && count == 3)
+                            || (it.value.state[idx] && count in 2..3))
+                }
             }
         }
         idx = nextIdx
@@ -93,20 +94,18 @@ class World4D(val lines: List<String>, cycles: Int) {
 
     private fun countActiveNeighbors(p: Point4D): Int {
         var count = 0
-        for (w in p.w - 1..p.w + 1) {
-            for (z in p.z - 1..p.z + 1) {
-                for (y in p.y - 1..p.y + 1) {
-                    for (x in p.x - 1..p.x + 1) {
+        (p.w - 1..p.w + 1).forEach { w ->
+            (p.z - 1..p.z + 1).forEach { z ->
+                (p.y - 1..p.y + 1).forEach { y ->
+                    (p.x - 1..p.x + 1).forEach { x ->
                         val neighbor = Point4D(w, z, y, x)
-                        if (p != neighbor
-                            && w in 0 until fourth
-                            && z in 0 until depth
-                            && y in 0 until height
-                            && x in 0 until width
-                        ) {
-                            if (worldMap[neighbor]!!.state[idx]) {
-                                count++
-                            }
+                        when {
+                            (p != neighbor
+                                    && w in 0 until fourth
+                                    && z in 0 until depth
+                                    && y in 0 until height
+                                    && x in 0 until width)
+                                    && worldMap[neighbor]!!.state[idx] -> count++
                         }
                     }
                 }
@@ -116,4 +115,4 @@ class World4D(val lines: List<String>, cycles: Int) {
     }
 }
 
-data class Point4D(val w: Int, val z: Int, val y: Int, val x: Int) {}
+data class Point4D(val w: Int, val z: Int, val y: Int, val x: Int)

@@ -129,7 +129,7 @@ class World(val lines: List<String>, cycles: Int) {
     }
 }
 
-data class Point3D(val z: Int, val y: Int, val x: Int) {}
+data class Point3D(val z: Int, val y: Int, val x: Int)
 
 class Element {
     var state = booleanArrayOf(false, false)
