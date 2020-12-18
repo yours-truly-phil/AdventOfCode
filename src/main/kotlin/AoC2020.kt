@@ -27,6 +27,7 @@ fun main() {
                 val day16 = GlobalScope.async { runDay16() }
                 val day17 = GlobalScope.async { runDay17() }
                 val day17part2 = GlobalScope.async { runDay17Part2() }
+                val day18 = GlobalScope.async { runDay18() }
                 runBlocking {
                     day1.await()
                     day2.await()
@@ -47,6 +48,7 @@ fun main() {
                     day16.await()
                     day17.await()
                     day17part2.await()
+                    day18.await()
                 }
             } / 1000f
         }s"
