@@ -53,28 +53,29 @@ class Day18 {
         var result = 0L
         var curChar: Char
         while (curIdx < charArray.size) {
-
             curChar = charArray[curIdx]
-            if (curChar == '+') curOp = PLUS
-            else if (curChar == '-') curOp = MINUS
-            else if (curChar == '*') curOp = MULTI
-            else if (curChar.toString()
-                    .matches("^'0'|[1-9][0-9]*\$".toRegex())
-            ) {
-                val num = curChar.toString().toInt()
-                when (curOp) {
-                    PLUS -> result += num
-                    MINUS -> result -= num
-                    MULTI -> result *= num
+            when {
+                curChar == '+' -> curOp = PLUS
+                curChar == '-' -> curOp = MINUS
+                curChar == '*' -> curOp = MULTI
+                curChar.toString()
+                    .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                    val num = curChar.toString().toInt()
+                    when (curOp) {
+                        PLUS -> result += num
+                        MINUS -> result -= num
+                        MULTI -> result *= num
+                    }
                 }
-            } else if (curChar == '(') {
-                val endIdx = curIdx + findParanthesisEnd(expression.substring(curIdx))
-                val substring = expression.substring(curIdx + 1, endIdx)
-                curIdx = endIdx
-                when (curOp) {
-                    PLUS -> result += calculate(substring)
-                    MINUS -> result -= calculate(substring)
-                    MULTI -> result *= calculate(substring)
+                curChar == '(' -> {
+                    val endIdx = curIdx + findParanthesisEnd(expression.substring(curIdx))
+                    val substring = expression.substring(curIdx + 1, endIdx)
+                    curIdx = endIdx
+                    when (curOp) {
+                        PLUS -> result += calculate(substring)
+                        MINUS -> result -= calculate(substring)
+                        MULTI -> result *= calculate(substring)
+                    }
                 }
             }
             curIdx++
@@ -92,14 +93,15 @@ class Day18Part2 {
         val charList = str.toMutableList()
         var i = 0
         while (i < charList.size) {
-            if (charList[i] == '+') {
-                val idxLeft = idxNewBracketLeft(charList, i)
-                charList.add(idxLeft, '(')
-                i++
-                val idxRight = idxNewBracketRight(charList, i)
-                charList.add(idxRight + 1, ')')
-                i++
-                println("$charList")
+            when {
+                charList[i] == '+' -> {
+                    val idxLeft = idxNewBracketLeft(charList, i)
+                    charList.add(idxLeft, '(')
+                    i++
+                    val idxRight = idxNewBracketRight(charList, i)
+                    charList.add(idxRight + 1, ')')
+                    i++
+                }
             }
             i++
         }
@@ -110,14 +112,15 @@ class Day18Part2 {
     fun idxNewBracketRight(charList: List<Char>, idx: Int): Int {
         var countOpen = 0
         var pastFirstNum = false
-        for (i in idx + 1 until charList.size) {
-            if (charList[i] != ' ') {
-                if (charList[i] == '(') countOpen++
-                else if (charList[i] == ')') countOpen--
-                else if (charList[i].toString()
-                        .matches("^'0'|[1-9][0-9]*\$".toRegex())
-                ) {
-                    pastFirstNum = true
+        for (i in idx + 1 until charList.size) when {
+            charList[i] != ' ' -> {
+                when {
+                    charList[i] == '(' -> countOpen++
+                    charList[i] == ')' -> countOpen--
+                    charList[i].toString()
+                        .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                        pastFirstNum = true
+                    }
                 }
 
                 if (countOpen == 0 && pastFirstNum) {
@@ -131,14 +134,15 @@ class Day18Part2 {
     fun idxNewBracketLeft(charList: List<Char>, idx: Int): Int {
         var countClosing = 0
         var pastFirstNum = false
-        for (i in idx - 1 downTo 0) {
-            if (charList[i] != ' ') {
-                if (charList[i] == ')') countClosing++
-                else if (charList[i] == '(') countClosing--
-                else if (charList[i].toString()
-                        .matches("^'0'|[1-9][0-9]*\$".toRegex())
-                ) {
-                    pastFirstNum = true
+        for (i in idx - 1 downTo 0) when {
+            charList[i] != ' ' -> {
+                when {
+                    charList[i] == ')' -> countClosing++
+                    charList[i] == '(' -> countClosing--
+                    charList[i].toString()
+                        .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                        pastFirstNum = true
+                    }
                 }
 
                 if (countClosing == 0 && pastFirstNum) {
