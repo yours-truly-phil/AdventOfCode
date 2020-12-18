@@ -10,7 +10,7 @@ fun main() {
 }
 
 fun runDay8() {
-    val lines = File("aoc2020/day8.txt").readLines()
+    val lines = File("files/2020/day8.txt").readLines()
     val instructions = lines.map { Instruction(it) }.toTypedArray()
 
     println("day8part1=${micros(Callable { day8part1(instructions) })}")

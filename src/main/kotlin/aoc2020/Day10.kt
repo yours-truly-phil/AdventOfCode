@@ -9,7 +9,7 @@ fun main() {
 }
 
 fun runDay10() {
-    val input = File("aoc2020/day10.txt")
+    val input = File("files/2020/day10.txt")
         .readLines()
         .map { it.toInt() }
         .sorted()

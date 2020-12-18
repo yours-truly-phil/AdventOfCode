@@ -11,7 +11,7 @@ fun main() {
 
 fun runDay1() {
     val start = nanoTime()
-    val arr = File("aoc2020/day1.txt")
+    val arr = File("files/2020/day1.txt")
         .readLines()
         .map { it.toInt() }
         .sorted()

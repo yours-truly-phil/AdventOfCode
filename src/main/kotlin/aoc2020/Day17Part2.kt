@@ -9,7 +9,7 @@ fun main() {
 }
 
 fun runDay17Part2() {
-    val lines = File("aoc2020/day17.txt").readLines()
+    val lines = File("files/2020/day17.txt").readLines()
     val cycles = 6
 
     val start = System.nanoTime()

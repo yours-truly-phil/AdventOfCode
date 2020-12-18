@@ -9,7 +9,7 @@ fun main() {
 }
 
 fun runDay3() {
-    val lines = File("aoc2020/day3.txt").readLines()
+    val lines = File("files/2020/day3.txt").readLines()
 
     println("day3part1=${micros(Callable { day3part1(lines) })}")
     println("day3part2=${micros(Callable { day3part2(lines) })}")

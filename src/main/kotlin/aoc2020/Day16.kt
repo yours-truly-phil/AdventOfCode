@@ -9,7 +9,7 @@ fun main() {
 }
 
 fun runDay16() {
-    val content = File("aoc2020/day16.txt").readText()
+    val content = File("files/2020/day16.txt").readText()
 
     val day16 = Day16(content)
 

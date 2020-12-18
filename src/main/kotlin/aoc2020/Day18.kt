@@ -10,7 +10,7 @@ fun main() {
 }
 
 fun runDay18() {
-    val lines = File("aoc2020/day18.txt").readLines()
+    val lines = File("files/2020/day18.txt").readLines()
 
     val day18 = Day18()
 //    day18.part1(lines)
