@@ -13,8 +13,10 @@ fun runDay18() {
     val lines = File("aoc2020/day18.txt").readLines()
 
     val day18 = Day18()
-    day18.part1(lines)
+//    day18.part1(lines)
     println("day18part1=${micros(Callable { day18.part1(lines) })}")
+    val day18Part2 = Day18Part2()
+    println("day18part2=${micros(Callable { day18Part2.part2(lines) })}")
 }
 
 class Day18 {
@@ -24,6 +26,24 @@ class Day18 {
 
     enum class Op {
         PLUS, MINUS, MULTI
+    }
+
+    /**
+     * expression needs to start with '('
+     */
+    fun findParanthesisEnd(expression: String): Int {
+        val charArr = expression.toCharArray()
+        var countOpen = 0
+        for (i in charArr.indices) {
+            if (charArr[i] == '(') countOpen++
+            else if (charArr[i] == ')') {
+                countOpen--
+                if (countOpen == 0) {
+                    return i
+                }
+            }
+        }
+        throw RuntimeException("missing $countOpen closing ')' in $expression")
     }
 
     fun calculate(expression: String): Long {
@@ -61,22 +81,71 @@ class Day18 {
         }
         return result
     }
+}
 
-    /**
-     * expression needs to start with '('
-     */
-    fun findParanthesisEnd(expression: String): Int {
-        val charArr = expression.toCharArray()
+class Day18Part2 {
+    fun part2(lines: List<String>): Long {
+        return lines.map { calculate(it) }.sum()
+    }
+
+    fun calculate(str: String): Long {
+        val charList = str.toMutableList()
+        var i = 0
+        while (i < charList.size) {
+            if (charList[i] == '+') {
+                val idxLeft = idxNewBracketLeft(charList, i)
+                charList.add(idxLeft, '(')
+                i++
+                val idxRight = idxNewBracketRight(charList, i)
+                charList.add(idxRight + 1, ')')
+                i++
+                println("$charList")
+            }
+            i++
+        }
+
+        return Day18().calculate(charList.joinToString(""))
+    }
+
+    fun idxNewBracketRight(charList: List<Char>, idx: Int): Int {
         var countOpen = 0
-        for (i in charArr.indices) {
-            if (charArr[i] == '(') countOpen++
-            else if (charArr[i] == ')') {
-                countOpen--
-                if (countOpen == 0) {
+        var pastFirstNum = false
+        for (i in idx + 1 until charList.size) {
+            if (charList[i] != ' ') {
+                if (charList[i] == '(') countOpen++
+                else if (charList[i] == ')') countOpen--
+                else if (charList[i].toString()
+                        .matches("^'0'|[1-9][0-9]*\$".toRegex())
+                ) {
+                    pastFirstNum = true
+                }
+
+                if (countOpen == 0 && pastFirstNum) {
                     return i
                 }
             }
         }
-        throw RuntimeException("missing $countOpen closing ')' in $expression")
+        return -1
+    }
+
+    fun idxNewBracketLeft(charList: List<Char>, idx: Int): Int {
+        var countClosing = 0
+        var pastFirstNum = false
+        for (i in idx - 1 downTo 0) {
+            if (charList[i] != ' ') {
+                if (charList[i] == ')') countClosing++
+                else if (charList[i] == '(') countClosing--
+                else if (charList[i].toString()
+                        .matches("^'0'|[1-9][0-9]*\$".toRegex())
+                ) {
+                    pastFirstNum = true
+                }
+
+                if (countClosing == 0 && pastFirstNum) {
+                    return i
+                }
+            }
+        }
+        return -1
     }
 }
