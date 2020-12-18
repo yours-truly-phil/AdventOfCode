@@ -29,7 +29,7 @@ class Day18 {
     }
 
     /**
-     * expression needs to start with '('
+     * expression needs to start with '(' and returns idx of its closing ')'
      */
     fun findParanthesisEnd(expression: String): Int {
         val charArr = expression.toCharArray()
@@ -59,7 +59,7 @@ class Day18 {
                 curChar == '-' -> curOp = MINUS
                 curChar == '*' -> curOp = MULTI
                 curChar.toString()
-                    .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                        .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
                     val num = curChar.toString().toInt()
                     when (curOp) {
                         PLUS -> result += num
@@ -118,7 +118,7 @@ class Day18Part2 {
                     charList[i] == '(' -> countOpen++
                     charList[i] == ')' -> countOpen--
                     charList[i].toString()
-                        .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                            .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
                         pastFirstNum = true
                     }
                 }
@@ -140,7 +140,7 @@ class Day18Part2 {
                     charList[i] == ')' -> countClosing++
                     charList[i] == '(' -> countClosing--
                     charList[i].toString()
-                        .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                            .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
                         pastFirstNum = true
                     }
                 }
