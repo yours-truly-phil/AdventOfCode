@@ -90,7 +90,7 @@ class Day13 {
     class Bus(val offset: Long, val frequency: Long) : Comparable<Bus> {
         override fun compareTo(other: Bus): Int {
             return when {
-                other.frequency - this.frequency > 0 -> -1
+                other.offset - this.offset > 0 -> -1
                 else -> 1
             }
         }
