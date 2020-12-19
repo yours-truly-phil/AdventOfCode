@@ -11,8 +11,8 @@ fun main() {
 
 class Day19(content: String) {
 
-    val rulesMap: HashMap<Int, Rule>
-    val codes: List<String>
+    private val rulesMap: HashMap<Int, Rule>
+    private val codes: List<String>
 
     init {
         val fileParts = content.split("\n\n")
@@ -40,7 +40,6 @@ class Day19(content: String) {
         val rule0 = rulesMap[0]!!
         var count = 0
         val regex = "^${rule0.toRegex(rulesMap)}$".toRegex()
-//        println(regex)
         for (code in codes) {
             if (regex.matches(code)) count++
         }
@@ -51,7 +50,6 @@ class Day19(content: String) {
         val rule0 = rulesMap[0]!!
         var count = 0
         val regex = "^${rule0.toRegexPart2(rulesMap)}$".toRegex()
-//        println(regex)
         for (code in codes) {
             if (regex.matches(code)) count++
         }
@@ -62,7 +60,7 @@ class Day19(content: String) {
         val no: Int
         val links = ArrayList<List<Int>>()
         val rules = ArrayList<List<Rule>>()
-        var value: String = ""
+        private var value: String = ""
 
         init {
             var parts = s.split(":")
@@ -105,8 +103,11 @@ class Day19(content: String) {
                         }
                     }
                     else -> {
-                        res += rules.joinToString(separator = "|") {
-                            "(${it.map { it.toRegexPart2(rulesMap) }.joinToString(separator = "") { it }})"
+                        res += rules.joinToString(separator = "|") { ruleList ->
+                            "(${
+                                ruleList.map { it.toRegexPart2(rulesMap) }
+                                        .joinToString(separator = "") { it }
+                            })"
                         }
                     }
                 }
@@ -120,8 +121,11 @@ class Day19(content: String) {
                 value
             } else {
                 var res = "("
-                res += rules.joinToString(separator = "|") {
-                    "(${it.map { it.toRegex(rulesMap) }.joinToString(separator = "") { it }})"
+                res += rules.joinToString(separator = "|") { ruleList ->
+                    "(${
+                        ruleList.map { it.toRegex(rulesMap) }
+                                .joinToString(separator = "") { it }
+                    })"
                 }
                 res += ")"
                 res
