@@ -13,9 +13,9 @@ fun makeCharArray(str: String): Array<CharArray> {
 }
 
 fun rot90CW(arr: Array<CharArray>): Array<CharArray> {
-    println("arr width: ${arr[0].size} height: ${arr.size}")
+    println("rot from width: ${arr[0].size} height: ${arr.size}")
     val rotated = Array(arr[0].size) { CharArray(arr.size) }
-    println("rotated width: ${rotated[0].size} height: ${rotated.size}")
+    println("rot to   width: ${rotated[0].size} height: ${rotated.size}")
     for (rowIdx in arr.indices) {
         for (charIdx in arr[0].indices) {
             rotated[charIdx][rotated[charIdx].size - 1 - rowIdx] = arr[rowIdx][charIdx]
@@ -55,12 +55,13 @@ class Day20(path: String) {
 
         val fullContent = drawFullContent()
         println("fullContent:\n$fullContent")
-        println("width: ${fullContent.lines()[0].length} height: ${fullContent.lines().size}")
+        println("full width: ${fullContent.lines()[0].length} height: ${fullContent.lines().size}")
         val relevantContent = drawRelevantContent()
         val monster = "                  # \n" +
                 "#    ##    ##    ###\n" +
                 " #  #  #  #  #  #   "
-        println("[$relevantContent]")
+        println("relevantContent:\n$relevantContent")
+        println("relevant width: ${relevantContent.lines()[0].length} height: ${relevantContent.lines().size}")
 
         var lakeArr = makeCharArray(relevantContent)
         val monsterArr = makeCharArray(monster)
@@ -68,22 +69,23 @@ class Day20(path: String) {
         var lake = Lake(lakeArr, monsterArr)
         println(lake.monsterMap.size)
 
+        println("rotating 90 clockwise")
         lakeArr = rot90CW(lakeArr)
         lake = Lake(lakeArr, monsterArr)
         println(lake.monsterMap.size)
 
+        println("rotating 90 clockwise")
         lakeArr = rot90CW(lakeArr)
         lake = Lake(lakeArr, monsterArr)
         println(lake.monsterMap.size)
 
+        println("rotating 90 clockwise")
         lakeArr = rot90CW(lakeArr)
         lake = Lake(lakeArr, monsterArr)
         println(lake.monsterMap.size)
 
+        println("flipping horizontally")
         flipH(lakeArr)
-        println("---------")
-        lakeArr.forEach { println(it.joinToString("")) }
-        println("---------")
         lake = Lake(lakeArr, monsterArr)
         println(lake.monsterMap.size)
         lake.printLake()
@@ -191,7 +193,7 @@ class Day20(path: String) {
                 for (col in 0..lWidth() - mWidth()) {
                     if (isMonster(Point(row, col))) {
                         monstersAt.add(Point(row, col))
-//                        removeMonsterFromLake(Point(row, col))
+                        removeMonsterFromLake(Point(row, col))
                     }
                 }
             }
@@ -320,8 +322,14 @@ class Day20(path: String) {
     }
 
     fun findTopLeft(): Image {
-        return images.filter { it.neighbors.containsKey(1) && it.neighbors.containsKey(2) &&
-                !it.neighbors.containsKey(3) && !it.neighbors.containsKey(4) }[0]
+        for(image in images) {
+            println("${image.id}: neighbors=${image.neighbors}")
+        }
+        println()
+        var res = images.filter { it.neighbors.containsKey(1) && it.neighbors.containsKey(2) &&
+                !it.neighbors.containsKey(3) && !it.neighbors.containsKey(0) }[0]
+        println(res)
+        return res
     }
 
     class Image(str: String) {
@@ -330,6 +338,7 @@ class Day20(path: String) {
         val sides = HashMap<Int, Int>()
         val neighbors = HashMap<Int, Image>()
         var rotateForbidden = false
+        var printed = false
 
         init {
             val parts = str.split("\n")
