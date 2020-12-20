@@ -288,4 +288,10 @@ internal class Day20Test {
         arr.forEach { println(it.joinToString("")) }
         println()
     }
+
+    @Test
+    fun part2() {
+        val day20 = Day20("files/2020/day20Test.txt")
+        day20.part2()
+    }
 }

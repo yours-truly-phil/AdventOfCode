@@ -48,12 +48,13 @@ class Day20(path: String) {
 
     fun part2(): Int {
         val part1 = part1()
+        println(part1)
         if (part1 != 51214443014783L) {
             println("part 1 not working anymore: $part1")
         }
 
         val fullContent = drawFullContent()
-        println(fullContent)
+        println("fullContent:\n$fullContent")
         println("width: ${fullContent.lines()[0].length} height: ${fullContent.lines().size}")
         val relevantContent = drawRelevantContent()
         val monster = "                  # \n" +
@@ -80,10 +81,16 @@ class Day20(path: String) {
         println(lake.monsterMap.size)
 
         flipH(lakeArr)
+        println("---------")
+        lakeArr.forEach { println(it.joinToString("")) }
+        println("---------")
         lake = Lake(lakeArr, monsterArr)
         println(lake.monsterMap.size)
         lake.printLake()
-        println(lake.countSharpsInLake())
+        println("monster sharps each: ${lake.countSharpsMonster()}")
+        println("monster count: ${lake.monsterMap.size}")
+        println("lake sharps: ${lake.countSharpsInLake()}")
+        println("lake without monster sharps: ${lake.countSharpsInLakeWithoutMonster()}")
 
         return lake.countSharpsInLake()
     }
@@ -122,7 +129,6 @@ class Day20(path: String) {
 
         fun countSharpsInLake(): Int {
             var count = 0
-            printLake()
             for (row in lake) {
                 for (char in row) {
                     if (char == '#') {
@@ -153,6 +159,22 @@ class Day20(path: String) {
             lake.forEach { println(it.joinToString("")) }
         }
 
+        fun countSharpsInLakeWithoutMonster(): Int {
+            return countSharpsInLake() - monsterMap.size * countSharpsMonster()
+        }
+
+        fun countSharpsMonster(): Int {
+            var count = 0
+            for (line in monster) {
+                for (c in line) {
+                    if (c == '#') {
+                        count++
+                    }
+                }
+            }
+            return count
+        }
+
         fun removeMonsterFromLake(p: Point) {
             for (row in monster.indices) {
                 for (col in monster[row].indices) {
@@ -169,7 +191,7 @@ class Day20(path: String) {
                 for (col in 0..lWidth() - mWidth()) {
                     if (isMonster(Point(row, col))) {
                         monstersAt.add(Point(row, col))
-                        removeMonsterFromLake(Point(row, col))
+//                        removeMonsterFromLake(Point(row, col))
                     }
                 }
             }
@@ -298,7 +320,8 @@ class Day20(path: String) {
     }
 
     fun findTopLeft(): Image {
-        return images.filter { it.neighbors.containsKey(1) && it.neighbors.containsKey(2) }[0]
+        return images.filter { it.neighbors.containsKey(1) && it.neighbors.containsKey(2) &&
+                !it.neighbors.containsKey(3) && !it.neighbors.containsKey(4) }[0]
     }
 
     class Image(str: String) {
