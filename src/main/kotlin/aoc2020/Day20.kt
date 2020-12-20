@@ -5,6 +5,7 @@ import java.io.File
 fun main() {
     val day20 = Day20("files/2020/day20.txt")
     println(day20.part1())
+    println(day20.part2())
 }
 
 class Day20(path: String) {
@@ -20,12 +21,24 @@ class Day20(path: String) {
 
     fun part1(): Long {
         findNeighbors(images[0])
+//        findNeighborsStringCompare(images[0])
         images.forEach { println(it.toString()) }
         return images.filter { it.neighbors.size == 2 }.map { it.id.toLong() }.reduce { acc, l -> acc * l }
     }
 
-    fun findNeighbors(self: Image) {
-        self.posFound = true
+    fun part2(): Long {
+        val part1 = part1()
+        if (part1 != 51214443014783L) {
+            println("part 1 not working anymore: $part1")
+        }
+
+        drawGrid()
+
+        return -1
+    }
+
+    private fun findNeighbors(self: Image) {
+        self.rotateForbidden = true
         for (img in images) {
             if (img.id != self.id) {
                 for (i in 0 until 4) {
@@ -38,22 +51,72 @@ class Day20(path: String) {
     }
 
     private fun checkAsNeighbor(self: Image, img: Image, side: Int) {
-        val other = r(side, 2)
-        if (self.sides[side] == img.sides[other]) {
+        val otherSideIdx = r(side, 2)
+        if (self.sides[side] == img.sides[otherSideIdx]) {
             // north and south fit, no rotation
             self.neighbors[side] = img
-            img.neighbors[other] = self
+            img.neighbors[otherSideIdx] = self
+            if (self.getSideAsString(side) != img.getSideAsString(otherSideIdx)) {
+                println("no match sides $side and $otherSideIdx:\n$self\n${self.draw()}$img\n${img.draw()}")
+            }
             findNeighbors(img)
-        } else if (!img.posFound) {
+            return
+        } else if (!img.rotateForbidden) {
             for (i in 0 until 4) {
-                if (self.sides[side] == img.rot90CW().sides[other]) {
+                if (self.sides[side] == img.rot90CW().sides[otherSideIdx]) {
                     findNeighbors(img)
+                    return
                 }
             }
-            img.flipH()
+            img.flipV()
+//            img.flipH()
             for (i in 0 until 4) {
-                if (self.sides[side] == img.rot90CW().sides[other]) {
+                if (self.sides[side] == img.rot90CW().sides[otherSideIdx]) {
                     findNeighbors(img)
+                    return
+                }
+            }
+        }
+    }
+
+    private fun findNeighborsStringCompare(self: Image) {
+        self.rotateForbidden = true
+        for (img in images) {
+            if (img.id != self.id) {
+                for (i in 0 until 4) {
+                    if (!self.neighbors.containsKey(i)) {
+                        checkAsNeighborStringCompare(self, img, i)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkAsNeighborStringCompare(self: Image, img: Image, side: Int) {
+        val otherSide = (side + 2) % 4
+        val matchMe = self.getSideAsString(side)
+        if (matchMe == img.getSideAsString(otherSide)) {
+            self.neighbors[side] = img
+            img.neighbors[otherSide] = self
+        } else if (!img.rotateForbidden) {
+            // we can rotate / flip img
+            for (i in 0 until 4) {
+                img.rot90CW()
+                if (matchMe == img.getSideAsString(otherSide)) {
+                    self.neighbors[side] = img
+                    img.neighbors[otherSide] = self
+                    findNeighborsStringCompare(img)
+                }
+            }
+            // flip and rotate again
+            img.flipV()
+//            img.flipH()
+            for (i in 0 until 4) {
+                img.rot90CW()
+                if (matchMe == img.getSideAsString(otherSide)) {
+                    self.neighbors[side] = img
+                    img.neighbors[otherSide] = self
+                    findNeighborsStringCompare(img)
                 }
             }
         }
@@ -63,16 +126,30 @@ class Day20(path: String) {
         return (cur + steps) % 4
     }
 
-    fun part2(): Long {
-        return -1
+    fun drawGrid() {
+        val topLeft = findTopLeft()
+        var cur = topLeft
+        var bottomReached = false
+        while (!bottomReached) {
+            println(cur.drawSelfAndAllRight())
+            if (cur.neighbors.containsKey(2)) {
+                cur = cur.neighbors[2]!!
+            } else {
+                bottomReached = true
+            }
+        }
+    }
+
+    fun findTopLeft(): Image {
+        return images.filter { it.neighbors.containsKey(1) && it.neighbors.containsKey(2) }[0]
     }
 
     class Image(str: String) {
         val id: Int
-        val content: Array<CharArray>
+        var content: Array<CharArray>
         val sides = HashMap<Int, Int>()
         val neighbors = HashMap<Int, Image>()
-        var posFound = false
+        var rotateForbidden = false
 
         init {
             val parts = str.split("\n")
@@ -108,52 +185,132 @@ class Day20(path: String) {
             sides[3] = west
         }
 
-        fun getSideValues(): IntArray {
-            return sides.values.toIntArray()
-        }
-
-        fun flipV(): Image {
-            sides[0] = sides[0]!!.biInv()
-            sides[2] = sides[2]!!.biInv()
-            val west = sides[3]!!
-            sides[3] = sides[1]!!
-            sides[1] = west
-            return this
+        fun getSideAsString(i: Int): String {
+            when (i) {
+                0 -> {
+                    // north
+                    return content[0].joinToString("")
+                }
+                1 -> {
+                    // east
+                    var res = ""
+                    for (row in content.indices) {
+                        res += content[row][content.size - 1]
+                    }
+                    return res
+                }
+                2 -> {
+                    // south
+                    return content[content.size - 1].joinToString("")
+                }
+                3 -> {
+                    // west
+                    var res = ""
+                    for (row in content.indices) {
+                        res += content[row][0]
+                    }
+                    return res
+                }
+                else -> return ""
+            }
         }
 
         fun flipH(): Image {
+            val west = sides[3]!!
+            sides[3] = sides[1]!!
+            sides[1] = west
+            sides[0] = sides[1]!!.biInv(content.size)
+            sides[2] = sides[2]!!.biInv(content.size)
+            for (i in content.indices) {
+                content[i] = content[i].reversedArray()
+            }
+            return this
+        }
+
+        fun flipV(): Image {
             val north = sides[0]!!
             sides[0] = sides[2]!!
             sides[2] = north
-            sides[1] = sides[1]!!.biInv()
-            sides[3] = sides[3]!!.biInv()
+            sides[1] = sides[1]!!.biInv(content.size)
+            sides[3] = sides[3]!!.biInv(content.size)
+
+            for (i in 0 until content.size / 2) {
+                for (j in content[i].indices) {
+                    val top = content[i][j]
+                    content[i][j] = content[(content.size - 1) - i][j]
+                    content[(content.size - 1) - i][j] = top
+                }
+            }
+
             return this
         }
 
         fun rot90CW(): Image {
             val zero = sides[0]!!
             // flip west to north
-            sides[0] = sides[3]!!.biInv()
+            sides[0] = sides[3]!!.biInv(content.size)
             sides[3] = sides[2]!!
             // flip east to south
-            sides[2] = sides[1]!!.biInv()
+            sides[2] = sides[1]!!.biInv(content.size)
             sides[1] = zero
+
+            val rotated = Array(content.size) { CharArray(content.size) }
+            for (rowIdx in content.indices) {
+                for (charIdx in content.indices) {
+                    rotated[charIdx][content.size - 1 - rowIdx] = content[rowIdx][charIdx]
+                }
+            }
+            content = rotated
             return this
+        }
+
+        fun drawSelfAndAllRight(): String {
+            val res = StringBuilder()
+            for (rowIdx in content.indices) {
+                for (el in content[rowIdx]) {
+                    res.append(el)
+                }
+                var end = false
+                var cur = this
+                while (!end) {
+                    if (cur.neighbors.containsKey(1)) {
+                        cur = cur.neighbors[1]!!
+                        for (el in cur.content[rowIdx]) {
+                            res.append(el)
+                        }
+                    } else {
+                        end = true
+                    }
+                }
+                res.append("\n")
+            }
+            return res.toString()
+        }
+
+        fun draw(): String {
+            val res = StringBuilder()
+            for (row in content) {
+                for (el in row) {
+                    res.append(el)
+                }
+                res.append("\n")
+            }
+            return res.toString()
         }
 
         override fun toString(): String {
             return "$id: hasNeighbors=${neighbors.count()} " +
-                    "north=${sides[0]!!.biString()} east=${sides[1]!!.biString()} " +
-                    "south=${sides[2]!!.biString()} west=${sides[3]!!.biString()}"
+                    "north=${sides[0]!!.biString(content.size)} east=${sides[1]!!.biString(content.size)} " +
+                    "south=${sides[2]!!.biString(content.size)} west=${sides[3]!!.biString(content.size)}"
         }
     }
 }
 
 
-fun Int.biString(): String {
-    return String.format("%10s", this.toString(2)).replace(" ", "0")
+fun Int.biString(length: Int): String {
+    return String.format("%${length}s", this.toString(2)).replace(" ", "0")
 }
 
-fun Int.biInv(): Int {
-    return this.biString().reversed().toInt(2)
+fun Int.biInv(length: Int): Int {
+    return this.biString(length).reversed().toInt(2)
 }
