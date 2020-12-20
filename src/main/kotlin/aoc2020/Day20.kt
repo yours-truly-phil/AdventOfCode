@@ -8,6 +8,26 @@ fun main() {
     println(day20.part2())
 }
 
+fun makeCharArray(str: String): Array<CharArray> {
+    return str.lines().map { it.toCharArray() }.toTypedArray()
+}
+
+fun rot90CW(arr: Array<CharArray>): Array<CharArray> {
+    println("arr width: ${arr[0].size} height: ${arr.size}")
+    val rotated = Array(arr[0].size) { CharArray(arr.size) }
+    println("rotated width: ${rotated[0].size} height: ${rotated.size}")
+    for (rowIdx in arr.indices) {
+        for (charIdx in arr[0].indices) {
+            rotated[charIdx][rotated[charIdx].size - 1 - rowIdx] = arr[rowIdx][charIdx]
+        }
+    }
+    return rotated
+}
+
+fun flipH(arr: Array<CharArray>) {
+    arr.forEach { it.reverse() }
+}
+
 class Day20(path: String) {
 
     val images: List<Image>
@@ -26,15 +46,166 @@ class Day20(path: String) {
         return images.filter { it.neighbors.size == 2 }.map { it.id.toLong() }.reduce { acc, l -> acc * l }
     }
 
-    fun part2(): Long {
+    fun part2(): Int {
         val part1 = part1()
         if (part1 != 51214443014783L) {
             println("part 1 not working anymore: $part1")
         }
 
-        drawGrid()
+        val fullContent = drawFullContent()
+        println(fullContent)
+        println("width: ${fullContent.lines()[0].length} height: ${fullContent.lines().size}")
+        val relevantContent = drawRelevantContent()
+        val monster = "                  # \n" +
+                "#    ##    ##    ###\n" +
+                " #  #  #  #  #  #   "
+        println("[$relevantContent]")
 
-        return -1
+        var lakeArr = makeCharArray(relevantContent)
+        val monsterArr = makeCharArray(monster)
+
+        var lake = Lake(lakeArr, monsterArr)
+        println(lake.monsterMap.size)
+
+        lakeArr = rot90CW(lakeArr)
+        lake = Lake(lakeArr, monsterArr)
+        println(lake.monsterMap.size)
+
+        lakeArr = rot90CW(lakeArr)
+        lake = Lake(lakeArr, monsterArr)
+        println(lake.monsterMap.size)
+
+        lakeArr = rot90CW(lakeArr)
+        lake = Lake(lakeArr, monsterArr)
+        println(lake.monsterMap.size)
+
+        flipH(lakeArr)
+        lake = Lake(lakeArr, monsterArr)
+        println(lake.monsterMap.size)
+        lake.printLake()
+        println(lake.countSharpsInLake())
+
+        return lake.countSharpsInLake()
+    }
+
+    fun drawRelevantContent(): String {
+        val sb = StringBuilder()
+        val topLeft = findTopLeft()
+        var cur = topLeft
+        var bottomReached = false
+        while (!bottomReached) {
+            sb.append(cur.drawWithoutBorderAndRightOfSelf())
+            if (cur.neighbors.containsKey(2)) {
+                cur = cur.neighbors[2]!!
+            } else {
+                bottomReached = true
+            }
+        }
+        val res = sb.toString()
+        return res.substring(0, res.length - 1)
+    }
+
+    class Lake(val lake: Array<CharArray>, val monster: Array<CharArray>) {
+        var monsterSharps: ArrayList<Point> = ArrayList()
+        var monsterMap: List<Point>
+
+        init {
+            for (row in monster.indices) {
+                for (col in monster[row].indices) {
+                    if (monster[row][col] == '#') {
+                        monsterSharps.add(Point(row, col))
+                    }
+                }
+            }
+            monsterMap = monsterMap()
+        }
+
+        fun countSharpsInLake(): Int {
+            var count = 0
+            printLake()
+            for (row in lake) {
+                for (char in row) {
+                    if (char == '#') {
+                        count++
+                    }
+                }
+            }
+            return count
+        }
+
+        fun mWidth(): Int {
+            return monster[0].size
+        }
+
+        fun mHeight(): Int {
+            return monster.size
+        }
+
+        fun lWidth(): Int {
+            return lake[0].size
+        }
+
+        fun lHeight(): Int {
+            return lake.size
+        }
+
+        fun printLake() {
+            lake.forEach { println(it.joinToString("")) }
+        }
+
+        fun removeMonsterFromLake(p: Point) {
+            for (row in monster.indices) {
+                for (col in monster[row].indices) {
+                    if (monster[row][col] == '#') {
+                        lake[row + p.row][col + p.col] = 'O'
+                    }
+                }
+            }
+        }
+
+        fun monsterMap(): List<Point> {
+            val monstersAt = ArrayList<Point>()
+            for (row in 0..lHeight() - mHeight()) {
+                for (col in 0..lWidth() - mWidth()) {
+                    if (isMonster(Point(row, col))) {
+                        monstersAt.add(Point(row, col))
+                        removeMonsterFromLake(Point(row, col))
+                    }
+                }
+            }
+            return monstersAt
+        }
+
+        fun isMonster(point: Point): Boolean {
+            for (m in monsterSharps) {
+                if (lake[m.row + point.row][m.col + point.col] != '#') {
+                    return false
+                }
+            }
+            return true
+        }
+
+        data class Point(val row: Int, val col: Int)
+    }
+
+    fun drawFullContent(): String {
+        val sb = StringBuilder()
+        val topLeft = findTopLeft()
+        var cur = topLeft
+        var bottomReached = false
+        while (!bottomReached) {
+            sb.append(cur.drawSelfAndAllRight())
+            if (cur.neighbors.containsKey(2)) {
+                cur = cur.neighbors[2]!!
+            } else {
+                bottomReached = true
+            }
+            if (!bottomReached) {
+                sb.append("\n")
+            }
+        }
+        val res = sb.toString().replace("\n\n", "\n")
+        return res.substring(0, res.length - 1)
     }
 
     private fun findNeighbors(self: Image) {
@@ -124,20 +295,6 @@ class Day20(path: String) {
 
     fun r(cur: Int, steps: Int): Int {
         return (cur + steps) % 4
-    }
-
-    fun drawGrid() {
-        val topLeft = findTopLeft()
-        var cur = topLeft
-        var bottomReached = false
-        while (!bottomReached) {
-            println(cur.drawSelfAndAllRight())
-            if (cur.neighbors.containsKey(2)) {
-                cur = cur.neighbors[2]!!
-            } else {
-                bottomReached = true
-            }
-        }
     }
 
     fun findTopLeft(): Image {
@@ -262,6 +419,29 @@ class Day20(path: String) {
             }
             content = rotated
             return this
+        }
+
+        fun drawWithoutBorderAndRightOfSelf(): String {
+            val res = StringBuilder()
+            for (row in 1 until content.size - 1) {
+                for (col in 1 until content[row].size - 1) {
+                    res.append(content[row][col])
+                }
+                var end = false
+                var cur = this
+                while (!end) {
+                    if (cur.neighbors.containsKey(1)) {
+                        cur = cur.neighbors[1]!!
+                        for (col in 1 until cur.content[row].size - 1) {
+                            res.append(cur.content[row][col])
+                        }
+                    } else {
+                        end = true
+                    }
+                }
+                res.append("\n")
+            }
+            return res.toString()
         }
 
         fun drawSelfAndAllRight(): String {

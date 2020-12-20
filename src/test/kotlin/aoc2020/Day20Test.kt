@@ -163,4 +163,129 @@ internal class Day20Test {
         img2.flipV().flipH().rot90CW().flipV().rot90CW().flipH()
         assertEquals(stringRep, img2.draw())
     }
+
+    @Test
+    fun countSharps() {
+        val input = """.####...#####..#...###..
+#####..#..#.#.####..#.#.
+.#.#...#.###...#.##.O#..
+#.O.##.OO#.#.OO.##.OOO##
+..#O.#O#.O##O..O.#O##.##
+...#.#..##.##...#..#..##
+#.##.#..#.#..#..##.#.#..
+.###.##.....#...###.#...
+#.####.#.#....##.#..#.#.
+##...#..#....#..#...####
+..#.##...###..#.#####..#
+....#.##.#.#####....#...
+..##.##.###.....#.##..#.
+#...#...###..####....##.
+.#.##...#.##.#.#.###...#
+#.###.#..####...##..#...
+#.###...#.##...#.##O###.
+.O##.#OO.###OO##..OOO##.
+..O#.O..O..O.#O##O##.###
+#.#..##.########..#..##.
+#.#####..#.#...##..#....
+#....##..#.#########..##
+#...#.....#..##...###.##
+#..###....##.#...##.##.#""".trimIndent()
+        assertEquals(273, input.filter { it == '#' }.count())
+    }
+
+    @Test
+    fun findMonster() {
+
+        val l = "                  # \n" +
+                "#    ##    ##    ###\n" +
+                " #  #  #  #  #  #   "
+        val lArr = l.lines().map { it.toCharArray() }.toTypedArray()
+        val m = "                  # \n" +
+                "#    ##    ##    ###\n" +
+                " #  #  #  #  #  #   "
+        val mArr = m.lines().map { it.toCharArray() }.toTypedArray()
+        val lake = Day20.Lake(lArr, mArr)
+        assertEquals(1, lake.monsterMap.size)
+    }
+
+    @Test
+    fun findMonsterBigLake() {
+        val l = "#    ##    ##    ####    ##    ##    ###\n" +
+                "#    ##    ##    ####    ##    ##    ###\n" +
+                "#    ##    ##    ###                  # \n" +
+                "#    ##    ##    ####    ##    ##    ###\n" +
+                "#    ##    ##    ### #  #  #  #  #  #   \n" +
+                "#    ##    ##    ###   ##########     # \n" +
+                "#    ##    ##    ####  ############# ###\n" +
+                "#    ##    ##    ### ########### #  #   "
+        val lArr = l.lines().map { it.toCharArray() }.toTypedArray()
+        val m = "                  # \n" +
+                "#    ##    ##    ###\n" +
+                " #  #  #  #  #  #   "
+        val mArr = m.lines().map { it.toCharArray() }.toTypedArray()
+        val lake = Day20.Lake(lArr, mArr)
+        assertEquals(2, lake.monsterMap.size)
+    }
+
+    @Test
+    fun findMonsterAoCTest() {
+        val l = """.#.#..#.##...#.##..#####
+###....#.#....#..#......
+##.##.###.#.#..######...
+###.#####...#.#####.#..#
+##.#....#.##.####...#.##
+...########.#....#####.#
+....#..#...##..#.#.###..
+.####...#..#.....#......
+#..#.##..#..###.#.##....
+#.####..#.####.#.#.###..
+###.#.#...#.######.#..##
+#.####....##..########.#
+##..##.#...#...#.#.#.#..
+...#..#..#.#.##..###.###
+.#.#....#.##.#...###.##.
+###.#...#..#.##.######..
+.#.#.###.##.##.#..#.##..
+.####.###.#...###.#..#.#
+..#.#..#..#.#.#.####.###
+#..####...#.#.#.###.###.
+#####..#####...###....##
+#.##..#..#...#..####...#
+.#.###..##..##..####.##.
+...###...##...#...#..###""".trimIndent()
+        var lArr = l.lines().map { it.toCharArray() }.toTypedArray()
+        val m = "                  # \n" +
+                "#    ##    ##    ###\n" +
+                " #  #  #  #  #  #   "
+        val mArr = m.lines().map { it.toCharArray() }.toTypedArray()
+        var lake = Day20.Lake(lArr, mArr)
+//        assertEquals(2, lake.monsterMap.size)
+        lArr = rot90CW(lArr)
+        printArr(lArr)
+        lArr = rot90CW(lArr)
+        printArr(lArr)
+        lArr = rot90CW(lArr)
+        printArr(lArr)
+        flipH(lArr)
+        printArr(lArr)
+        lake = Day20.Lake(lArr, mArr)
+        println(lake.monsterMap.size)
+        lArr = rot90CW(lArr)
+        printArr(lArr)
+        lake = Day20.Lake(lArr, mArr)
+        println(lake.monsterMap.size)
+        lArr = rot90CW(lArr)
+        printArr(lArr)
+        lake = Day20.Lake(lArr, mArr)
+        println(lake.monsterMap.size)
+        lArr = rot90CW(lArr)
+        printArr(lArr)
+        lake = Day20.Lake(lArr, mArr)
+        println(lake.monsterMap.size)
+    }
+
+    fun printArr(arr: Array<CharArray>) {
+        arr.forEach { println(it.joinToString("")) }
+        println()
+    }
 }
