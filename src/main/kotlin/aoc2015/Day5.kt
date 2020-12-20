@@ -5,7 +5,8 @@ import java.io.File
 fun main() {
     val day5 = Day5("files/2015/day5.txt")
     println(day5.part1())
-    println(day5.part2())
+    val day5Part2 = Day5Part2("files/2015/day5.txt")
+    println(day5Part2.part2())
 }
 
 class Day5(path: String) {
@@ -30,8 +31,25 @@ class Day5(path: String) {
         }
         return false
     }
+}
+
+class Day5Part2(path: String) {
+    val lines = File(path).readLines()
 
     fun part2(): Int {
-        return -1
+        return lines.filter { isValid(it) }.count()
+    }
+
+    private fun isValid(str: String): Boolean {
+        for (i in 0 until str.length - 2) {
+            if (str[i] == str[i + 2]) {
+                for (i in 0 until str.length - 3) {
+                    if (str.substring(i + 2).contains(str.substring(i, i + 2))) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
     }
 }
