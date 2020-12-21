@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test
 
 internal class Day18Test {
 
-    val day18 = Day18()
-    val day18Part2 = Day18Part2()
+    private val day18 = Day18()
+    private val day18Part2 = Day18Part2()
 
     @Test
     fun calculate() {

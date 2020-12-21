@@ -17,44 +17,23 @@ fun runDay17() {
     val dur = System.nanoTime() - start
     println("parsed world in ${dur / 1000}µs")
 
-//    printWorld(world)
-
     println("day17part1=${micros(Callable { day17part1(world, cycles) })}")
 }
 
 fun day17part1(world: World, cycles: Int): Int {
     for (i in 0 until cycles) {
         world.step()
-//        printWorld(world)
     }
     return world.worldMap.entries.filter { it.value.state[world.idx] }.count()
 }
 
-private fun printWorld(world: World) {
-
-    for (z in 0 until world.depth) {
-        println("z$z")
-        for (y in 0 until world.width) {
-            for (x in 0 until world.width) {
-                if (world.world[z][y][x].state[world.idx]) {
-                    print("#")
-                } else {
-                    print(".")
-                }
-            }
-            println()
-        }
-        println()
-    }
-}
-
 class World(val lines: List<String>, cycles: Int) {
-    val world = ArrayList<ArrayList<ArrayList<Element>>>()
+    private val world = ArrayList<ArrayList<ArrayList<Element>>>()
     val worldMap = HashMap<Point3D, Element>()
 
-    val height: Int
-    val width: Int
-    val depth: Int
+    private val height: Int
+    private val width: Int
+    private val depth: Int
 
     var idx = 0
 

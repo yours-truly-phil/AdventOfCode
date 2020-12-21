@@ -49,7 +49,7 @@ class Day11 {
         return count
     }
 
-    fun parseGrid(lines: List<String>): Array<Array<Seat>> {
+    private fun parseGrid(lines: List<String>): Array<Array<Seat>> {
         val grid = Array(lines.size) { Array(lines[0].length) { Seat(FLOOR) } }
 
         lines.indices.forEach { i ->

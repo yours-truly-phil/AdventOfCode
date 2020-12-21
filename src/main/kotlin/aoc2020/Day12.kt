@@ -50,7 +50,7 @@ class Day12 {
 
     class Ship {
         val pos = Vec2(0, 0)
-        var angle = 90
+        private var angle = 90
 
         fun rotate(degrees: Int) {
             angle += degrees
@@ -89,7 +89,7 @@ class Day12Part2 {
 
     class Vec2(var x: Int, var y: Int) {
         fun rotate(degrees: Int) {
-            val angle = Math.toRadians(degrees.toDouble());
+            val angle = Math.toRadians(degrees.toDouble())
             val rx = (x * cos(angle)) - (y * sin(angle))
             val ry = (x * sin(angle)) + (y * cos(angle))
             x = rx.roundToInt()

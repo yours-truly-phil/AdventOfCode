@@ -13,7 +13,6 @@ fun runDay18() {
     val lines = File("files/2020/day18.txt").readLines()
 
     val day18 = Day18()
-//    day18.part1(lines)
     println("day18part1=${micros(Callable { day18.part1(lines) })}")
     val day18Part2 = Day18Part2()
     println("day18part2=${micros(Callable { day18Part2.part2(lines) })}")
@@ -31,7 +30,7 @@ class Day18 {
     /**
      * expression needs to start with '(' and returns idx of its closing ')'
      */
-    fun findParanthesisEnd(expression: String): Int {
+    private fun findParanthesisEnd(expression: String): Int {
         val charArr = expression.toCharArray()
         var countOpen = 0
         for (i in charArr.indices) {
@@ -59,7 +58,7 @@ class Day18 {
                 curChar == '-' -> curOp = MINUS
                 curChar == '*' -> curOp = MULTI
                 curChar.toString()
-                        .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                    .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
                     val num = curChar.toString().toInt()
                     when (curOp) {
                         PLUS -> result += num
@@ -109,7 +108,7 @@ class Day18Part2 {
         return Day18().calculate(charList.joinToString(""))
     }
 
-    fun idxNewBracketRight(charList: List<Char>, idx: Int): Int {
+    private fun idxNewBracketRight(charList: List<Char>, idx: Int): Int {
         var countOpen = 0
         var pastFirstNum = false
         for (i in idx + 1 until charList.size) when {
@@ -118,7 +117,7 @@ class Day18Part2 {
                     charList[i] == '(' -> countOpen++
                     charList[i] == ')' -> countOpen--
                     charList[i].toString()
-                            .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                        .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
                         pastFirstNum = true
                     }
                 }
@@ -140,7 +139,7 @@ class Day18Part2 {
                     charList[i] == ')' -> countClosing++
                     charList[i] == '(' -> countClosing--
                     charList[i].toString()
-                            .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                        .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
                         pastFirstNum = true
                     }
                 }

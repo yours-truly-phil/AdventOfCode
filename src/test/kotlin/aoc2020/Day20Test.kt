@@ -258,8 +258,7 @@ internal class Day20Test {
                 "#    ##    ##    ###\n" +
                 " #  #  #  #  #  #   "
         val mArr = m.lines().map { it.toCharArray() }.toTypedArray()
-        var lake = Day20.Lake(lArr, mArr)
-//        assertEquals(2, lake.monsterMap.size)
+        //        assertEquals(2, lake.monsterMap.size)
         lArr = rot90CW(lArr)
         printArr(lArr)
         lArr = rot90CW(lArr)
@@ -268,7 +267,7 @@ internal class Day20Test {
         printArr(lArr)
         flipH(lArr)
         printArr(lArr)
-        lake = Day20.Lake(lArr, mArr)
+        var lake: Day20.Lake = Day20.Lake(lArr, mArr)
         println(lake.monsterMap.size)
         lArr = rot90CW(lArr)
         printArr(lArr)
@@ -284,7 +283,7 @@ internal class Day20Test {
         println(lake.monsterMap.size)
     }
 
-    fun printArr(arr: Array<CharArray>) {
+    private fun printArr(arr: Array<CharArray>) {
         arr.forEach { println(it.joinToString("")) }
         println()
     }

@@ -30,8 +30,8 @@ fun flipH(arr: Array<CharArray>) {
 
 class Day20(path: String) {
 
-    val images: List<Image>
-    val imageMap: Map<Int, Image>
+    private val images: List<Image>
+    private val imageMap: Map<Int, Image>
 
     init {
         val paragraphs = File(path).readText().split("\n\n")
@@ -41,7 +41,6 @@ class Day20(path: String) {
 
     fun part1(): Long {
         findNeighbors(images[0])
-//        findNeighborsStringCompare(images[0])
         images.forEach { println(it.toString()) }
         return images.filter { it.neighbors.size == 2 }.map { it.id.toLong() }.reduce { acc, l -> acc * l }
     }
@@ -97,7 +96,7 @@ class Day20(path: String) {
         return lake.countSharpsInLake()
     }
 
-    fun drawRelevantContent(): String {
+    private fun drawRelevantContent(): String {
         val sb = StringBuilder()
         val topLeft = findTopLeft()
         var cur = topLeft
@@ -114,8 +113,8 @@ class Day20(path: String) {
         return res.substring(0, res.length - 1)
     }
 
-    class Lake(val lake: Array<CharArray>, val monster: Array<CharArray>) {
-        var monsterSharps: ArrayList<Point> = ArrayList()
+    class Lake(private val lake: Array<CharArray>, private val monster: Array<CharArray>) {
+        private var monsterSharps: ArrayList<Point> = ArrayList()
         var monsterMap: List<Point>
 
         init {
@@ -141,19 +140,19 @@ class Day20(path: String) {
             return count
         }
 
-        fun mWidth(): Int {
+        private fun mWidth(): Int {
             return monster[0].size
         }
 
-        fun mHeight(): Int {
+        private fun mHeight(): Int {
             return monster.size
         }
 
-        fun lWidth(): Int {
+        private fun lWidth(): Int {
             return lake[0].size
         }
 
-        fun lHeight(): Int {
+        private fun lHeight(): Int {
             return lake.size
         }
 
@@ -177,7 +176,7 @@ class Day20(path: String) {
             return count
         }
 
-        fun removeMonsterFromLake(p: Point) {
+        private fun removeMonsterFromLake(p: Point) {
             for (row in monster.indices) {
                 for (col in monster[row].indices) {
                     if (monster[row][col] == '#') {
@@ -187,7 +186,7 @@ class Day20(path: String) {
             }
         }
 
-        fun monsterMap(): List<Point> {
+        private fun monsterMap(): List<Point> {
             val monstersAt = ArrayList<Point>()
             for (row in 0..lHeight() - mHeight()) {
                 for (col in 0..lWidth() - mWidth()) {
@@ -200,7 +199,7 @@ class Day20(path: String) {
             return monstersAt
         }
 
-        fun isMonster(point: Point): Boolean {
+        private fun isMonster(point: Point): Boolean {
             for (m in monsterSharps) {
                 if (lake[m.row + point.row][m.col + point.col] != '#') {
                     return false
@@ -212,7 +211,7 @@ class Day20(path: String) {
         data class Point(val row: Int, val col: Int)
     }
 
-    fun drawFullContent(): String {
+    private fun drawFullContent(): String {
         val sb = StringBuilder()
         val topLeft = findTopLeft()
         var cur = topLeft
@@ -246,7 +245,7 @@ class Day20(path: String) {
     }
 
     private fun checkAsNeighbor(self: Image, img: Image, side: Int) {
-        val otherSideIdx = r(side, 2)
+        val otherSideIdx = (side + 2) % 4
         if (self.sides[side] == img.sides[otherSideIdx]) {
             // north and south fit, no rotation
             self.neighbors[side] = img
@@ -264,7 +263,6 @@ class Day20(path: String) {
                 }
             }
             img.flipV()
-//            img.flipH()
             for (i in 0 until 4) {
                 if (self.sides[side] == img.rot90CW().sides[otherSideIdx]) {
                     findNeighbors(img)
@@ -305,7 +303,6 @@ class Day20(path: String) {
             }
             // flip and rotate again
             img.flipV()
-//            img.flipH()
             for (i in 0 until 4) {
                 img.rot90CW()
                 if (matchMe == img.getSideAsString(otherSide)) {
@@ -317,28 +314,19 @@ class Day20(path: String) {
         }
     }
 
-    fun r(cur: Int, steps: Int): Int {
-        return (cur + steps) % 4
-    }
-
     fun findTopLeft(): Image {
-        for(image in images) {
-            println("${image.id}: neighbors=${image.neighbors}")
-        }
-        println()
-        var res = images.filter { it.neighbors.containsKey(1) && it.neighbors.containsKey(2) &&
-                !it.neighbors.containsKey(3) && !it.neighbors.containsKey(0) }[0]
-        println(res)
-        return res
+        return images.filter {
+            it.neighbors.containsKey(1) && it.neighbors.containsKey(2) &&
+                    !it.neighbors.containsKey(3) && !it.neighbors.containsKey(0)
+        }[0]
     }
 
     class Image(str: String) {
         val id: Int
-        var content: Array<CharArray>
+        private var content: Array<CharArray>
         val sides = HashMap<Int, Int>()
         val neighbors = HashMap<Int, Image>()
         var rotateForbidden = false
-        var printed = false
 
         init {
             val parts = str.split("\n")
