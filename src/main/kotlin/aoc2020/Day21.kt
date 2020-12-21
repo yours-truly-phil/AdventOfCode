@@ -10,9 +10,9 @@ fun main() {
 
 class Day21(lines: List<String>) {
 
-    val allergens = HashMap<String, Allergen>()
-    val ingredients = HashMap<String, HashSet<Food>>()
-    val foods = ArrayList<Food>()
+    private val allergens = HashMap<String, Allergen>()
+    private val ingredients = HashMap<String, HashSet<Food>>()
+    private val foods = ArrayList<Food>()
 
     init {
         lines.forEach { line ->
@@ -38,10 +38,9 @@ class Day21(lines: List<String>) {
             val foodsWithAllergen = allFoodsWithAllergen(allergen)
             val possibleIngredientsForAllergen = allIngredientsCommonInFoods(foodsWithAllergen)
             allergen.possibleIngredients.addAll(possibleIngredientsForAllergen)
-            println("possible ingredients for ${allergen.name}:\n$possibleIngredientsForAllergen\n")
         }
 
-        while (allergensWithUnknownIngredients().size > 0) {
+        while (allergensWithUnknownIngredients().isNotEmpty()) {
             val allergenWithOneIngredient = allergenWithOnePossibleIngredient()
             for (allergen in allergenWithOneIngredient) {
                 allergen.ingredient = allergen.possibleIngredients.elementAt(0)
@@ -52,11 +51,15 @@ class Day21(lines: List<String>) {
             }
         }
 
-        allergens.values.forEach {
-            println("ingredient for ${it.name}:\n${it.ingredient}\n")
-        }
-
         return countUnAssignedIngredients()
+    }
+
+    fun part2(): Int {
+        val part1Result = part1()
+        if(part1Result != 2410) {
+            throw IllegalStateException("messed up part1, expected 2410, got $part1Result")
+        }
+        return -1
     }
 
     private fun countUnAssignedIngredients(): Int {
@@ -103,12 +106,7 @@ class Day21(lines: List<String>) {
         }.toSet()
     }
 
-    fun part2(): Int {
-        return -1
-    }
-
-    data class Food(val ingredients: List<String>, val allergens: Map<String, Allergen>) {
-    }
+    data class Food(val ingredients: List<String>, val allergens: Map<String, Allergen>)
 
     data class Allergen(val name: String) {
         val inFoods = HashSet<Food>()
