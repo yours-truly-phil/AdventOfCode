@@ -54,12 +54,16 @@ class Day21(lines: List<String>) {
         return countUnAssignedIngredients()
     }
 
-    fun part2(): Int {
-        val part1Result = part1()
-        if(part1Result != 2410) {
-            throw IllegalStateException("messed up part1, expected 2410, got $part1Result")
-        }
-        return -1
+    fun part2(): String {
+        part1()
+        return getDangerousIngredientList()
+    }
+
+    private fun getDangerousIngredientList(): String {
+        return allergens.values
+            .sortedBy { it.name }
+            .map { it.ingredient }
+            .joinToString(",")
     }
 
     private fun countUnAssignedIngredients(): Int {
