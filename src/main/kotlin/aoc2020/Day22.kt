@@ -2,6 +2,7 @@ package aoc2020
 
 import java.io.File
 import java.util.*
+import kotlin.collections.HashSet
 
 fun main() {
     val day22 = Day22(File("files/2020/day22.txt").readText())
@@ -9,23 +10,24 @@ fun main() {
     println(day22.part2())
 }
 
-class Day22(input: String) {
-    private val deck1: Deck
-    private val deck2: Deck
+class Day22(val input: String) {
+    private lateinit var deck1: Deck
+    private lateinit var deck2: Deck
 
-    init {
+    fun init(input: String) {
         val parts = input.split("\n\n")
         deck1 = Deck(parts[0])
         deck2 = Deck(parts[1])
     }
 
     fun part1(): Int {
+        init(input)
         play()
         return getLeader().getPoints()
     }
 
     private fun play() {
-        while (!isGameEnd()) {
+        while (!isGameEnd(deck1, deck2)) {
             playRound()
         }
     }
@@ -47,16 +49,47 @@ class Day22(input: String) {
         }
     }
 
-    private fun isGameEnd(): Boolean {
-        return deck1.cards.size == 0 || deck2.cards.size == 0
+    private fun isGameEnd(d1: Deck, d2: Deck): Boolean {
+        return d1.cards.size == 0 || d2.cards.size == 0
     }
 
     private fun getLeader(): Deck {
         return if (deck1.getPoints() > deck2.getPoints()) deck1 else deck2
     }
 
-    fun part2(): Any? {
-        TODO("Not yet implemented")
+    fun part2(): Int {
+        init(input)
+        playPart2(deck1, deck2, HashSet(), 1)
+        return getLeader().getPoints()
+    }
+
+    private fun playPart2(d1: Deck, d2: Deck, memo: HashSet<String>, lvl: Int): String {
+        var round = 0
+        var winner = d1.name
+        while (!isGameEnd(d1, d2)) {
+            round++
+            if ("${d1.hash()}|${d2.hash()}" in memo) return d1.name
+            else memo += "${d1.hash()}|${d2.hash()}"
+
+            val card1 = d1.playCard()
+            val card2 = d2.playCard()
+            winner = d1.name
+            if (shouldPlaySubGame(card1, d1, card2, d2)) {
+                winner = playPart2(d1.copyDeck(card1), d2.copyDeck(card2), HashSet(), lvl + 1)
+            } else if (card2 > card1) {
+                winner = d2.name
+            }
+            if (winner == d1.name) {
+                d1.takeCards(card1, card2)
+            } else {
+                d2.takeCards(card2, card1)
+            }
+        }
+        return winner
+    }
+
+    private fun shouldPlaySubGame(c1: Int, d1: Deck, c2: Int, d2: Deck): Boolean {
+        return c1 <= d1.noCardsInDeck() && c2 <= d2.noCardsInDeck()
     }
 
     override fun toString(): String {
@@ -64,7 +97,7 @@ class Day22(input: String) {
     }
 
     class Deck(input: String) {
-        private val name: String
+        val name: String
         val cards = LinkedList<Int>()
 
         init {
@@ -88,9 +121,25 @@ class Day22(input: String) {
             cards.addLast(card2)
         }
 
+        fun noCardsInDeck(): Int {
+            return cards.size
+        }
+
         fun getPoints(): Int {
             return cards.mapIndexed { idx, card -> (cards.size - idx) * card }
                 .sum()
+        }
+
+        fun copyDeck(num: Int): Deck {
+            val newDeck = Deck(name)
+            for (i in 0 until num) {
+                newDeck.cards.add(cards[i])
+            }
+            return newDeck
+        }
+
+        fun hash(): String {
+            return cards.joinToString(",")
         }
 
         override fun toString(): String {
