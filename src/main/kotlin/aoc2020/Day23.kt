@@ -12,7 +12,7 @@ fun main() {
 
 class Day23(input: String, size: Int) {
     private val sortedCups: List<Cup>
-    var selected: Cup
+    private var selected: Cup
 
     init {
         val cupArr = IntArray(size)
@@ -43,19 +43,8 @@ class Day23(input: String, size: Int) {
         return res
     }
 
-    private fun repr(cup: Cup, size: Int): String {
-        var res = ""
-        var cur = cup
-        for (i in 0 until size) {
-            res += cur.num
-            cur = cur.next
-        }
-        return res
-    }
-
     private fun play(rounds: Int) {
         for (i in 0 until rounds) {
-//            println("-- move ${i + 1} --\n${repr(selected, sortedCups.size)}")
             move()
         }
     }
