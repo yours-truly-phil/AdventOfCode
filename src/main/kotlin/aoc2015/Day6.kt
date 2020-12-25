@@ -6,6 +6,7 @@ import java.io.File
 
 fun main() {
     Day6().also { println(it.part1(File("files/2015/day6.txt").readText(), 1000, 1000)) }
+        .also { println(it.part2(File("files/2015/day6.txt").readText(), 1000, 1000)) }
 }
 
 class Day6 {
@@ -19,6 +20,40 @@ class Day6 {
                     }
             }
             .sumBy { it.count { b -> b == ON } }
+    }
+
+    fun part2(input: String, width: Int, height: Int): Int {
+        return Array(height) { Array(width) { 0 } }
+            .also { grid ->
+                input.lines()
+                    .map { it.split(" ") }
+                    .forEach {
+                        executeInstructions2(it, grid)
+                    }
+            }
+            .sumBy { it.sum() }
+    }
+
+    private fun executeInstructions2(parts: List<String>, grid: Array<Array<Int>>) {
+        when {
+            parts[0] == "turn" -> when {
+                parts[1] == "on" -> parseNums(2, parts)
+                    .also {
+                        apply2(it.first[0], it.first[1], it.second[0], it.second[1], grid)
+                        { i -> i + 1 }
+                    }
+                parts[1] == "off" -> parseNums(2, parts)
+                    .also {
+                        apply2(it.first[0], it.first[1], it.second[0], it.second[1], grid)
+                        { i -> maxOf(i - 1, 0) }
+                    }
+            }
+            parts[0] == "toggle" -> parseNums(1, parts)
+                .also {
+                    apply2(it.first[0], it.first[1], it.second[0], it.second[1], grid)
+                    { i -> i + 2 }
+                }
+        }
     }
 
     private fun executeInstructions(parts: List<String>, grid: Array<Array<State>>) {
@@ -50,6 +85,10 @@ class Day6 {
     }
 
     private fun apply(y: Int, x: Int, y2: Int, x2: Int, grid: Array<Array<State>>, func: (State) -> State) {
+        for (col in y..y2) for (row in x..x2) grid[col][row] = func(grid[col][row])
+    }
+
+    private fun apply2(y: Int, x: Int, y2: Int, x2: Int, grid: Array<Array<Int>>, func: (Int) -> Int) {
         for (col in y..y2) for (row in x..x2) grid[col][row] = func(grid[col][row])
     }
 
