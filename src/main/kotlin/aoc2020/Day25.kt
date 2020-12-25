@@ -33,11 +33,11 @@ class Day25 {
     private fun loopSize(num: Long): Int {
         var res = 1L
         var i = 0
-        while (true) {
+        while (res != num) {
             i++
             res *= initSubjNum
             res %= divNum
-            if (res == num) return i
         }
+        return i
     }
 }
