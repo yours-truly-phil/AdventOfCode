@@ -11,11 +11,9 @@ fun main() {
 
 class Day24 {
     private val directions = hashMapOf(
-//        "n" to Pos(2, 0),
         "ne" to Pos(1, 1),
         "e" to Pos(0, 2),
         "se" to Pos(-1, 1),
-//        "s" to Pos(-2, 0),
         "sw" to Pos(-1, -1),
         "w" to Pos(0, -2),
         "nw" to Pos(1, -1)
@@ -25,7 +23,7 @@ class Day24 {
         return initTiles(input).filter { entry -> entry.value == BLACK }.count()
     }
 
-    fun initTiles(input: String): HashMap<Pos, TileColor> {
+    private fun initTiles(input: String): HashMap<Pos, TileColor> {
         val tiles = HashMap<Pos, TileColor>()
         input.lines().forEach { line ->
             findTargetCoordinates(line).also {
@@ -80,7 +78,7 @@ class Day24 {
         return tiles.filter { entry -> entry.value == BLACK }.count()
     }
 
-    fun evolve(tiles: HashMap<Pos, TileColor>, rounds: Int) {
+    private fun evolve(tiles: HashMap<Pos, TileColor>, rounds: Int) {
         for (i in 1..rounds) {
             step(tiles)
             println("after day $i:")
@@ -132,7 +130,7 @@ class Day24 {
         }
     }
 
-    fun printTiles(tiles: HashMap<Pos, TileColor>) {
+    private fun printTiles(tiles: HashMap<Pos, TileColor>) {
         var minX = Int.MAX_VALUE
         var maxX = Int.MIN_VALUE
         var minY = Int.MAX_VALUE
