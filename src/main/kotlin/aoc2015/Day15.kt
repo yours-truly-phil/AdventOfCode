@@ -4,6 +4,7 @@ import java.io.File
 
 fun main() {
     Day15().also { println(it.part1(File("files/2015/day15.txt").readText())) }
+        .also { println(it.part2(File("files/2015/day15.txt").readText())) }
 }
 
 class Day15 {
@@ -15,14 +16,38 @@ class Day15 {
                 for (x3 in 0 until 100 - x1 - x2) {
                     val x4 = 100 - x1 - x2 - x3
                     val res = res(ingredients, arrayOf(x1, x2, x3, x4))
-                    if(total < res) {
+                    if (total < res) {
                         println("x1=$x1 x2=$x2 x3=$x3 x4=$x4 total=${x1 + x2 + x3 + x4} res=$res")
                         total = res
                     }
                 }
             }
         }
+        return total
+    }
 
+    fun part2(input: String): Long {
+        val ingredients = input.lines().map { Ingredient(it) }
+        var total = 0L
+        for (x1 in 0..100 - 3) {
+            for (x2 in 0..100 - x1 - 2) {
+                for (x3 in 0 until 100 - x1 - x2) {
+                    val x4 = 100 - x1 - x2 - x3
+                    val amounts = arrayOf(x1, x2, x3, x4)
+                    var totalCalories = 0
+                    for (i in 0 until 4) {
+                        totalCalories += ingredients[i].cal * amounts[i]
+                    }
+                    if (totalCalories == 500) {
+                        val res = res(ingredients, amounts)
+                        if (total < res) {
+                            println("x1=$x1 x2=$x2 x3=$x3 x4=$x4 total=${x1 + x2 + x3 + x4} res=$res")
+                            total = res
+                        }
+                    }
+                }
+            }
+        }
         return total
     }
 
