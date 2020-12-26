@@ -19,6 +19,6 @@ internal class Day13Test {
                 "David would gain 46 happiness units by sitting next to Alice.\n" +
                 "David would lose 7 happiness units by sitting next to Bob.\n" +
                 "David would gain 41 happiness units by sitting next to Carol."
-        assertEquals(330, Day13().part1(input))
+        assertEquals(330, Day13().part1(input, false))
     }
 }
