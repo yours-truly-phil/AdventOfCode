@@ -17,7 +17,6 @@ class Day15 {
                     val x4 = 100 - x1 - x2 - x3
                     val res = res(ingredients, arrayOf(x1, x2, x3, x4))
                     if (total < res) {
-                        println("x1=$x1 x2=$x2 x3=$x3 x4=$x4 total=${x1 + x2 + x3 + x4} res=$res")
                         total = res
                     }
                 }
@@ -41,7 +40,6 @@ class Day15 {
                     if (totalCalories == 500) {
                         val res = res(ingredients, amounts)
                         if (total < res) {
-                            println("x1=$x1 x2=$x2 x3=$x3 x4=$x4 total=${x1 + x2 + x3 + x4} res=$res")
                             total = res
                         }
                     }
