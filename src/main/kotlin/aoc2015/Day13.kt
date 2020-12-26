@@ -3,16 +3,17 @@ package aoc2015
 import java.io.File
 
 fun main() {
-    Day13().also { println(it.part1(File("files/2015/day13.txt").readText())) }
+    Day13().also { println(it.part1(File("files/2015/day13.txt").readText(), false)) }
+        .also { println(it.part1(File("files/2015/day13.txt").readText(), true)) }
 }
 
 class Day13 {
-    fun part1(input: String): Int {
+    fun part1(input: String, part2: Boolean): Int {
 
         val people = input.lines()
             .map { it.split(" ")[0] }
             .distinct()
-            .map { it to Person(it) }.toMap()
+            .map { it to Person(it) }.toMap().toMutableMap()
 
         input.lines()
             .forEach {
@@ -22,14 +23,19 @@ class Day13 {
                 var amount = parts[3].toInt()
                 if (parts[2] == "lose") amount *= -1
                 people[person]!!.happiness[nextTo] = amount
-
             }
-        for (entry in people) {
-            println("${entry.key} -> ${entry.value.happiness}")
+
+        if (part2) {
+            val me = Person("Phil")
+            people[me.name] = me
+            for (entry in people) {
+                entry.value.happiness[me.name] = 0
+                me.happiness[entry.key] = 0
+            }
         }
 
         val listOfPeople = people.keys.toList()
-        val permutations = listOfPeople.size.pow(listOfPeople.size)
+        val permutations = pow(listOfPeople.size)
         var res = Int.MIN_VALUE
         for (i in 0 until permutations) {
             val seating = i.toString(listOfPeople.size).padStart(listOfPeople.size, '0')
@@ -63,7 +69,7 @@ class Day13 {
         val happiness = HashMap<String, Int>()
     }
 
-    private fun Int.pow(other: Int): Long {
+    private fun pow(other: Int): Long {
         var res = 1L
         repeat(other) {
             res *= other
