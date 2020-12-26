@@ -3,16 +3,35 @@ package aoc2015
 import java.io.File
 
 fun main() {
-    Day7().also { println(it.part1(File("files/2015/day7.txt").readText())) }
+    Day7().also { println(it.part1(File("files/2015/day7.txt").readText(), "a")) }
+        .also {
+            println(
+                it.part2(
+                    File("files/2015/day7.txt").readText(),
+                    "a",
+                    "b",
+                    it.part1(File("files/2015/day7.txt").readText(), "a")
+                )
+            )
+        }
 }
 
 class Day7 {
-    fun part1(input: String): Int {
-        input.lines()
-            .map { it.split(" -> ") }
-            .map { it[1] to it[0] }
-            .toMap()
-            .also { return wireValue("a", it, hashMapOf()) }
+    fun part1(input: String, wire: String): Int {
+        parseToMap(input)
+            .also { return wireValue(wire, it, hashMapOf()) }
+    }
+
+    private fun parseToMap(input: String) = input.lines()
+        .map { it.split(" -> ") }
+        .map { it[1] to it[0] }
+        .toMap()
+
+    fun part2(input: String, wire: String, override: String, value: Int): Int {
+        parseToMap(input)
+            .toMutableMap()
+            .also { it[override] = value.toString() }
+            .also { return wireValue(wire, it, hashMapOf()) }
     }
 
     private fun wireValue(wire: String, instructions: Map<String, String>, res: HashMap<String, Int>): Int {
