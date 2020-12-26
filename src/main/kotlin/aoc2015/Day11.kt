@@ -4,6 +4,7 @@ import java.io.File
 
 fun main() {
     Day11().also { println(it.part1(File("files/2015/day11.txt").readText())) }
+        .also { println(it.part1(it.part1(File("files/2015/day11.txt").readText()))) }
 }
 
 class Day11 {
