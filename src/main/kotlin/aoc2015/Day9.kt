@@ -1,23 +1,33 @@
 package aoc2015
 
 import java.io.File
+import java.util.function.BiFunction
 import kotlin.math.pow
 
 fun main() {
     Day9().also { println(it.part1(File("files/2015/day9.txt").readText())) }
+        .also { println(it.part2(File("files/2015/day9.txt").readText())) }
 }
 
 class Day9 {
     fun part1(input: String): Int {
-        HashMap<String, City>()
+        parseCities(input).also { return bruteForceAllRoutes(it.values.toList(), Int.MAX_VALUE, ::minOf) }
+    }
+
+    private fun parseCities(input: String): HashMap<String, City> {
+        return HashMap<String, City>()
             .also { cities ->
                 input.lines()
                     .forEach { parseCities(it, cities) }
-            }.apply { return bruteForceShortestDistanceAllCities(values.toList()) }
+            }
     }
 
-    private fun bruteForceShortestDistanceAllCities(cities: List<City>): Int {
-        var min = Int.MAX_VALUE
+    fun part2(input: String): Int {
+        parseCities(input).also { return bruteForceAllRoutes(it.values.toList(), 0, ::maxOf) }
+    }
+
+    private fun bruteForceAllRoutes(cities: List<City>, startVal: Int, func: BiFunction<Int, Int, Int>): Int {
+        var res = startVal
         val numCombinations = cities.size.toDouble().pow(cities.size.toDouble()).toInt()
         for (i in 0 until numCombinations) {
             val route = i.toString(cities.size).padStart(cities.size, '0')
@@ -42,11 +52,10 @@ class Day9 {
                 }
             }
             if (dist >= 0) {
-                if(dist < min) println("route=$route cost=$dist")
-                min = minOf(min, dist)
+                res = func.apply(res, dist)
             }
         }
-        return min
+        return res
     }
 
 
