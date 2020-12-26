@@ -5,6 +5,7 @@ import java.io.File
 fun main() {
     Day8()
         .also { println(it.part1(File("files/2015/day8.txt").readText())) }
+        .also { println(it.part2(File("files/2015/day8.txt").readText())) }
 }
 
 class Day8 {
@@ -12,6 +13,12 @@ class Day8 {
         val noChars = input.lines().map { it.length }.sum()
         val noUnescapedChars = input.lines().map { unescapedStringLength(it) }.sum()
         return noChars - noUnescapedChars
+    }
+
+    fun part2(input: String): Int {
+        val noChars = input.lines().map { it.length }.sum()
+        val noEscapedChars = input.lines().map { escapedStringLength(it) }.sum()
+        return noEscapedChars - noChars
     }
 
     private fun unescapedStringLength(s: String): Int {
@@ -33,6 +40,17 @@ class Day8 {
                     i++
                     count++
                 }
+            }
+        }
+        return count
+    }
+
+    private fun escapedStringLength(s: String): Int {
+        var count = s.length + 2
+        s.forEach {
+            when (it) {
+                '"' -> count++
+                '\\' -> count++
             }
         }
         return count
