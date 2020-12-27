@@ -3,16 +3,18 @@ package aoc2015
 import java.io.File
 
 fun main() {
-    Day18().also { println(it.part1(File("files/2015/day18.txt").readText())) }
+    Day18().also { println(it.part1(File("files/2015/day18.txt").readText(), false)) }
+        .also { println(it.part1(File("files/2015/day18.txt").readText(), true)) }
 }
 
 class Day18 {
-    fun part1(input: String): Int = parseInput(input)
+    fun part1(input: String, part2: Boolean): Int = parseInput(input, part2)
         .also { grid ->
             repeat(100) {
                 for (y in grid.indices) {
                     for (x in grid.indices) {
                         setNext(y, x, grid)
+                        if (part2) setCornerOn(grid)
                     }
                 }
                 for (y in grid.indices) {
@@ -38,7 +40,14 @@ class Day18 {
         }
     }
 
-    private fun parseInput(input: String): Array<Array<Light>> = input.lines().map { line ->
+    private fun setCornerOn(grid: Array<Array<Light>>) {
+        grid.first().first().also { it.on = true }.also { it.next = true }
+        grid.first().last().also { it.on = true }.also { it.next = true }
+        grid.last().first().also { it.on = true }.also { it.next = true }
+        grid.last().last().also { it.on = true }.also { it.next = true }
+    }
+
+    private fun parseInput(input: String, part2: Boolean): Array<Array<Light>> = input.lines().map { line ->
         line.map { c ->
             Light().apply {
                 when (c) {
@@ -46,7 +55,7 @@ class Day18 {
                 }
             }
         }.toTypedArray()
-    }.toTypedArray()
+    }.toTypedArray().also { if (part2) setCornerOn(it) }
 
     class Light {
         var on = false
