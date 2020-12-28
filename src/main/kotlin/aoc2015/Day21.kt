@@ -1,5 +1,7 @@
 package aoc2015
 
+import java.util.function.Consumer
+
 /**
 Boss:
 Hit Points: 100
@@ -30,7 +32,7 @@ Defense +3   80     0       3
  */
 
 fun main() {
-    Day21().also { println(it.part1()) }
+    Day21().also { println(it.part1()) }.also { println(it.part2()) }
 }
 
 class Day21 {
@@ -62,36 +64,61 @@ class Day21 {
     )
     private val boss = Item("Boss", 0, 8, 2)
 
+    fun part2(): Int {
+        var maxCost = Int.MIN_VALUE
+        equipCombinations { equip ->
+            startGame(equip).apply {
+                if (this.first.hp < 0) {
+                    maxCost = maxOf(maxCost, this.first.cost())
+                }
+            }
+        }
+        return maxCost
+    }
+
     fun part1(): Int {
         var minCost = Int.MAX_VALUE
-        for (w in weapons.indices) {
-            for (a in armors.indices) {
-                for (r1 in rings.indices) {
-                    for (r2 in rings.indices) {
-                        if (rings[r1] != rings[r2]) {
-                            findWinner(player = Player()
-                                .also {
-                                    it.items.add(weapons[w])
-                                    it.items.add(armors[a])
-                                    it.items.add(rings[r1])
-                                    it.items.add(rings[r2])
-                                }, boss = Player().also {
-                                it.items.add(boss)
-                                it.isPlayer = false
-                            }).apply {
-                                if (isPlayer) {
-                                    minCost = minOf(minCost, cost())
-                                }
-                            }
-                        }
-                    }
+        equipCombinations { equip ->
+            startGame(equip).apply {
+                if (this.first.hp > 0) {
+                    minCost = minOf(minCost, this.first.cost())
                 }
             }
         }
         return minCost
     }
 
-    private fun findWinner(player: Player, boss: Player): Player {
+    private fun startGame(equip: IntArray): Pair<Player, Player> {
+        val player = Player()
+            .also {
+                it.items.add(weapons[equip[0]])
+                it.items.add(armors[equip[1]])
+                it.items.add(rings[equip[2]])
+                it.items.add(rings[equip[3]])
+            }
+        val boss = Player().also {
+            it.items.add(boss)
+            it.isPlayer = false
+        }
+        playGame(player, boss)
+        return Pair(player, boss)
+    }
+
+    private fun equipCombinations(consumer: Consumer<IntArray>) {
+        for (w in weapons.indices) {
+            for (a in armors.indices) {
+                for (r1 in rings.indices) {
+                    for (r2 in rings.indices) {
+                        if (rings[r1] != rings[r2]) {
+                            consumer.accept(intArrayOf(w, a, r1, r2))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun playGame(player: Player, boss: Player): Player {
         var curAttk = player
         var curDef = boss
         while (true) {
