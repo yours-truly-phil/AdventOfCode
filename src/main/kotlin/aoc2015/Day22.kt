@@ -1,13 +1,19 @@
 package aoc2015
 
+/**
+ * TODO part 2 not working, for some reason doesn't get boss below 11 hp
+ */
+
 fun main() {
     Day22().also { println("Part1=${it.part1(71, 10, false)}") }
-    Day22().also { println("Part2=${it.part1(71, 10, true)}") }
+        .also { println("Part2=${it.part1(71, 10, true)}") }
 }
 
 class Day22 {
-    private val totalCasts = 20
+    private val totalCasts = 18
     private val noSpells = 5
+    private val playerHp = 50
+    private val playerMana = 500
 
     fun part1(bossHp: Int, bossDmg: Int, part2: Boolean): Int {
         var minManaToWin = Int.MAX_VALUE
@@ -17,7 +23,7 @@ class Day22 {
             try {
                 playGame(
                     spellSequence,
-                    Player().apply { hp = 50 }.apply { mana = 500 },
+                    Player().apply { hp = playerHp }.apply { mana = playerMana },
                     Boss().apply { hp = bossHp }.apply { dmg = bossDmg }, part2
                 )
                     .also {
@@ -58,7 +64,10 @@ class Day22 {
 
             if (part2) {
                 player.hp -= 1
-                if (player.hp <= 0) throw InvalidMove("invalid move", i)
+                if (player.hp <= 0) {
+//                    println("${casts.joinToString(",")} boss=${boss.hp} player=${player.hp}")
+                    throw InvalidMove("invalid move", i+1)
+                }
             }
             tick(player, boss)
             when (cast) {
@@ -92,16 +101,13 @@ class Day22 {
                     totalMana += 229
                 }
             }
-            if (player.mana < 0 || player.hp < 0) throw InvalidMove("invalid move", i)
+            if (player.mana < 0) throw InvalidMove("invalid move", i)
             if (boss.hp < 0) return totalMana
 
             tick(player, boss)
             if (boss.hp < 0) return totalMana
-
-            if (player.shieldTimer > 0) player.hp -= maxOf(1, boss.dmg - 7) else player.hp -= boss.dmg
-
-            if (player.mana < 0 || player.hp < 0) throw InvalidMove("invalid move", i)
-            if (boss.hp < 0) return totalMana
+            if (player.shieldTimer >= 0) player.hp -= maxOf(1, boss.dmg - 7) else player.hp -= boss.dmg
+            if (player.hp < 0) throw InvalidMove("invalid move", i)
         }
         return Int.MAX_VALUE
     }
