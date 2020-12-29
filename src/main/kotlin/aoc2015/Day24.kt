@@ -7,14 +7,13 @@ import kotlin.system.measureTimeMillis
 
 fun main() {
     PowerSet(arrayOf(5, 4, 3, 2, 1).iterator()).also { while (it.hasNext()) println(it.next().joinToString(",")) }
-    Day24().also { println(it.part1(File("files/2015/day24.txt").readText())) }
-        .also { println(it.part2(File("files/2015/day24.txt").readText())) }
+    Day24().also { println(it.part1(File("files/2015/day24.txt").readText(), 3)) }
+        .also { println(it.part1(File("files/2015/day24.txt").readText(), 4)) }
 }
 
 class Day24 {
-    fun part1(input: String): Long {
+    fun part1(input: String, groups: Int): Long {
         val nums = input.lines().map { it.toInt() }.toIntArray().sortedArrayDescending()
-        val groups = 3
         val groupWeight = nums.sum() / groups
         println("nums=${nums.size} sum=${nums.sum()} targetWeight=$groupWeight" +
                 " possibilities=${nums.size.factorial()}")
@@ -52,10 +51,6 @@ class Day24 {
             res = res.multiply(BigInteger(i.toString()))
         }
         return res
-    }
-
-    fun part2(input: String): Int {
-        return -1
     }
 }
 
