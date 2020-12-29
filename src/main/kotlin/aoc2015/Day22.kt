@@ -1,11 +1,11 @@
 package aoc2015
 
 fun main() {
-    Day222().also { println(it.lowestManaForWin(50, 500, 71, 10, false)) }
+    Day22().also { println(it.lowestManaForWin(50, 500, 71, 10, false)) }
         .also { println(it.lowestManaForWin(50, 500, 71, 10, true)) }
 }
 
-class Day222 {
+class Day22 {
     private val allSpells = arrayListOf(
         Spell("Magic Missile", 53, 4, 0, 0, 0, 1),
         Spell("Drain", 73, 2, 2, 0, 0, 1),
