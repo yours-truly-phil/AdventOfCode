@@ -7,9 +7,8 @@ fun main() {
     }
 }
 
-class PowerSet<T>(storage: Iterator<T>) :
+class PowerSet<T>(storage: Iterator<T>) : Iterator<List<T>> {
 
-    MutableIterator<List<T>> {
     private var leftMode = true
     private var memory = Optional.empty<List<T>>()
     private var delegate = Optional.empty<PowerSet<T>>()
@@ -53,9 +52,5 @@ class PowerSet<T>(storage: Iterator<T>) :
                 pivot = Optional.empty()
             }
         }
-    }
-
-    override fun remove() {
-        throw UnsupportedOperationException("remove() unsupported")
     }
 }
