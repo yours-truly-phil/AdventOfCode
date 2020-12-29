@@ -4,6 +4,7 @@ import java.io.File
 
 fun main() {
     Day4().apply { println(part1(File("files/2016/day4.txt").readText())) }
+        .apply { println(part2(File("files/2016/day4.txt").readText())) }
 }
 
 class Day4 {
@@ -11,6 +12,24 @@ class Day4 {
         return input.lines()
             .filter { isRealRoom(it) }
             .map { it.substring(it.lastIndexOf("-") + 1, it.indexOf("[")).toLong() }.sum()
+    }
+
+    fun part2(input: String): Int {
+        return input.lines().map {
+            val id = it.substring(it.lastIndexOf("-") + 1, it.indexOf("[")).toInt()
+            val parts = it.split("-").subList(0, it.split("-").size - 1)
+            id to parts.joinToString("")
+        }.map {
+            it.first to it.second
+                .map { c -> c.toInt() + it.first }
+                .map { i ->
+                    var norm = i
+                    while (norm > 122) norm -= 26
+                    norm
+                }
+                .map { i -> i.toChar() }
+                .joinToString("")
+        }.first { it.second.contains("northpoleobjects") }.first
     }
 
     private fun isRealRoom(room: String): Boolean {
