@@ -82,8 +82,7 @@ class Day21 {
             startGame(equip).apply {
                 if (this.first.hp > 0) {
                     minCost = minOf(minCost, this.first.cost())
-                }
-            }
+                }            }
         }
         return minCost
     }

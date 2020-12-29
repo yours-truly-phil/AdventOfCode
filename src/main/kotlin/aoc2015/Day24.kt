@@ -1,6 +1,6 @@
 package aoc2015
 
-import util.PowerSet
+import PowerSet
 import java.io.File
 import java.math.BigInteger
 import kotlin.system.measureTimeMillis
