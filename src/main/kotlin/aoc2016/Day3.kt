@@ -21,7 +21,7 @@ class Day3 {
         val nums = input.lines().map { match.findAll(it).map { n -> n.value.toInt() }.toList() }
         var count = 0
         for (i in 0 until 3) {
-            for (y in 0 until nums.size - 3 step 3) {
+            for (y in 0 until nums.size - 2 step 3) {
                 val a = nums[y][i]
                 val b = nums[y + 1][i]
                 val c = nums[y + 2][i]
