@@ -4,11 +4,14 @@ import java.io.File
 
 fun main() {
     Day8().apply { println(part1(File("files/2016/day8.txt").readText())) }
+        .apply { println(part2(File("files/2016/day8.txt").readText())) }
 }
 
 class Day8 {
-    fun part1(input: String): Int {
-        return screen(input).map { it.sumBy { b -> if (b) 1 else 0 } }.sum()
+    fun part1(input: String): Int = screen(input).map { it.sumBy { b -> if (b) 1 else 0 } }.sum()
+
+    fun part2(input: String) {
+        screen(input).forEach { it.map { b -> if(b) "#" else " " }.apply { println(this.joinToString(" ")) } }
     }
 
     private fun screen(input: String): Array<BooleanArray> = Array(6) { BooleanArray(50) }
