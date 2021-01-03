@@ -27,61 +27,62 @@ class Day2 {
     }
 
     fun part2(input: String): String {
-        val keys = hashMapOf("1" to Key("1").also { it.down = "3" },
-            "2" to Key("2").also {
-                it.right = "3"
-                it.down = "6"
+        val keys = hashMapOf("1" to Key("1")
+            .apply { down = "3" },
+            "2" to Key("2").apply {
+                right = "3"
+                down = "6"
             },
-            "3" to Key("3").also {
-                it.up = "1"
-                it.left = "2"
-                it.right = "4"
-                it.down = "7"
+            "3" to Key("3").apply {
+                up = "1"
+                left = "2"
+                right = "4"
+                down = "7"
             },
-            "4" to Key("4").also {
-                it.left = "3"
-                it.down = "8"
+            "4" to Key("4").apply {
+                left = "3"
+                down = "8"
             },
-            "5" to Key("5").also {
-                it.right = "6"
+            "5" to Key("5").apply {
+                right = "6"
             },
-            "6" to Key("6").also {
-                it.up = "2"
-                it.left = "5"
-                it.right = "7"
-                it.down = "A"
+            "6" to Key("6").apply {
+                up = "2"
+                left = "5"
+                right = "7"
+                down = "A"
             },
-            "7" to Key("7").also {
-                it.up = "3"
-                it.left = "6"
-                it.right = "8"
-                it.down = "B"
+            "7" to Key("7").apply {
+                up = "3"
+                left = "6"
+                right = "8"
+                down = "B"
             },
-            "8" to Key("8").also {
-                it.up = "4"
-                it.left = "7"
-                it.right = "9"
-                it.down = "C"
+            "8" to Key("8").apply {
+                up = "4"
+                left = "7"
+                right = "9"
+                down = "C"
             },
-            "9" to Key("9").also {
-                it.left = "8"
+            "9" to Key("9").apply {
+                left = "8"
             },
-            "A" to Key("A").also {
-                it.up = "6"
-                it.right = "B"
+            "A" to Key("A").apply {
+                up = "6"
+                right = "B"
             },
-            "B" to Key("B").also {
-                it.up = "7"
-                it.left = "A"
-                it.right = "C"
-                it.down = "D"
+            "B" to Key("B").apply {
+                up = "7"
+                left = "A"
+                right = "C"
+                down = "D"
             },
-            "C" to Key("C").also {
-                it.up = "8"
-                it.left = "B"
+            "C" to Key("C").apply {
+                up = "8"
+                left = "B"
             },
-            "D" to Key("D").also {
-                it.up = "B"
+            "D" to Key("D").apply {
+                up = "B"
             })
 
         var code = ""
