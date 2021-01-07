@@ -3,11 +3,13 @@ package aoc2016
 
 fun main() {
     val input = Day11.Move(intArrayOf(0, 0, 0, 1, 2, 1, 2, 1, 2, 1, 2), 0)
-    Day11().apply { println(part1(input)) }
+    Day11().apply { println(minNumRides(input)) }
+    val part2 = Day11.Move(intArrayOf(0, 0, 0, 1, 2, 1, 2, 1, 2, 1, 2, 0, 0, 0, 0), 0)
+    Day11().apply { println(minNumRides(part2)) }
 }
 
 class Day11 {
-    fun part1(input: Move): Int {
+    fun minNumRides(input: Move): Int {
         return stepsMoveAllUp(input)
     }
 

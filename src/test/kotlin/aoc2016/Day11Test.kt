@@ -76,6 +76,6 @@ internal class Day11Test {
 
     @Test
     fun part1() {
-        assertEquals(11, Day11().part1(Move(intArrayOf(0, 1, 0, 2, 0), 0)))
+        assertEquals(11, Day11().minNumRides(Move(intArrayOf(0, 1, 0, 2, 0), 0)))
     }
 }
