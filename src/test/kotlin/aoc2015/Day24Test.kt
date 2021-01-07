@@ -7,6 +7,6 @@ internal class Day24Test {
 
     @Test
     fun part1() {
-        Day24().also { assertEquals(99, (it.part1("1\n2\n3\n4\n5\n7\n8\n9\n10\n11"))) }
+        Day24().also { assertEquals(99, (it.part1("1\n2\n3\n4\n5\n7\n8\n9\n10\n11", 3))) }
     }
 }

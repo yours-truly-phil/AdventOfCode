@@ -1,4 +1,4 @@
-import java.lang.System.*
+import java.lang.System.nanoTime
 import java.util.concurrent.Callable
 
 fun micros(of: Runnable) {
@@ -8,7 +8,7 @@ fun micros(of: Runnable) {
     println("Ran in ${diff / 1000} µs")
 }
 
-fun <T> micros(of: Callable<T>):T {
+fun <T> micros(of: Callable<T>): T {
     val start = nanoTime()
     val res = of.call()
     val diff = nanoTime() - start
