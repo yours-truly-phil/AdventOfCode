@@ -4,12 +4,58 @@ fun main() {
     Day13().apply {
         println("sample=${part1(Day13.P(7, 4), 10)}")
         println("part1=${part1(Day13.P(31, 39), 1352)}")
+        println("part2=${part2(1352, 50)}")
     }
 }
 
 class Day13 {
     fun part1(target: P, num: Int): Int {
         return numStepsTo(target, num)
+    }
+
+    fun part2(num: Int, steps: Int): Int {
+        return totalInRange(num, steps)
+    }
+
+    fun totalInRange(num: Int, steps: Int): Int {
+        val paths = HashMap<P, Int>().apply { this[P(1, 1)] = 0 }
+        while (paths.filter { it.value < steps && !it.key.neighborsChecked }.isNotEmpty()) {
+            val p = paths.filter { !it.key.neighborsChecked && it.value < steps }.minByOrNull { it.value }!!
+            val neighbors = arrayOf(p.key.up(), p.key.down(), p.key.left(), p.key.right())
+            for (neighbor in neighbors) {
+                if (isOpen(neighbor, num) && neighbor.x >= 0 && neighbor.y >= 0) {
+                    if (paths.containsKey(neighbor)) {
+                        if (paths[neighbor]!! > p.value + 1) {
+                            paths[neighbor] = p.value + 1
+                        }
+                    }
+                    paths.computeIfAbsent(neighbor) { p.value + 1 }
+                }
+            }
+            p.key.neighborsChecked = true
+        }
+        return printGrid(paths, steps)
+    }
+
+    fun printGrid(grid: HashMap<P, Int>, steps: Int):Int {
+        var count = 0
+        for (y in 0..grid.maxOf { it.key.y }) {
+            for (x in 0..grid.maxOf { it.key.x }) {
+                if (grid.containsKey(P(x, y))) {
+                    print("%3d".format(grid[P(x, y)]))
+                    if (grid[P(x, y)]!! <= steps) {
+                        print("*")
+                        count++
+                    } else {
+                        print(" ")
+                    }
+                } else {
+                    print("### ")
+                }
+            }
+            println()
+        }
+        return count
     }
 
     fun numStepsTo(target: P, num: Int): Int {
