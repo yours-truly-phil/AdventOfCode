@@ -3,12 +3,22 @@ package aoc2016
 import java.io.File
 
 fun main() {
-    Day12().apply { println(part1(File("files/2016/day12.txt").readText())) }
+    Day12().apply {
+        println(part1(File("files/2016/day12.txt").readText()))
+        println(part2(File("files/2016/day12.txt").readText()))
+    }
 }
 
 class Day12 {
     fun part1(input: String): Int {
         val register = hashMapOf("a" to 0, "b" to 0, "c" to 0, "d" to 0)
+        val instructions = input.lines().map { it.split(" ") }
+        runInstructions(instructions, register)
+        return register["a"]!!
+    }
+
+    fun part2(input: String): Int {
+        val register = hashMapOf("a" to 0, "b" to 0, "c" to 1, "d" to 0)
         val instructions = input.lines().map { it.split(" ") }
         runInstructions(instructions, register)
         return register["a"]!!
