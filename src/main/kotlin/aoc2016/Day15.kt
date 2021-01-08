@@ -9,6 +9,7 @@ fun main() {
                     "Disc #2 has 2 positions; at time=0, it is at position 1.")
         }")
         println("part1=${part1(File("files/2016/day15.txt").readText())}")
+        println("part2=${part1(File("files/2016/day15_part2.txt").readText())}")
     }
 }
 
