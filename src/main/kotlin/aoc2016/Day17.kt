@@ -6,114 +6,95 @@ import java.security.MessageDigest
 import kotlin.test.assertEquals
 
 class Day17 {
-    private val md = MessageDigest.getInstance("MD5")!!
 
-    fun findPath(s: String, to: Pos): String {
-        val paths = ArrayDeque<Path>().apply { add(Path(s, Pos(0, 0))) }
-        while (true) {
+    val md = MessageDigest.getInstance("MD5")!!
+
+    private fun hash(s: String): String = BigInteger(1, md.digest(s.toByteArray()))
+        .toString(16).padStart(32, '0')
+
+    fun findShortestPath(prefix: String, from: Pos, to: Pos): Path {
+        val paths = ArrayDeque<Path>().apply { add(Path("", from)) }
+        while (paths.isNotEmpty()) {
             paths.sort()
             val path = paths.removeFirst()
-            if (addNextPaths(path, to, paths)) {
-                return getPathTo(to, paths).substring(s.length)
-            }
+            val newPaths = pathsFrom(prefix, path).onEach { if (it.pos == to) return it }
+            paths.addAll(newPaths)
         }
+        throw Exception("no possible path from $from to $to")
     }
 
-    fun findLongestPath(s: String, to: Pos): String {
-        val paths = ArrayDeque<Path>().apply { add(Path(s, Pos(0, 0))) }
+    fun findLongestPath(prefix: String, from: Pos, to: Pos): Path {
+        val paths = ArrayDeque<Path>().apply { add(Path("", from)) }
+        val result = ArrayList<Path>()
+        while (paths.isNotEmpty()) {
+            val path = paths.removeFirst()
+            val newPaths = pathsFrom(prefix, path)
+            result.addAll(newPaths.filter { it.pos == to })
+            paths.addAll(newPaths.filter { it.pos != to })
+        }
+        result.sort()
+        return result.last()
+    }
+
+    private fun pathsFrom(pre: String, from: Path): List<Path> {
         val res = ArrayList<Path>()
-        while (true) {
-            if(paths.isEmpty()) break
-
-            paths.sort()
-            val path = paths.removeLast()
-            if (addNextPaths(path, to, paths)) {
-                res.addAll(paths.filter { it.pos == to })
-                paths.removeIf { it.pos == to }
-            }
-        }
-        res.sort()
-        return res.last().s.substring(s.length)
-    }
-
-    private fun getPathTo(to: Pos, paths: ArrayDeque<Path>): String {
-        for (path in paths) {
-            if (path.pos == to) return path.s
-        }
-        return "no path found"
-    }
-
-    private fun addNextPaths(from: Path, to: Pos, paths: ArrayDeque<Path>): Boolean {
-        val hash = generateHash(from.s).substring(0, 4).toCharArray()
+        val hash = hash(pre + from.s).substring(0, 4).toCharArray()
         if (from.pos.y > 0 && hash[0] in "bcdef") {
             val pos = Pos(from.pos.x, from.pos.y - 1)
-            paths += Path("${from.s}U", pos)
-            if (pos == to) return true
+            res += Path("${from.s}U", pos)
         }
         if (from.pos.y < 3 && hash[1] in "bcdef") {
             val pos = Pos(from.pos.x, from.pos.y + 1)
-            paths += Path("${from.s}D", pos)
-            if (pos == to) return true
+            res += Path("${from.s}D", pos)
         }
         if (from.pos.x > 0 && hash[2] in "bcdef") {
             val pos = Pos(from.pos.x - 1, from.pos.y)
-            paths += Path("${from.s}L", pos)
-            if (pos == to) return true
+            res += Path("${from.s}L", pos)
         }
         if (from.pos.x < 3 && hash[3] in "bcdef") {
             val pos = Pos(from.pos.x + 1, from.pos.y)
-            paths += Path("${from.s}R", pos)
-            if (pos == to) return true
+            res += Path("${from.s}R", pos)
         }
-        return false
+        return res
     }
-
-    private fun generateHash(s: String): String = BigInteger(1, md.digest(s.toByteArray())).toString(16)
 
     @Test
     fun part1() {
-        println(findPath("njfxhljp", Pos(3, 3)))
+        val path = findShortestPath("njfxhljp", Pos(0, 0), Pos(3, 3)).apply { println(s) }
+        assertEquals("DURLDRRDRD", path.s)
     }
 
     @Test
     fun part2() {
-        println(findLongestPath("njfxhljp", Pos(3, 3)).length)
+        val path = findLongestPath("njfxhljp", Pos(0, 0), Pos(3, 3)).apply { println(s) }
+        assertEquals(650, path.s.length)
     }
 
     @Test
-    fun `find the longest path`(){
-        assertEquals(492, findLongestPath("kglvqrro", Pos(3, 3)).length)
-        assertEquals(370, findLongestPath("ihgpwlah", Pos(3, 3)).length)
-    }
-
-    @Test
-    fun `find shortest path`() {
-        val paths = ArrayDeque<Path>().apply {
-            add(Path("ihgpwlah", Pos(0, 0)))
-            add(Path("ihgpwlahDDRRRD", Pos(3, 3)))
-        }
-        assertEquals("DDRRRD", getPathTo(Pos(3, 3), paths).substring("ihgpwlah".length))
-    }
-
-    @Test
-    fun `find directions with open doors`() {
-        val paths = ArrayDeque<Path>().apply { add(Path("hijkl", Pos(0, 0))) }
-        paths.sort()
-        addNextPaths(paths.first(), Pos(3, 3), paths)
-        assertEquals(2, paths.size)
-        paths.sort()
-        assertEquals(Path("hijklD", Pos(0, 1)), paths.last())
+    fun `add paths from`() {
+        val pre = "hijkl"
+        val paths = ArrayDeque<Path>().apply { add(Path("", Pos(0, 0))) }
+        val newPaths = pathsFrom(pre, paths.first())
+        assertEquals(1, newPaths.size)
+        assertEquals(Path("D", Pos(0, 1)), newPaths.first())
     }
 
     @Test
     fun `generate hex md5 hash`() {
-        assertEquals("ced9fc52441937264674bca3f4ba7588", generateHash("hijkl"))
+        assertEquals("ced9fc52441937264674bca3f4ba7588", hash("hijkl"))
     }
 
     @Test
     fun `find path`() {
-        assertEquals("DDRRRD", findPath("ihgpwlah", Pos(3, 3)))
-        assertEquals("DDUDRLRRUDRD", findPath("kglvqrro", Pos(3, 3)))
+        assertEquals("DDRRRD", findShortestPath("ihgpwlah", Pos(0, 0), Pos(3, 3)).s)
+        assertEquals("DDUDRLRRUDRD", findShortestPath("kglvqrro", Pos(0, 0), Pos(3, 3)).s)
+    }
+
+    @Test
+    fun `find the longest path`() {
+        assertEquals(830, findLongestPath("ulqzkmiv", Pos(0, 0), Pos(3, 3)).s.length)
+        assertEquals(370, findLongestPath("ihgpwlah", Pos(0, 0), Pos(3, 3)).s.length)
+        assertEquals(492, findLongestPath("kglvqrro", Pos(0, 0), Pos(3, 3)).s.length)
     }
 
     data class Path(val s: String, val pos: Pos) : Comparable<Path> {
