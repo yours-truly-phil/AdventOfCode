@@ -15,19 +15,57 @@ class Day19 {
         elf.next = first
         elf = first
         while (elf.next != elf) {
-            elf.presents += elf.next.presents
             elf.next = elf.next.next
             elf = elf.next
         }
         return elf.id
     }
 
+    fun elfWithAllPresentsCircle(input: Int): Int {
+        var elf = Elf(1)
+        val first = elf
+        for (i in 2..input) {
+            val new = Elf(i)
+            elf.next = new
+            elf = new
+        }
+        elf.next = first
+        elf = first
+        var total = input
+        while (elf.next != elf) {
+            var targetElf = elf
+            var prev = elf
+            repeat(total / 2) {
+                prev = targetElf
+                targetElf = targetElf.next
+            }
+            prev.next = targetElf.next
+            total--
+            elf = elf.next
+        }
+        return elf.id
+    }
+
+    // solution stolen, but it's just soo much better than my (very) long running removing from lists for part2
+    fun elfEraseOppositeInCircle(n: Int): Int {
+        var w = 1
+        (1 until n).forEach {
+            w = w % it + 1
+            if (w > (it + 1) / 2) w++
+        }
+        return w
+    }
+
     class Elf(val id: Int) {
-        var presents = 1
         lateinit var next: Elf
         override fun toString(): String {
-            return "Elf($id, p=$presents)"
+            return "Elf($id)"
         }
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(1420280, elfEraseOppositeInCircle(3014603))
     }
 
     @Test
@@ -38,5 +76,6 @@ class Day19 {
     @Test
     fun sample() {
         assertEquals(3, elfThatGetsAllPresents(5))
+        assertEquals(2, elfWithAllPresentsCircle(5))
     }
 }
