@@ -14,12 +14,29 @@ class Day17 {
             paths.sort()
             val path = paths.removeFirst()
             if (addNextPaths(path, to, paths)) {
-                return findShortestPathTo(to, paths).substring(s.length)
+                return getPathTo(to, paths).substring(s.length)
             }
         }
     }
 
-    private fun findShortestPathTo(to: Pos, paths: ArrayDeque<Path>): String {
+    fun findLongestPath(s: String, to: Pos): String {
+        val paths = ArrayDeque<Path>().apply { add(Path(s, Pos(0, 0))) }
+        val res = ArrayList<Path>()
+        while (true) {
+            if(paths.isEmpty()) break
+
+            paths.sort()
+            val path = paths.removeLast()
+            if (addNextPaths(path, to, paths)) {
+                res.addAll(paths.filter { it.pos == to })
+                paths.removeIf { it.pos == to }
+            }
+        }
+        res.sort()
+        return res.last().s.substring(s.length)
+    }
+
+    private fun getPathTo(to: Pos, paths: ArrayDeque<Path>): String {
         for (path in paths) {
             if (path.pos == to) return path.s
         }
@@ -59,12 +76,23 @@ class Day17 {
     }
 
     @Test
+    fun part2() {
+        println(findLongestPath("njfxhljp", Pos(3, 3)).length)
+    }
+
+    @Test
+    fun `find the longest path`(){
+        assertEquals(492, findLongestPath("kglvqrro", Pos(3, 3)).length)
+        assertEquals(370, findLongestPath("ihgpwlah", Pos(3, 3)).length)
+    }
+
+    @Test
     fun `find shortest path`() {
         val paths = ArrayDeque<Path>().apply {
             add(Path("ihgpwlah", Pos(0, 0)))
             add(Path("ihgpwlahDDRRRD", Pos(3, 3)))
         }
-        assertEquals("DDRRRD", findShortestPathTo(Pos(3, 3), paths).substring("ihgpwlah".length))
+        assertEquals("DDRRRD", getPathTo(Pos(3, 3), paths).substring("ihgpwlah".length))
     }
 
     @Test
