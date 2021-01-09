@@ -8,34 +8,55 @@ class Day20 {
     private fun findLowestValid(input: String): Long {
         val invalidRanges = input.lines()
             .map { Range(it.split("-")[0].toLong(), it.split("-")[1].toLong()) }
-            .toMutableList()
+            .sorted()
 
-        for (i in 0L..4294967295L) {
-            var valid = true
-            val toIgnore = ArrayList<Range>()
-            for (range in invalidRanges) {
-                if (range.inRange(i)) {
-                    valid = false
-                    break
-                } else if (range.high < i) {
-                    toIgnore.add(range)
-                }
+        var lower = 0L
+        for (range in invalidRanges) {
+            if(range.inRange(lower)) {
+                lower = range.high + 1
             }
-            invalidRanges.removeAll(toIgnore)
-            if (valid) return i
         }
-        return -1
+        return lower
     }
 
-    data class Range(var low: Long, var high: Long) {
+    private fun countValids(input: String): Long {
+        val invalidRanges = input.lines()
+            .map { Range(it.split("-")[0].toLong(), it.split("-")[1].toLong()) }
+            .sorted()
+            .toMutableList()
+
+        var count = 0L
+        var lower = 0L
+        while(lower <= 4294967295L) {
+            for (range in invalidRanges) {
+                if (range.inRange(lower)) {
+                    lower = range.high + 1
+                }
+            }
+            if(lower <= 4294967295L) count++
+            lower++
+        }
+        return count
+    }
+
+    data class Range(var low: Long, var high: Long) : Comparable<Range> {
         fun inRange(num: Long): Boolean {
             return num in low..high
+        }
+
+        override fun compareTo(other: Range): Int {
+            return low.compareTo(other.low)
         }
     }
 
     @Test
     fun part1() {
         assertEquals(14975795, findLowestValid(File("files/2016/day20.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(101, countValids(File("files/2016/day20.txt").readText()))
     }
 
     @Test
