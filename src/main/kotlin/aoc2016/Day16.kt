@@ -43,6 +43,11 @@ class Day16 {
     }
 
     @Test
+    fun part2() {
+        assertEquals("01101011101100011", checksumForDisc("10010000000110000", 35651584))
+    }
+
+    @Test
     fun `fold dragon curve`() {
         assertEquals("100", foldDragonCurve("1"))
         assertEquals("001", foldDragonCurve("0"))
