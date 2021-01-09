@@ -3,6 +3,7 @@ package aoc2016
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class Day21 {
     fun scramble(s: String, input: String): String {
@@ -28,6 +29,59 @@ class Day21 {
                 }
                 parts[0] == "move" -> {
                     move(pw, parts[2].toInt(), parts[5].toInt())
+                }
+            }
+        }
+        return pw.joinToString("")
+    }
+
+    fun unscrambleBruteforce(s: String, input: String): String {
+        val perms = ArrayList<String>()
+        perms(s, "", perms)
+        perms.forEach {
+            if (scramble(it, input) == s) {
+                return it
+            }
+        }
+        return "n/a"
+    }
+
+    fun perms(s: String, ans: String, res: ArrayList<String>) {
+        if (s.isEmpty()) {
+            res += ans
+            return
+        }
+
+        for (i in s.indices) {
+            val c = s[i]
+            val ros = s.substring(0, i) + s.substring(i + 1)
+            perms(ros, ans + c, res)
+        }
+    }
+
+    fun unscramble(s: String, input: String): String {
+        val pw = s.toCharArray()
+        input.lines().reversed().forEach {
+            val parts = it.split(" ")
+            when {
+                parts[0] == "swap" -> {
+                    when {
+                        parts[1] == "position" -> swapPosition(pw, parts[2].toInt(), parts[5].toInt())
+                        parts[1] == "letter" -> swapChars(pw, parts[2][0], parts[5][0])
+                    }
+                }
+                parts[0] == "rotate" -> {
+                    when {
+                        parts[1] == "based" -> rotateBased(pw, parts[6][0]) // TODO reverse
+                        parts[1] == "left" -> rotateRight(pw, parts[2].toInt())
+                        parts[1] == "right" -> rotateLeft(pw, parts[2].toInt())
+                    }
+                }
+                parts[0] == "reverse" -> {
+                    reverse(pw, parts[2].toInt(), parts[4].toInt())
+                }
+                parts[0] == "move" -> {
+                    move(pw, parts[5].toInt(), parts[2].toInt())
                 }
             }
         }
@@ -61,6 +115,10 @@ class Day21 {
             pw[i2 - num] = tmp
             num++
         }
+    }
+
+    private fun rotateBasedReversed(pw: CharArray, c: Char) {
+        // TODO
     }
 
     private fun rotateBased(pw: CharArray, c: Char) {
@@ -103,6 +161,17 @@ class Day21 {
         val tmp = pw[i1]
         pw[i1] = pw[i2]
         pw[i2] = tmp
+    }
+
+    @Test
+    fun `permutations of string`() {
+        val perms = ArrayList<String>()
+        perms("abcd", "", perms)
+        assertTrue(perms.containsAll(
+            arrayListOf("abcd", "abdc", "acbd", "acdb", "adbc", "adcb", "bacd",
+                "badc", "bcad", "bcda", "bdac", "bdca", "cabd", "cadb", "cbad",
+                "cbda", "cdab", "cdba", "dabc", "dacb", "dbac", "dbca", "dcab", "dcba")
+        ))
     }
 
     @Test
@@ -186,6 +255,11 @@ class Day21 {
 
     @Test
     fun part1() {
-        assertEquals("", scramble("abcdefgh", File("files/2016/day21.txt").readText()))
+        assertEquals("agcebfdh", scramble("abcdefgh", File("files/2016/day21.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals("afhdbegc", unscrambleBruteforce("fbgdceah", File("files/2016/day21.txt").readText()))
     }
 }
