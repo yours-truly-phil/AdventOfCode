@@ -37,6 +37,13 @@ class Day18 {
     }
 
     @Test
+    fun part2() {
+        val input =
+            "......^.^^.....^^^^^^^^^...^.^..^^.^^^..^.^..^.^^^.^^^^..^^.^.^.....^^^^^..^..^^^..^^.^.^..^^..^^^.."
+        assertEquals(20009568, noSaveTiles(input, 400000))
+    }
+
+    @Test
     fun samples() {
         assertEquals(6, noSaveTiles("..^^.", 3))
         assertEquals(38, noSaveTiles(".^^.^.^^^^", 10))
