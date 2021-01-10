@@ -85,6 +85,6 @@ class Day22 {
 
     @Test
     fun part1() {
-        assertEquals(-1, countViablePairs(File("files/2016/day22.txt").readText()))
+        assertEquals(872, countViablePairs(File("files/2016/day22.txt").readText()))
     }
 }
