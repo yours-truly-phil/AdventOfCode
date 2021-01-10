@@ -76,7 +76,7 @@ class Day21 {
     }
 
     fun perms(s: String, ans: String, res: ArrayList<String>) {
-        if (s.isEmpty()) {
+        if (s.length == 0) {
             res += ans
             return
         }
