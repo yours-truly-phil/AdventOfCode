@@ -160,4 +160,32 @@ class Day23 {
         assertEquals(14445, valueForSafe(File("files/2016/day23.txt").readText(),
             hashMapOf("a" to 7, "b" to 0, "c" to 0, "d" to 0)))
     }
+
+    @Test
+    fun part2() {
+        println("7=${
+            valueForSafe(File("files/2016/day23.txt").readText(),
+                hashMapOf("a" to 7, "b" to 0, "c" to 0, "d" to 0))
+        }")
+        println("8=${
+            valueForSafe(File("files/2016/day23.txt").readText(),
+                hashMapOf("a" to 8, "b" to 0, "c" to 0, "d" to 0))
+        }")
+        println("9=${
+            valueForSafe(File("files/2016/day23.txt").readText(),
+                hashMapOf("a" to 9, "b" to 0, "c" to 0, "d" to 0))
+        }")
+        println("10=${
+            valueForSafe(File("files/2016/day23.txt").readText(),
+                hashMapOf("a" to 10, "b" to 0, "c" to 0, "d" to 0))
+        }")
+        println("11=${
+            valueForSafe(File("files/2016/day23.txt").readText(),
+                hashMapOf("a" to 11, "b" to 0, "c" to 0, "d" to 0))
+        }")
+        assertEquals(479011005, valueForSafe(File("files/2016/day23.txt").readText(),
+            hashMapOf("a" to 12, "b" to 0, "c" to 0, "d" to 0)))
+
+        // or just 65 * 99 + 12! = 479011005 (because cpy 95 c and jnz 99 d and start of a=12
+    }
 }
