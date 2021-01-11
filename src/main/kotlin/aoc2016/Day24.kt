@@ -23,6 +23,24 @@ class Day24 {
         return min
     }
 
+    private fun minNumStepsBackToStart(input: String): Int {
+        val parsed = parse(input)
+        val poi = parsed.first
+        val map = parsed.second
+        val perms = permutationsOfPointsOfInterest(poi).filter { it[0] == '1' }.map { it + "1" }
+        var min = Int.MAX_VALUE
+        for (perm in perms) {
+            var totalSteps = 0
+            for (i in 0 until perm.length - 1) {
+                val locFrom = perm[i].toString().toInt()
+                val locTo = perm[i + 1].toString().toInt()
+                totalSteps += shortestPath(map, poi[locFrom]!!, poi[locTo]!!)
+            }
+            min = minOf(min, totalSteps)
+        }
+        return min
+    }
+
     private fun permutationsOfPointsOfInterest(poi: Map<Int, Loc>): ArrayList<String> {
         val res = ArrayList<String>()
         Day21().apply {
@@ -133,5 +151,10 @@ class Day24 {
     @Test
     fun part1() {
         assertEquals(430, minNumSteps(File("files/2016/day24.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(700, minNumStepsBackToStart(File("files/2016/day24.txt").readText()))
     }
 }
