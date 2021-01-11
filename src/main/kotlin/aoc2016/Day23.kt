@@ -13,7 +13,7 @@ class Day23 {
         return register["a"]!!
     }
 
-    private fun executeInstructions(insts: Map<Int, Instruction>, reg: HashMap<String, Int>) {
+    fun executeInstructions(insts: Map<Int, Instruction>, reg: HashMap<String, Int>) {
         var idx = 0
         while (true) {
             if (idx >= insts.size || idx < 0) return
