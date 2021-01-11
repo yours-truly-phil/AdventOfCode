@@ -43,8 +43,8 @@ class Day5Part2(path: String) {
     private fun isValid(str: String): Boolean {
         for (i in 0 until str.length - 2) {
             if (str[i] == str[i + 2]) {
-                for (i in 0 until str.length - 3) {
-                    if (str.substring(i + 2).contains(str.substring(i, i + 2))) {
+                for (i1 in 0 until str.length - 3) {
+                    if (str.substring(i1 + 2).contains(str.substring(i1, i1 + 2))) {
                         return true
                     }
                 }
