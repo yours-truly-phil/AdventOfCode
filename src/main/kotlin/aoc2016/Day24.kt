@@ -61,28 +61,25 @@ class Day24 {
             val route = routes.removeFirst()
             if (route.to == to) return route.steps
 
-            val up = route.to.up()
-            val down = route.to.down()
-            val left = route.to.left()
-            val right = route.to.right()
-            if (isNewLoc(up, map, seen)) {
-                routes.addLast(Route(up, route.steps + 1))
-                seen.add(up)
-            }
-            if (isNewLoc(down, map, seen)) {
-                routes.addLast(Route(down, route.steps + 1))
-                seen.add(down)
-            }
-            if (isNewLoc(left, map, seen)) {
-                routes.addLast(Route(left, route.steps + 1))
-                seen.add(left)
-            }
-            if (isNewLoc(right, map, seen)) {
-                routes.addLast(Route(right, route.steps + 1))
-                seen.add(right)
-            }
+            addRouteSeenIfNew(route.to.up(), map, seen, routes, route)
+            addRouteSeenIfNew(route.to.down(), map, seen, routes, route)
+            addRouteSeenIfNew(route.to.left(), map, seen, routes, route)
+            addRouteSeenIfNew(route.to.right(), map, seen, routes, route)
         }
         return -1
+    }
+
+    private fun addRouteSeenIfNew(
+        right: Loc,
+        map: Array<IntArray>,
+        seen: HashSet<Loc>,
+        routes: ArrayDeque<Route>,
+        route: Route,
+    ) {
+        if (isNewLoc(right, map, seen)) {
+            routes.addLast(Route(right, route.steps + 1))
+            seen.add(right)
+        }
     }
 
     private fun isNewLoc(loc: Loc, map: Array<IntArray>, seen: HashSet<Loc>): Boolean {

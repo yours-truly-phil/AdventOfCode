@@ -27,7 +27,10 @@ fun day1part1(arr: IntArray, total: Int): Int {
     for (num in arr) {
         if (num >= total / 2) break
         val rest = total - num
-        if (arr.binarySearch(rest) >= 0) return num * rest
+        if (arr.binarySearch(rest) >= 0) {
+            println("num $num rest $rest")
+            return num * rest
+        }
     }
     return -1
 }

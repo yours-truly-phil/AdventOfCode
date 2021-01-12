@@ -27,13 +27,13 @@ fun day2part1(lines: List<String>): Int {
     return count
 }
 
-fun day2part2(lines: List<String>):Int {
+fun day2part2(lines: List<String>): Int {
     var count = 0
     for (l in lines) {
         val line = Line(l)
         val c1 = line.pw[line.lower - 1]
         val c2 = line.pw[line.upper - 1]
-        if(c1 != c2 && (c1 == line.char || c2 == line.char)) {
+        if (c1 != c2 && (c1 == line.char || c2 == line.char)) {
             count++
         }
     }
