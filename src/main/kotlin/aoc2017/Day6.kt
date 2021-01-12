@@ -19,6 +19,19 @@ class Day6 {
         return count
     }
 
+    private fun loopSize(input: String): Int {
+        val mem = input.split("\t").map { it.toInt() }.toIntArray()
+        val seen = HashMap<String, Int>()
+        var count = 0
+        while (!seen.contains(mem.joinToString(","))) {
+            seen[mem.joinToString(",")] = count
+            val maxIdx = idxOfMaxValue(mem)
+            redistribute(maxIdx, mem)
+            count++
+        }
+        return count - seen[mem.joinToString(",")]!!
+    }
+
     private fun redistribute(maxIdx: Int, mem: IntArray) {
         var v = mem[maxIdx]
         var idx = maxIdx
@@ -60,7 +73,17 @@ class Day6 {
     }
 
     @Test
+    fun `loop size of sample input`() {
+        assertEquals(4, loopSize("0\t2\t7\t0"))
+    }
+
+    @Test
     fun part1() {
         assertEquals(12841, countRedistributionCycles(File("files/2017/day6.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(8038, loopSize(File("files/2017/day6.txt").readText()))
     }
 }
