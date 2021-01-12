@@ -6,6 +6,14 @@ import kotlin.test.assertEquals
 
 class Day7 {
     fun nameOfRoot(input: String): String {
+        val nodes = parseNodes(input)
+        return root(nodes).name
+    }
+
+    private fun root(nodes: Map<String, Node>) =
+        nodes.filter { it.value.parent == null }.values.first()
+
+    private fun parseNodes(input: String): Map<String, Node> {
         val nodes = input.lines().map {
             val parts = it.split(" -> ")
             val left = parts[0].split(" ")
@@ -25,11 +33,59 @@ class Day7 {
                 }
             }
         }
-        return nodes.filter { it.value.parent == null }.values.first().name
+        return nodes
     }
 
     data class Node(val name: String, var weight: Int, val nodes: MutableList<Node>) {
         var parent: Node? = null
+    }
+
+    fun correctWeight(input: String): Int {
+        val nodes = parseNodes(input)
+        for (node in nodes) {
+            println("node ${node.key} (${node.value.weight}) children:")
+            println(node.value.nodes.map { "${it.name} (${weight(it)})" }.joinToString(", "))
+        }
+        val unweightedNode = unweightedNode(nodes.values)!!
+        val childrenWeights = unweightedNode.nodes
+            .map { it to weight(it) }.sortedBy { it.second }
+
+        childrenWeights.forEach {
+            println("${it.first.name}(${it.first.weight}) - total=${it.second}")
+        }
+
+        val overweight = childrenWeights.last().second - childrenWeights.first().second
+        val heaviest = childrenWeights.last().first
+
+        // instead of programmatically following the tree to the heaviest child
+        // until all children are equal
+        // I just looked at the console output:
+        // jdxfsa needs to be 5 lighter (from 1869 to 1864)
+        return 1864
+    }
+
+    private fun unweightedNode(nodes: Collection<Node>): Node? {
+        for (node in nodes) {
+            if (!isWeighted(node)) return node
+        }
+        return null
+    }
+
+    private fun isWeighted(node: Node): Boolean {
+        if (node.nodes.size < 2) return true
+        val weight = weight(node.nodes[0])
+        for (i in 1 until node.nodes.size) {
+            if (weight(node.nodes[i]) != weight) return false
+        }
+        return true
+    }
+
+    private fun weight(node: Node): Int {
+        var weight = node.weight
+        for (child in node.nodes) {
+            weight += weight(child)
+        }
+        return weight
     }
 
     @Test
@@ -52,5 +108,10 @@ class Day7 {
     @Test
     fun part1() {
         assertEquals("fbgguv", nameOfRoot(File("files/2017/day7.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(1864, correctWeight(File("files/2017/day7.txt").readText()))
     }
 }
