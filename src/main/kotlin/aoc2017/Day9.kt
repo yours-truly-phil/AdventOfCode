@@ -28,6 +28,31 @@ class Day9 {
         return counts
     }
 
+    private fun nonCanceledGarbage(s: String): Int {
+        val removeExclamation = removeExclamation(removeIgnoredChars(s))
+        val removeTrash = removeTrashLeaveOpenClose(removeExclamation)
+        return removeExclamation.length - removeTrash.length
+    }
+
+    private fun removeTrashLeaveOpenClose(input: String): String {
+        val sb = StringBuilder()
+        var ignore = false
+        for (c in input) {
+            if (c == '<' && !ignore) {
+                ignore = true
+                sb.append(c)
+            } else if (c == '>' && ignore) {
+                ignore = false
+                sb.append(c)
+            } else {
+                if (!ignore) {
+                    sb.append(c)
+                }
+            }
+        }
+        return sb.toString()
+    }
+
     private fun cleanup(input: String): String {
         return removeTrash(removeExclamation(removeIgnoredChars(input)))
     }
@@ -59,6 +84,17 @@ class Day9 {
 
     private fun removeExclamation(input: String): String {
         return input.replace("!", "")
+    }
+
+    @Test
+    fun `count non-canceled characters within garbage`() {
+        assertEquals(0, nonCanceledGarbage("<>"))
+        assertEquals(17, nonCanceledGarbage("<random characters>"))
+        assertEquals(3, nonCanceledGarbage("<<<<>"))
+        assertEquals(2, nonCanceledGarbage("<{!>}>"))
+        assertEquals(0, nonCanceledGarbage("<!!>"))
+        assertEquals(0, nonCanceledGarbage("<!!!>>"))
+        assertEquals(10, nonCanceledGarbage("<{o\"i!a,<{i<a>"))
     }
 
     @Test
@@ -104,5 +140,10 @@ class Day9 {
     @Test
     fun part1() {
         assertEquals(10820, totalScore(File("files/2017/day9.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(5547, nonCanceledGarbage(File("files/2017/day9.txt").readText()))
     }
 }
