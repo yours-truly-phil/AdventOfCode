@@ -21,6 +21,10 @@ class Day10 {
         return generateHash(size, input)
     }
 
+    fun knotHash(input: String): String {
+        return generateHash(256, input)
+    }
+
     private fun generateHash(size: Int, input: String): String {
         val arr = IntArray(size).also { for (i in 0 until size) it[i] = i }
         val nums = toPart2ASCIIArr(input)
