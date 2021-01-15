@@ -8,8 +8,8 @@ class Day19 {
     private fun lettersInPath(input: String): String {
         val grid = input.lines().map { it.toCharArray() }.toTypedArray()
 
-        val dbg = Array(grid.size) { CharArray(grid.maxOf { arr -> arr.size }) }
-        for (y in dbg.indices) for (x in dbg[y].indices) dbg[y][x] = ' '
+//        val dbg = Array(grid.size) { CharArray(grid.maxOf { arr -> arr.size }) }
+//        for (y in dbg.indices) for (x in dbg[y].indices) dbg[y][x] = ' '
 
         val p = Pos(grid[0].indexOf('|'), 0)
         val dir = Pos(0, 1)
@@ -17,12 +17,29 @@ class Day19 {
         while (true) {
             p += dir
             val c = grid[p.y][p.x]
-            dbg[p.y][p.x] = c
+//            dbg[p.y][p.x] = c
             if (c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
                 sb.append(c)
                 if (c == 'Z') return sb.toString()
             } else if (c == '+') {
-                dbg.forEach { println(it.joinToString("")) }
+//                dbg.forEach { println(it.joinToString("")) }
+                updateDir(dir, p, grid)
+            }
+        }
+    }
+
+    private fun countSteps(input: String): Int {
+        val grid = input.lines().map { it.toCharArray() }.toTypedArray()
+        val p = Pos(grid[0].indexOf('|'), 0)
+        val dir = Pos(0, 1)
+        var count = 1
+        while (true) {
+            count++
+            p += dir
+            val c = grid[p.y][p.x]
+            if (c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
+                if (c == 'Z') return count
+            } else if (c == '+') {
                 updateDir(dir, p, grid)
             }
         }
@@ -77,6 +94,16 @@ class Day19 {
     }
 
     @Test
+    fun `part 2 sample`() {
+        assertEquals(38, countSteps("     |          \n" +
+                "     |  +--+    \n" +
+                "     A  |  C    \n" +
+                " Z---|----E|--+ \n" +
+                "     |  |  |  D \n" +
+                "     +B-+  +--+ \n"))
+    }
+
+    @Test
     fun sample() {
         assertEquals("ABCDEZ", lettersInPath("     |          \n" +
                 "     |  +--+    \n" +
@@ -88,6 +115,11 @@ class Day19 {
 
     @Test
     fun part1() {
-        assertEquals("", lettersInPath(File("files/2017/day19.txt").readText()))
+        assertEquals("HATBMQJYZ", lettersInPath(File("files/2017/day19.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(16332, countSteps(File("files/2017/day19.txt").readText()))
     }
 }
