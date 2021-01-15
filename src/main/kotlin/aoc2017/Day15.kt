@@ -21,10 +21,13 @@ class Day15 {
         var b = genB
         var count = 0
         repeat(5_000_000) {
-            a = (a * 16807) % 2147483647
-            b = (b * 48271) % 2147483647
-            while (a % 4 != 0L) a = (a * 16807) % 2147483647
-            while (b % 8 != 0L) b = (b * 48271) % 2147483647
+
+            do a = (a * 16807) % 2147483647
+            while (a % 4 != 0L)
+
+            do b = (b * 48271) % 2147483647
+            while (b % 8 != 0L)
+
             if (a and 0xffff == b and 0xffff) count++
         }
         return count
