@@ -198,4 +198,9 @@ class Day21 {
     fun part1() {
         assertEquals(197, countPixelsOn(File("files/2017/day21.txt").readText(), 5))
     }
+
+    @Test
+    fun part2() {
+        assertEquals(3081737, countPixelsOn(File("files/2017/day21.txt").readText(), 18))
+    }
 }
