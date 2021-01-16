@@ -7,12 +7,28 @@ import kotlin.test.assertEquals
 
 class Day20 {
     private fun closestParticle(input: String): Int {
-        val particles = input.lines()
-            .mapIndexed { index, s -> Particle(index, s) }.toTypedArray()
+        val particles = parseParticles(input)
 
         particles.sort()
         return particles.first().idx
     }
+
+    private fun noParticlesLeft(input: String): Int {
+        val particles = parseParticles(input).toMutableList()
+
+        repeat(100_000) {
+            particles.forEach {
+                it.v += it.a
+                it.p += it.v
+            }
+            particles.groupBy { it.p }.filter { it.value.size > 1 }
+                .forEach { particles.removeAll(it.value) }
+        }
+        return particles.size
+    }
+
+    private fun parseParticles(input: String) = input.lines()
+        .mapIndexed { index, s -> Particle(index, s) }.toTypedArray()
 
     class Particle(val idx: Int, input: String) : Comparable<Particle> {
         val p: V3i
@@ -75,6 +91,14 @@ class Day20 {
     operator fun V3i.plus(o: V3i): V3i = V3i(x + o.x, y + o.y, z + o.z)
 
     @Test
+    fun `part 2 sample`() {
+        assertEquals(1, noParticlesLeft("p=<-6,0,0>, v=<3,0,0>, a=<0,0,0>\n" +
+                "p=<-4,0,0>, v=<2,0,0>, a=<0,0,0>\n" +
+                "p=<-2,0,0>, v=<1,0,0>, a=<0,0,0>\n" +
+                "p=<3,0,0>, v=<-1,0,0>, a=<0,0,0>"))
+    }
+
+    @Test
     fun sample() {
         assertEquals(0, closestParticle(
             "p=<3,0,0>, v=<2,0,0>, a=<-1,0,0>\n" +
@@ -84,5 +108,10 @@ class Day20 {
     @Test
     fun part1() {
         assertEquals(457, closestParticle(File("files/2017/day20.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(448, noParticlesLeft(File("files/2017/day20.txt").readText()))
     }
 }
