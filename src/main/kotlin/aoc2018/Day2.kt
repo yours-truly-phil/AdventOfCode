@@ -1,23 +1,15 @@
 package aoc2018
 
+import frequencyMap
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
 
 class Day2 {
     fun checksum(input: String): Int {
-        val freqMap = input.lines().map { charFrequencyMap(it) }
+        val freqMap = input.lines().map { frequencyMap(it.toCharArray().toTypedArray()) }
         return freqMap.filter { it.containsValue(2) }.count() * freqMap.filter { it.containsValue(3) }.count()
     }
-
-    fun charFrequencyMap(chars: String): Map<Char, Int> =
-        HashMap<Char, Int>().apply {
-            chars.forEach {
-                this.putIfAbsent(it, 0)
-                this[it] = this[it]!! + 1
-            }
-
-        }
 
     fun findCommonChars(input: String): String {
         val ids = input.lines().sorted().toTypedArray()
