@@ -22,6 +22,28 @@ class Day6 {
         return coords
     }
 
+    fun sizeOfLoocationsWithDistToAllLessThen(input: String, maxDist: Int): Int {
+        val coords = parseCoordinates(input)
+
+        val maxX = coords.maxOf { it.x }
+        val maxY = coords.maxOf { it.y }
+
+        var count = 0
+        for (y in 0..maxY) {
+            for (x in 0..maxX) {
+                var totalDist = 0
+                val loc = Loc(x, y)
+                for (i in coords.indices) {
+                    totalDist += coords[i].distFrom(loc)
+                }
+                if (totalDist < maxDist) {
+                    count++
+                }
+            }
+        }
+        return count
+    }
+
     private fun fillGridWithShortestIndices(coords: Array<Loc>): Array<IntArray> {
         val maxX = coords.maxOf { it.x }
         val maxY = coords.maxOf { it.y }
@@ -104,7 +126,22 @@ class Day6 {
     }
 
     @Test
+    fun `part 2 sample`() {
+        assertEquals(16, sizeOfLoocationsWithDistToAllLessThen("1, 1\n" +
+                "1, 6\n" +
+                "8, 3\n" +
+                "3, 4\n" +
+                "5, 5\n" +
+                "8, 9", 32))
+    }
+
+    @Test
     fun part1() {
         assertEquals(3010, maxArea(File("files/2018/day6.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(48034, sizeOfLoocationsWithDistToAllLessThen(File("files/2018/day6.txt").readText(), 10000))
     }
 }
