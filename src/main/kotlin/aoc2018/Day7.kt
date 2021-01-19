@@ -6,7 +6,11 @@ import kotlin.test.assertEquals
 
 class Day7 {
     fun instructionOrder(input: String): String {
+        val order = getNodesInOrder(input)
+        return order.joinToString("") { it.id }
+    }
 
+    private fun getNodesInOrder(input: String): ArrayDeque<Node> {
         val nodes = HashMap<String, Node>()
         input.lines().forEach {
             val s = it.split(" ")
@@ -51,8 +55,6 @@ class Day7 {
             }
         }
 
-        println("found sorted order: ${isValidOrder(order)}")
-        println("order: ${order.joinToString(", ") { it.id }}")
         var sorted = false
         while (!sorted) {
             sorted = true
@@ -63,21 +65,11 @@ class Day7 {
                         swap(order, i)
                     } else {
                         sorted = false
-                        println("new order: ${order.joinToString(", ") { it.id }}")
                     }
                 }
             }
         }
-
-        println("first: $first")
-        println("last: $last")
-        nodes.forEach {
-            println(it)
-        }
-
-        println()
-        println("order: ${order.joinToString(", ") { it.id }}")
-        return order.joinToString("") { it.id }
+        return order
     }
 
     private fun swap(order: ArrayDeque<Node>, i: Int) {
@@ -122,6 +114,21 @@ class Day7 {
         override fun toString(): String {
             return "[${before.joinToString(",") { it.id }}] < $id < [${after.joinToString(",") { it.id }}]"
         }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as Node
+
+            if (id != other.id) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return id.hashCode()
+        }
     }
 
     @Test
@@ -136,7 +143,58 @@ class Day7 {
     }
 
     @Test
+    fun `part 2 sample`() {
+        assertEquals(15, totalDuration("Step C must be finished before step A can begin.\n" +
+                "Step C must be finished before step F can begin.\n" +
+                "Step A must be finished before step B can begin.\n" +
+                "Step A must be finished before step D can begin.\n" +
+                "Step B must be finished before step E can begin.\n" +
+                "Step D must be finished before step E can begin.\n" +
+                "Step F must be finished before step E can begin.", 2, 0))
+    }
+
+    @Test
     fun part1() {
         assertEquals("IBJTUWGFKDNVEYAHOMPCQRLSZX", instructionOrder(File("files/2018/day7.txt").readText()))
+    }
+
+    fun totalDuration(input: String, workers: Int, minDur: Int): Int {
+        val times = "_ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        val nodes = getNodesInOrder(input)
+        val noNodes = nodes.size
+        val blocked = HashMap<Node, HashSet<Node>>()
+        val done = HashSet<Node>()
+        val curRunning = HashMap<Node, Int>()
+        var t = 0
+        while (done.size < noNodes) {
+            for (node in nodes) {
+                if (curRunning.size < workers) {
+                    if (!blocked.any { it.value.contains(node) } && !done.contains(node) && !curRunning.containsKey(node)) {
+                        curRunning[node] = minDur + times.indexOf(node.id)
+                        blocked.computeIfAbsent(node) { HashSet() }
+                        blocked[node]!!.addAll(node.allAfter)
+                    }
+                } else {
+                    break
+                }
+            }
+//            println("$t: running: ${curRunning.map { "${it.key.id} (${it.value}" }.joinToString(", ")}")
+            t++
+            for (runningNode in curRunning.keys) {
+                nodes.remove(runningNode)
+                curRunning[runningNode] = curRunning[runningNode]!! - 1
+            }
+            done.addAll(curRunning.filter { it.value <= 0 }.keys)
+            for (d in done) {
+                blocked.remove(d)
+                curRunning.remove(d)
+            }
+        }
+        return t
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(1118, totalDuration(File("files/2018/day7.txt").readText(), 5, 60))
     }
 }
