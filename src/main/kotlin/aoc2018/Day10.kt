@@ -5,7 +5,7 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day10 {
-    private fun messageInTheSky(input: String): String {
+    private fun timeForMessageInTheSky(input: String): Int {
         val positions = input.lines().map {
             val parts = it.split("> velocity=<")
             val left = parts[0].split("<")[1].split(",")
@@ -15,6 +15,7 @@ class Day10 {
             pos to vel
         }
 
+        var count = 0
         var prevWidth = Int.MAX_VALUE
         while (true) {
             for (pos in positions) {
@@ -69,6 +70,7 @@ class Day10 {
                 break
             } else {
                 prevWidth = maxX
+                count++
             }
         }
 
@@ -84,7 +86,7 @@ class Day10 {
         #.......#.......#...##..#...#...#.......#.......#...##..#....#
         #.......#.......#....#...###....######..######..#....#..#....#
          */
-        return "PPNJEENH"
+        return count
     }
 
     data class V2i(var x: Int, var y: Int) {
@@ -96,7 +98,7 @@ class Day10 {
 
     @Test
     fun sample() {
-        assertEquals("HI", messageInTheSky("position=< 9,  1> velocity=< 0,  2>\n" +
+        assertEquals(3, timeForMessageInTheSky("position=< 9,  1> velocity=< 0,  2>\n" +
                 "position=< 7,  0> velocity=<-1,  0>\n" +
                 "position=< 3, -2> velocity=<-1,  1>\n" +
                 "position=< 6, 10> velocity=<-2, -1>\n" +
@@ -131,6 +133,6 @@ class Day10 {
 
     @Test
     fun part1() {
-        assertEquals("PPNJEENH", messageInTheSky(File("files/2018/day10.txt").readText()))
+        assertEquals(10375, timeForMessageInTheSky(File("files/2018/day10.txt").readText()))
     }
 }
