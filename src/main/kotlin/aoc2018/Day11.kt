@@ -7,6 +7,15 @@ class Day11 {
     private fun posSquareMaxPower(serial: Int, gridSize: Int, squareSize: Int): String {
         val powerLvls = computePowerLvls(gridSize, serial)
 
+        var (maxIdx, maxPower) = maxPowerForSquareSize(powerLvls, squareSize)
+        println("idx: $maxIdx total power: $maxPower")
+        return maxIdx
+    }
+
+    private fun maxPowerForSquareSize(
+        powerLvls: Array<IntArray>,
+        squareSize: Int,
+    ): Pair<String, Int> {
         var maxIdx = "-1,-1"
         var maxPower = Int.MIN_VALUE
         for (x in 0..powerLvls.size - squareSize) {
@@ -23,8 +32,25 @@ class Day11 {
                 }
             }
         }
-        println("idx: $maxIdx total power: $maxPower")
-        return maxIdx
+        return Pair(maxIdx, maxPower)
+    }
+
+    private fun maxSquare(serial: Int, gridSize: Int): String {
+        val powerLvls = computePowerLvls(gridSize, serial)
+
+        var maxIdx = "-1,-1"
+        var maxPower = Int.MIN_VALUE
+        var maxSize = -1
+        for (size in 1..50) {
+            val (idx, power) = maxPowerForSquareSize(powerLvls, size)
+            if (power > maxPower) {
+                maxSize = size
+                maxPower = power
+                maxIdx = idx
+            }
+        }
+
+        return "$maxIdx,$maxSize"
     }
 
     private fun computePowerLvls(gridSize: Int, serial: Int): Array<IntArray> {
@@ -62,7 +88,18 @@ class Day11 {
     }
 
     @Test
+    fun `max square`() {
+        assertEquals("90,269,16", maxSquare(18, 300))
+        assertEquals("232,251,12", maxSquare(42, 300))
+    }
+
+    @Test
     fun part1() {
         assertEquals("235,87", posSquareMaxPower(8199, 300, 3))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals("234,272,18", maxSquare(8199, 300))
     }
 }
