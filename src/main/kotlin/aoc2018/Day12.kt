@@ -21,10 +21,34 @@ class Day12 {
 
         var count = 0
         val leftMostIdx = iLeftPtr[0]
-        for(i in state.indices) {
-            if(state[i] == '#') count += i + leftMostIdx
+        for (i in state.indices) {
+            if (state[i] == '#') count += i + leftMostIdx
         }
         return count
+    }
+
+    fun getPotsAfterIterations(input: String, gens: Long): Long {
+        val paragraphs = input.split("\n\n")
+        var state = paragraphs[0].split(" ")[2]
+        val mappings = paragraphs[1].lines()
+            .map { it.split(" => ") }
+            .map { it[0] to it[1] }
+            .toMap()
+        println("0: $state")
+        val iLeftPtr = intArrayOf(0)
+        for (i in 0 until 200) {
+            state = step(state, mappings, iLeftPtr)
+//            println("${i + 1}: $state | ${iLeftPtr[0]}")
+        }
+
+        val potsIndices = ArrayList<Long>()
+        val leftMostIdx = iLeftPtr[0]
+        for (i in state.indices) {
+            if (state[i] == '#') {
+                potsIndices += i + leftMostIdx.toLong()
+            }
+        }
+        return potsIndices.map { it + (gens - 200) }.sum()
     }
 
     fun step(state: String, mappings: Map<String, String>, iLeftPtr: IntArray): String {
@@ -71,7 +95,30 @@ class Day12 {
     }
 
     @Test
+    fun playground() {
+        assertEquals(17228, sumOfNumsOfPotsContainingPlant(File("files/2018/day12.txt").readText(), 400))
+        /*
+        looks like there comes a pattern that just repeats and 1 right each iteration:
+        392: ........#.#..............#.#....#.#......#.#....#.#....#.#....#.#....#.#....#.#........#.#....#.#......#.#....#.#.......#.#...........#.#......#.#....#.#.....#.#.....#.#......#.#.......#.#.. | 304
+393: .......#.#..............#.#....#.#......#.#....#.#....#.#....#.#....#.#....#.#........#.#....#.#......#.#....#.#.......#.#...........#.#......#.#....#.#.....#.#.....#.#......#.#.......#.#... | 306
+394: ......#.#..............#.#....#.#......#.#....#.#....#.#....#.#....#.#....#.#........#.#....#.#......#.#....#.#.......#.#...........#.#......#.#....#.#.....#.#.....#.#......#.#.......#.#.... | 308
+395: .....#.#..............#.#....#.#......#.#....#.#....#.#....#.#....#.#....#.#........#.#....#.#......#.#....#.#.......#.#...........#.#......#.#....#.#.....#.#.....#.#......#.#.......#.#..... | 310
+396: ....#.#..............#.#....#.#......#.#....#.#....#.#....#.#....#.#....#.#........#.#....#.#......#.#....#.#.......#.#...........#.#......#.#....#.#.....#.#.....#.#......#.#.......#.#. | 312
+397: ........#.#..............#.#....#.#......#.#....#.#....#.#....#.#....#.#....#.#........#.#....#.#......#.#....#.#.......#.#...........#.#......#.#....#.#.....#.#.....#.#......#.#.......#.#.. | 309
+398: .......#.#..............#.#....#.#......#.#....#.#....#.#....#.#....#.#....#.#........#.#....#.#......#.#....#.#.......#.#...........#.#......#.#....#.#.....#.#.....#.#......#.#.......#.#... | 311
+399: ......#.#..............#.#....#.#......#.#....#.#....#.#....#.#....#.#....#.#........#.#....#.#......#.#....#.#.......#.#...........#.#......#.#....#.#.....#.#.....#.#......#.#.......#.#.... | 313
+400: .....#.#..............#.#....#.#......#.#....#.#....#.#....#.#....#.#....#.#........#.#....#.#......#.#....#.#.......#.#...........#.#......#.#....#.#.....#.#.....#.#......#.#.......#.#..... | 315
+         */
+        assertEquals(17228, getPotsAfterIterations(File("files/2018/day12.txt").readText(), 400))
+    }
+
+    @Test
     fun part1() {
-        assertEquals(-1, sumOfNumsOfPotsContainingPlant(File("files/2018/day12.txt").readText(), 20))
+        assertEquals(2045, sumOfNumsOfPotsContainingPlant(File("files/2018/day12.txt").readText(), 20))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(2100000000428, getPotsAfterIterations(File("files/2018/day12.txt").readText(), 50_000_000_000))
     }
 }
