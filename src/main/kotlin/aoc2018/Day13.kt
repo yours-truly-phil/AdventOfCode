@@ -2,6 +2,9 @@ package aoc2018
 
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 import kotlin.test.assertEquals
 
 class Day13 {
@@ -41,6 +44,63 @@ class Day13 {
         out.forEach { println(it.joinToString("")) }
     }
 
+    private fun lastCar(input: String): String {
+        val (track, cars) = parseCarsAndTrack(input)
+
+        while (cars.count { !it.crashed } != 1) {
+            stepAndCheckCrash(cars, track)
+        }
+
+        val last = cars.find { !it.crashed }!!
+        return "${last.x},${last.y}"
+    }
+
+    private fun stepAndCheckCrash(cars: List<Car>, track: Array<CharArray>) {
+        Collections.sort(cars)
+        cars.forEach {
+            when (it.dir) {
+                0 -> it.y--
+                1 -> it.x++
+                2 -> it.y++
+                3 -> it.x--
+            }
+            when {
+                track[it.y][it.x] == '+' -> {
+                    when (it.turns) {
+                        0 -> {
+                            it.dir += 3
+                            it.dir %= 4
+                        }
+                        2 -> {
+                            it.dir++
+                            it.dir %= 4
+                        }
+                    }
+                    it.turns++
+                    it.turns %= 3
+                }
+                track[it.y][it.x] == '\\' -> it.dir = 3 - it.dir
+                track[it.y][it.x] == '/' -> {
+                    when (it.dir) {
+                        0 -> it.dir = 1
+                        1 -> it.dir = 0
+                        2 -> it.dir = 3
+                        3 -> it.dir = 2
+                    }
+                }
+            }
+            updateCrashes(cars)
+        }
+    }
+
+    private fun updateCrashes(cars: List<Car>) {
+        val pos = HashSet<String>()
+        val crashedLocs = cars.filter { !it.crashed }.map { "${it.x},${it.y}" }.filter { !pos.add(it) }
+        for (crash in crashedLocs) {
+            cars.filter { "${it.x},${it.y}" == crash }.forEach { it.crashed = true }
+        }
+    }
+
     private fun isCrash(cars: List<Car>): Boolean {
         val pos = HashSet<String>()
         return cars.map { "${it.x},${it.y}" }
@@ -58,19 +118,19 @@ class Day13 {
             for (x in track[y].indices) {
                 when (track[y][x]) {
                     '^' -> {
-                        cars.add(Car(x, y, 0, 0))
+                        cars.add(Car(x, y, 0, 0, false))
                         track[y][x] = '|'
                     }
                     '>' -> {
-                        cars.add(Car(x, y, 1, 0))
+                        cars.add(Car(x, y, 1, 0, false))
                         track[y][x] = '-'
                     }
                     'v' -> {
-                        cars.add(Car(x, y, 2, 0))
+                        cars.add(Car(x, y, 2, 0, false))
                         track[y][x] = '|'
                     }
                     '<' -> {
-                        cars.add(Car(x, y, 3, 0))
+                        cars.add(Car(x, y, 3, 0, false))
                         track[y][x] = '-'
                     }
                 }
@@ -89,7 +149,7 @@ class Day13 {
             }
             when {
                 track[it.y][it.x] == '+' -> {
-                    when (it.turns % 3) {
+                    when (it.turns) {
                         0 -> {
                             it.dir += 3
                             it.dir %= 4
@@ -100,6 +160,7 @@ class Day13 {
                         }
                     }
                     it.turns++
+                    it.turns %= 3
                 }
                 track[it.y][it.x] == '\\' -> it.dir = 3 - it.dir
                 track[it.y][it.x] == '/' -> {
@@ -114,9 +175,14 @@ class Day13 {
         }
     }
 
-    class Car(var x: Int, var y: Int, var dir: Int, var turns: Int) {
+    class Car(var x: Int, var y: Int, var dir: Int, var turns: Int, var crashed: Boolean) : Comparable<Car> {
         override fun toString(): String {
             return "Car(x=$x, y=$y, dir=$dir, turns=$turns)"
+        }
+
+        override fun compareTo(other: Car): Int {
+            return "${y.toString().padStart(3, '0')},${x.toString().padStart(3, '0')}"
+                .compareTo("${other.y.toString().padStart(3, '0')},${other.x.toString().padStart(3, '0')}")
         }
     }
 
@@ -131,7 +197,23 @@ class Day13 {
     }
 
     @Test
+    fun `part 2 sample`() {
+        assertEquals("6,4", lastCar("/>-<\\  \n" +
+                "|   |  \n" +
+                "| /<+-\\\n" +
+                "| | | v\n" +
+                "\\>+</ |\n" +
+                "  |   ^\n" +
+                "  \\<->/"))
+    }
+
+    @Test
     fun part1() {
         assertEquals("100,21", locateCrash(File("files/2018/day13.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals("113,109", lastCar(File("files/2018/day13.txt").readText()))
     }
 }
