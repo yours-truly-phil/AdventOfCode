@@ -3,10 +3,6 @@ package aoc2018
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-fun main() {
-    Day14().apply { println(appearsAfter("503761")) }
-}
-
 class Day14 {
     fun scoresOfRecipesAfter(offset: Int): String {
         val scores = ArrayList<Int>(offset + 10)
@@ -33,10 +29,9 @@ class Day14 {
     }
 
     fun appearsAfter(num: String): Int {
-        val scores = ByteArray(500000000)
-        scores[0] = 3
-        scores[1] = 7
-        var size = 2
+        val scores = ArrayList<Byte>()
+        scores += 3
+        scores += 7
         var i1 = 0
         var i2 = 1
 
@@ -54,27 +49,28 @@ class Day14 {
             val new1 = sum % 10
             if (sum >= 10) {
                 val new2 = (sum / 10) % 10
-                scores[size] = new2.toByte()
-                size++
+                scores += new2.toByte()
                 lastNums.removeFirst()
                 lastNums.addLast(new2)
+                if (lastNums.joinToString("") == num) {
+                    break
+                }
             }
-            scores[size] = new1.toByte()
-            size++
+            scores += new1.toByte()
             lastNums.removeFirst()
             lastNums.addLast(new1)
 
             i1 += 1 + s1
-            i1 %= size
+            i1 %= scores.size
             i2 += 1 + s2
-            i2 %= size
+            i2 %= scores.size
 
             if (lastNums.joinToString("") == num) {
                 break
             }
         }
 
-        return size - num.length
+        return scores.size - num.length
     }
 
     @Test
@@ -100,6 +96,6 @@ class Day14 {
 
     @Test
     fun part2() {
-        assertEquals(-1, appearsAfter("503761"))
+        assertEquals(20185425, appearsAfter("503761"))
     }
 }
