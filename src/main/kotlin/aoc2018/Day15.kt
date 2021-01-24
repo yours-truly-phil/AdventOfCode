@@ -34,6 +34,69 @@ class Day15 {
         return rounds * units.filter { !it.isDead() }.sumOf { it.hp }
     }
 
+    private fun lowestApOutcome(input: String): Int {
+        var ap = 3
+        var elfsDie: Boolean
+        var outcome: Int
+        do {
+            ap++
+            val (map, units) = init(input, ap)
+            val (die, points) = elfsDie(map, units)
+            elfsDie = die
+            outcome = points
+        } while (elfsDie)
+        return outcome
+    }
+
+    private fun elfsDie(map: Array<CharArray>, units: ArrayList<Entity>): Pair<Boolean, Int> {
+        var rounds = 0
+        var elfsDie = false
+        while (units.filter { it.type == 'E' }.any { !it.isDead() } &&
+            units.filter { it.type == 'G' }.any { !it.isDead() }) {
+            rounds++
+            units.sort()
+            units.forEach {
+                when {
+                    !it.isDead() -> {
+                        if (it.step(map, units)) {
+                            elfsDie = true
+                        }
+                    }
+                }
+            }
+            if (elfsDie) {
+                break
+            }
+        }
+        rounds--
+        return Pair(elfsDie, rounds * units.filter { !it.isDead() }.sumOf { it.hp })
+    }
+
+    private fun init(input: String, ap: Int): Pair<Array<CharArray>, ArrayList<Entity>> {
+        val lines = input.lines()
+        val height = lines.size
+        val width = lines.maxOf { it.length }
+        val map = Array(height) { CharArray(width) }
+        val units = ArrayList<Entity>()
+        lines.forEachIndexed { y, row ->
+            row.forEachIndexed { x, c ->
+                when (c) {
+                    '#' -> map[y][x] = '#'
+                    '.' -> map[y][x] = '.'
+                    'G' -> {
+                        map[y][x] = '.'
+                        units += Entity(this, V2i(x, y), 200, 3, 'G')
+                    }
+                    'E' -> {
+                        map[y][x] = '.'
+                        units += Entity(this, V2i(x, y), 200, ap, 'E')
+                    }
+                }
+            }
+        }
+        return Pair(map, units)
+    }
+
     private fun parse(input: String): Pair<Array<CharArray>, ArrayList<Entity>> {
         val lines = input.lines()
         val height = lines.size
@@ -79,7 +142,7 @@ class Day15 {
     class Entity(val p: Day15, val loc: V2i, var hp: Int, var ap: Int, val type: Char) : Comparable<Entity> {
         fun isDead(): Boolean = hp <= 0
 
-        fun step(map: Array<CharArray>, units: List<Entity>) {
+        fun step(map: Array<CharArray>, units: List<Entity>): Boolean {
             val others = units.filter { it != this }.toSet()
 
             val enemyLocs = others.filter { it.type == if (type == 'G') 'E' else 'G' }
@@ -123,6 +186,7 @@ class Day15 {
             } else {
                 minHpEnemy.hp -= ap
             }
+            return units.filter { it.type == 'E' }.any { it.isDead() }
         }
 
         private fun move(
@@ -209,13 +273,6 @@ class Day15 {
 
     @Test
     fun sample() {
-//        assertEquals(27730, outcome("#######\n" +
-//                "#.G...#\n" +
-//                "#...EG#\n" +
-//                "#.#.#G#\n" +
-//                "#..G#E#\n" +
-//                "#.....#\n" +
-//                "#######"))
         assertEquals(39514, outcome("#######\n" +
                 "#E..EG#\n" +
                 "#.#G.E#\n" +
@@ -233,7 +290,23 @@ class Day15 {
     }
 
     @Test
+    fun `part 2 sample`() {
+        assertEquals(4988, lowestApOutcome("#######\n" +
+                "#.G...#\n" +
+                "#...EG#\n" +
+                "#.#.#G#\n" +
+                "#..G#E#\n" +
+                "#.....#\n" +
+                "#######"))
+    }
+
+    @Test
     fun part1() {
         assertEquals(228730, outcome(File("files/2018/day15.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(33621, lowestApOutcome(File("files/2018/day15.txt").readText()))
     }
 }
