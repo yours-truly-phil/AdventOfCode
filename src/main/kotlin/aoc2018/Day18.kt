@@ -7,7 +7,10 @@ import kotlin.test.assertEquals
 class Day18 {
     fun totalValueLumberCollection(input: String, mins: Int): Int {
         val world = input.lines().map { it.toCharArray() }.toTypedArray()
-        repeat(mins) {
+        val memo = HashMap<String, Int>()
+        var curRep = 0
+        var foundCycle = false
+        while (curRep < mins) {
             val tmp = Array(world.size) { CharArray(world.maxOf { it.size }) }
             world.forEachIndexed { y, row ->
                 row.forEachIndexed { x, c ->
@@ -20,8 +23,21 @@ class Day18 {
                 }
             }
             tmp.forEachIndexed { y, row -> row.forEachIndexed { x, c -> world[y][x] = c } }
-            println("After ${it + 1} mins:")
-            world.forEach { println(it.joinToString("")) }
+
+            curRep++
+            if (!foundCycle) {
+                val strRep = world.joinToString("\n") { it.joinToString("") }
+                if (memo.contains(strRep)) {
+                    val dt = curRep - memo[strRep]!!
+                    while (curRep < mins) {
+                        curRep += dt
+                    }
+                    curRep -= dt
+                    foundCycle = true
+                } else {
+                    memo[strRep] = curRep
+                }
+            }
         }
 
         val noWood = world.map { it.count { c -> c == '|' } }.sum()
@@ -56,5 +72,10 @@ class Day18 {
     @Test
     fun part1() {
         assertEquals(514944, totalValueLumberCollection(File("files/2018/day18.txt").readText(), 10))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(193050, totalValueLumberCollection(File("files/2018/day18.txt").readText(), 1000000000))
     }
 }
