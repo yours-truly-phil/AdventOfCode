@@ -5,123 +5,34 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day17 {
-    private fun retainedWater(input: String):Int {
-        val clays = input.lines().map { parseLine(it) }.flatten().toHashSet()
-        val spring = V2i(500, 0)
+    data class State(val environment: MutableMap<V2i, Char>, val water: HashSet<V2i>, val minY: Int, val maxY: Int)
 
-        val env = clays.map { it to '#' }.toMap().toMutableMap()
-//        env[spring] = '+'
+    private fun retainedWater(input: String): Int {
+        val state = runSimulation(input)
 
-//        val springs = ArrayDeque<V2i>().also { it.add(spring) }
-        val springs = ArrayList<V2i>().also { it.add(spring) }
-        val maxY = env.maxOf { it.key.y }
-        val minY = env.minOf { it.key.y }
-        println("minY=$minY")
-        val flowing = HashSet<V2i>()
-        while (springs.isNotEmpty()) {
-            springs.sorted()
-            var source: V2i
-            do {
-                source = springs.removeFirst()
-            } while (env.containsKey(source))
+        println("flowing=${state.water.filter { it.y in state.minY..state.maxY }.count()}")
+        println("retained=${state.environment.filter { it.value == '~' }.count()}")
+        println(envToString(state.environment, state.water.filter { it.y <= state.maxY }.toSet()))
 
-            var springDone = false
-            while (!springDone) {
-                var bottom = source.y
-                while (!env.containsKey(V2i(source.x, bottom + 1))) {
-                    flowing.add(V2i(source.x, bottom + 1))
-                    bottom++
-                    if (bottom > maxY) break
-                }
-                if (bottom == source.y) {
-
-                    var overflowing = false
-                    var top = source.y
-                    while (!overflowing) {
-                        flowing.add(V2i(source.x, top))
-                        var left = source.x
-                        var right = source.x
-                        while (!env.containsKey(V2i(left - 1, top))) {
-                            flowing.add(V2i(left - 1, top))
-                            left--
-                            if (!env.containsKey(V2i(left, top + 1))) {
-                                overflowing = true
-//                                springs.addLast(V2i(left, top))
-                                springs.add(V2i(left, top))
-                                break
-                            }
-                        }
-                        while (!env.containsKey(V2i(right + 1, top))) {
-                            flowing.add(V2i(right + 1, top))
-                            right++
-                            if (!env.containsKey(V2i(right, top + 1))) {
-                                overflowing = true
-//                                springs.addLast(V2i(right, top))
-                                springs.add(V2i(right, top))
-                                break
-                            }
-                        }
-                        if (!overflowing) {
-                            for (x in left..right) {
-                                env[V2i(x, top)] = '~'
-                            }
-                            top--
-                        }
-                    }
-                    break
-                }
-                if (bottom > maxY) break
-
-                var left = source.x
-                var right = source.x
-                while (!env.containsKey(V2i(left - 1, bottom))) {
-                    flowing.add(V2i(left - 1, bottom))
-                    left--
-                    if (!env.containsKey(V2i(left, bottom + 1))) {
-                        springDone = true
-//                        springs.addLast(V2i(left, bottom))
-                        springs.add(V2i(left, bottom))
-                        break
-                    }
-                }
-                while (!env.containsKey(V2i(right + 1, bottom))) {
-                    flowing.add(V2i(right + 1, bottom))
-                    right++
-                    if (!env.containsKey(V2i(right, bottom + 1))) {
-                        springDone = true
-//                        springs.addLast(V2i(right, bottom))
-                        springs.add(V2i(right, bottom))
-                        break
-                    }
-                }
-                if (!springDone) {
-                    for (x in left..right) {
-                        env[V2i(x, bottom)] = '~'
-                    }
-                }
-//                println("flowing=${flowing.size}")
-//                println(envToString(env, flowing))
-            }
-        }
-
-        println("flowing=${flowing.filter { it.y in minY..maxY }.count()}")
-        println("retained=${env.filter { it.value == '~' }.count()}")
-        println(envToString(env, flowing.filter { it.y <= maxY }.toSet()))
-
-        return env.filter { it.value == '~' }.count()
+        return state.environment.filter { it.value == '~' }.count()
     }
+
     private fun countTilesReachWater(input: String): Int {
+        val state = runSimulation(input)
+
+        println("flowing=${state.water.filter { it.y in state.minY..state.maxY }.count()}")
+        println(envToString(state.environment, state.water.filter { it.y <= state.maxY }.toSet()))
+
+        return state.water.filter { it.y in state.minY..state.maxY }.count()
+    }
+
+    private fun runSimulation(input: String): State {
         val clays = input.lines().map { parseLine(it) }.flatten().toHashSet()
         val spring = V2i(500, 0)
-
         val env = clays.map { it to '#' }.toMap().toMutableMap()
-//        env[spring] = '+'
-
-//        val springs = ArrayDeque<V2i>().also { it.add(spring) }
         val springs = ArrayList<V2i>().also { it.add(spring) }
         val maxY = env.maxOf { it.key.y }
         val minY = env.minOf { it.key.y }
-        println("minY=$minY")
         val flowing = HashSet<V2i>()
         while (springs.isNotEmpty()) {
             springs.sorted()
@@ -151,7 +62,6 @@ class Day17 {
                             left--
                             if (!env.containsKey(V2i(left, top + 1))) {
                                 overflowing = true
-//                                springs.addLast(V2i(left, top))
                                 springs.add(V2i(left, top))
                                 break
                             }
@@ -161,7 +71,6 @@ class Day17 {
                             right++
                             if (!env.containsKey(V2i(right, top + 1))) {
                                 overflowing = true
-//                                springs.addLast(V2i(right, top))
                                 springs.add(V2i(right, top))
                                 break
                             }
@@ -184,7 +93,6 @@ class Day17 {
                     left--
                     if (!env.containsKey(V2i(left, bottom + 1))) {
                         springDone = true
-//                        springs.addLast(V2i(left, bottom))
                         springs.add(V2i(left, bottom))
                         break
                     }
@@ -194,7 +102,6 @@ class Day17 {
                     right++
                     if (!env.containsKey(V2i(right, bottom + 1))) {
                         springDone = true
-//                        springs.addLast(V2i(right, bottom))
                         springs.add(V2i(right, bottom))
                         break
                     }
@@ -204,15 +111,9 @@ class Day17 {
                         env[V2i(x, bottom)] = '~'
                     }
                 }
-//                println("flowing=${flowing.size}")
-//                println(envToString(env, flowing))
             }
         }
-
-        println("flowing=${flowing.filter { it.y in minY..maxY }.count()}")
-        println(envToString(env, flowing.filter { it.y <= maxY }.toSet()))
-
-        return flowing.filter { it.y in minY..maxY }.count()
+        return State(env, flowing, minY, maxY)
     }
 
     private fun envToString(env: MutableMap<V2i, Char>, flowing: Set<V2i>): String {
