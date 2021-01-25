@@ -134,8 +134,18 @@ x 35 seti 0 4 1   -> whole block puts 10551261 in reg d and then doesn't get exe
         assertEquals(1344, regValue(File("files/2018/day19.txt").readText(), 0, IntArray(6) { 0 }))
     }
 
+    /*
+    while looking for a system on how to systematically disassemble and optimize instructions like that I stumbled over
+    the notebook https://nbviewer.jupyter.org/github/mjpieters/adventofcode/blob/master/2018/Day%2019.ipynb
+    which more or less immediately gave away that it sums up all factors of the number I already found which gets put
+    in register d from that second part of the instructions.
+     */
+    fun sumFactors(num: Int): Int {
+        return (1..num).filter { num % it == 0 }.sum()
+    }
+
     @Test
     fun part2() {
-        assertEquals(1344, regValue(File("files/2018/day19.txt").readText(), 0, intArrayOf(1, 0, 0, 0, 0, 0)))
+        assertEquals(16078144, sumFactors(10551261))
     }
 }
