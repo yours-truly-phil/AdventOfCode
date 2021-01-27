@@ -9,6 +9,11 @@ class Day20 {
     private fun maxDoorsToReachRoom(input: String): Int {
         val map = createMap(input)
         println(map.toString())
+        val distMap = distanceMap(map)
+        return distMap.maxOf { it.value }
+    }
+
+    private fun distanceMap(map: Map): HashMap<Loc, Int> {
         val distMap = HashMap<Loc, Int>().also { it[Loc(0, 0)] = 0 }
         val rooms = ArrayDeque<Loc>().also { it.add(Loc(0, 0)) }
         while (rooms.isNotEmpty()) {
@@ -27,7 +32,13 @@ class Day20 {
                 updateDistMap(distMap, loc.w(), rooms, loc)
             }
         }
-        return distMap.maxOf { it.value }
+        return distMap
+    }
+
+    private fun noRoomsShortestPathAtLeastNumOfDoors(input: String, numDoors: Int): Int {
+        val map = createMap(input)
+        val distMap = distanceMap(map)
+        return distMap.filter { it.value >= numDoors }.count()
     }
 
     private fun updateDistMap(distMap: HashMap<Loc, Int>, next: Loc, rooms: ArrayDeque<Loc>, loc: Loc) {
@@ -288,5 +299,10 @@ class Day20 {
     @Test
     fun part1() {
         assertEquals(3835, maxDoorsToReachRoom(File("files/2018/day20.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(8520, noRoomsShortestPathAtLeastNumOfDoors(File("files/2018/day20.txt").readText(), 1000))
     }
 }
