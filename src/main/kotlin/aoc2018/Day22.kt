@@ -16,7 +16,7 @@ class Day22 {
     fun shortestPath(depth: Int, target: V2i): Int {
         val map = parseMap(depth, target)
 
-        val memo = HashSet<Pair<V2i, Gear>>().also { it.add(Pair(V2i(0, 0), TORCH)) }
+        val memo = HashMap<Pair<V2i, Gear>, Int>().also { it[Pair(V2i(0, 0), TORCH)] = 0 }
 
         val paths = ArrayList<PossiblePath>().also {
             it += PossiblePath(V2i(0, 0), 0, minTotalTime(V2i(0, 0), TORCH, 0, target), TORCH, V2i(0, 0).toString())
@@ -27,6 +27,7 @@ class Day22 {
 
             if (next.loc == target && next.gear == TORCH) {
                 println(next.track)
+                println(mapToString(map, target))
                 return next.minTotalTime
             }
 
@@ -35,9 +36,12 @@ class Day22 {
             addNewPathsThroughMoving(next, map, depth, nextPossiblePaths, target)
             val newPaths = nextPossiblePaths
                 .filter { it.loc.x >= 0 && it.loc.y >= 0 }
-                .filter { Pair(it.loc, it.gear) !in memo }
+                .filter {
+                    val key = Pair(it.loc, it.gear)
+                    !memo.containsKey(key) || memo[key]!! > it.dt
+                }
 
-            memo.addAll(newPaths.map { it.loc to it.gear })
+            newPaths.forEach { memo[Pair(it.loc, it.gear)] = it.dt }
 
             insertNewPaths(paths, newPaths)
         }
@@ -58,7 +62,7 @@ class Day22 {
                 if (next.gear != CLIMB) nextPossiblePaths += nextPath(next, target, CLIMB)
                 else if (next.gear != NONE) nextPossiblePaths += nextPath(next, target, NONE)
             }
-            else -> {
+            '|' -> {
                 if (next.gear != TORCH) nextPossiblePaths += nextPath(next, target, TORCH)
                 else if (next.gear != NONE) nextPossiblePaths += nextPath(next, target, NONE)
             }
@@ -74,24 +78,15 @@ class Day22 {
     ) {
         val u = next.loc.up()
         if (u.x >= 0 && u.y >= 0) addPossiblePath(map, u, depth, next, nextPossiblePaths, target)
+
         val d = next.loc.down()
-        if (d.x >= 0 && d.y >= 0) addPossiblePath(map, d, depth, next, nextPossiblePaths, target)
+        addPossiblePath(map, d, depth, next, nextPossiblePaths, target)
+
         val l = next.loc.left()
         if (l.x >= 0 && l.y >= 0) addPossiblePath(map, l, depth, next, nextPossiblePaths, target)
+
         val r = next.loc.right()
-        if (r.x >= 0 && r.y >= 0) addPossiblePath(map, r, depth, next, nextPossiblePaths, target)
-    }
-
-    private fun nextPath(next: PossiblePath, target: V2i, gear: Gear) =
-        PossiblePath(next.loc, next.dt + 7, minTotalTime(next.loc, gear, next.dt + 7, target), gear,
-            "${next.track}|${next.gear}->$gear")
-
-    private fun insertNewPaths(paths: MutableList<PossiblePath>, newPaths: List<PossiblePath>) {
-        newPaths.forEach {
-            var idx = paths.binarySearch(it, { o1, o2 -> o1.minTotalTime.compareTo(o2.minTotalTime) })
-            if (idx < 0) idx = -idx - 1
-            paths.add(idx, it)
-        }
+        addPossiblePath(map, r, depth, next, nextPossiblePaths, target)
     }
 
     private fun addPossiblePath(
@@ -109,6 +104,18 @@ class Day22 {
                     fromPath.dt + 1,
                     minTotalTime(to, fromPath.gear, fromPath.dt + 1, target),
                     fromPath.gear, "${fromPath.track}|$to")
+        }
+    }
+
+    private fun nextPath(next: PossiblePath, target: V2i, gear: Gear) =
+        PossiblePath(next.loc, next.dt + 7, minTotalTime(next.loc, gear, next.dt + 7, target), gear,
+            "${next.track}|${next.gear}->$gear")
+
+    private fun insertNewPaths(paths: MutableList<PossiblePath>, newPaths: List<PossiblePath>) {
+        newPaths.forEach {
+            var idx = paths.binarySearch(it, { o1, o2 -> o1.minTotalTime.compareTo(o2.minTotalTime) })
+            if (idx < 0) idx = -idx - 1
+            paths.add(idx, it)
         }
     }
 
@@ -181,7 +188,6 @@ class Day22 {
                     loc == V2i(0, 0) -> sb.append("M")
                     loc == target -> sb.append("T")
                     map.containsKey(loc) -> sb.append(map[loc])
-                    else -> sb.append("X")
                 }
             }
             lines.add(sb.toString())
@@ -216,6 +222,39 @@ class Day22 {
     }
 
     @Test
+    fun `insert new path in sorted list`() {
+        val sorted = ArrayList<String>()
+        val insert = listOf("k",
+            "c",
+            "r",
+            "b",
+            "m",
+            "v",
+            "s",
+            "a",
+            "p",
+            "e",
+            "n",
+            "u",
+            "f",
+            "j",
+            "g",
+            "l",
+            "h",
+            "o",
+            "i",
+            "d",
+            "q",
+            "t")
+        insert.forEach {
+            var idx = sorted.binarySearch(it, { o1, o2 -> o1.compareTo(o2) })
+            if (idx < 0) idx = -idx - 1
+            sorted.add(idx, it)
+        }
+        assertEquals("abcdefghijklmnopqrstuv", sorted.joinToString(""))
+    }
+
+    @Test
     fun sample() {
         assertEquals(114, totalRiskLvl(510, V2i(10, 10)))
     }
@@ -232,6 +271,6 @@ class Day22 {
 
     @Test
     fun part2() {
-        assertEquals(-1, shortestPath(8112, V2i(13, 743)))
+        assertEquals(1010, shortestPath(8112, V2i(13, 743)))
     }
 }
