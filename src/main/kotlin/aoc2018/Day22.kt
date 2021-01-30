@@ -84,6 +84,6 @@ class Day22 {
 
     @Test
     fun part1() {
-        assertEquals(-1, totalRiskLvl(8112, V2i(13, 743)))
+        assertEquals(10395, totalRiskLvl(8112, V2i(13, 743)))
     }
 }
