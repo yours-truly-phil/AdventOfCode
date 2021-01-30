@@ -19,66 +19,77 @@ class Day22 {
         val memo = HashSet<Pair<V2i, Gear>>().also { it.add(Pair(V2i(0, 0), TORCH)) }
 
         val paths = ArrayList<PossiblePath>().also {
-            it += PossiblePath(V2i(0, 0), 0, minTotalTime(V2i(0, 0), TORCH, 0, target), TORCH)
+            it += PossiblePath(V2i(0, 0), 0, minTotalTime(V2i(0, 0), TORCH, 0, target), TORCH, V2i(0, 0).toString())
         }
 
         while (true) {
             val next = paths.removeAt(0)
 
-            if (next.loc == target && next.gear == TORCH) return next.minTotalTime
-
-            val nextPossiblePaths = ArrayList<PossiblePath>()
-            when (map[next.loc]!!.type()) {
-                '.' -> {
-                    if (next.gear != TORCH) nextPossiblePaths +=
-                        PossiblePath(next.loc, next.dt + 7, minTotalTime(next.loc, TORCH, next.dt + 7, target), TORCH)
-                    else if (next.gear != CLIMB) nextPossiblePaths +=
-                        PossiblePath(next.loc, next.dt + 7, minTotalTime(next.loc, CLIMB, next.dt + 7, target), CLIMB)
-                }
-                '=' -> {
-                    if (next.gear != CLIMB) nextPossiblePaths +=
-                        PossiblePath(next.loc, next.dt + 7, minTotalTime(next.loc, CLIMB, next.dt + 7, target), CLIMB)
-                    else if (next.gear != NONE) nextPossiblePaths +=
-                        PossiblePath(next.loc, next.dt + 7, minTotalTime(next.loc, NONE, next.dt + 7, target), NONE)
-                }
-                else -> {
-                    if (next.gear != TORCH) nextPossiblePaths +=
-                        PossiblePath(next.loc, next.dt + 7, minTotalTime(next.loc, TORCH, next.dt + 7, target), TORCH)
-                    else if (next.gear != NONE) nextPossiblePaths +=
-                        PossiblePath(next.loc, next.dt + 7, minTotalTime(next.loc, NONE, next.dt + 7, target), NONE)
-                }
+            if (next.loc == target && next.gear == TORCH) {
+                println(next.track)
+                return next.minTotalTime
             }
 
-            val up = next.loc.up()
-            if (up.x >= 0 && up.y >= 0) addPossiblePath(map, up, depth, next, nextPossiblePaths, target)
-            val down = next.loc.down()
-            if (down.x >= 0 && down.y >= 0) addPossiblePath(map, down, depth, next, nextPossiblePaths, target)
-            val left = next.loc.left()
-            if (left.x >= 0 && left.y >= 0) addPossiblePath(map, left, depth, next, nextPossiblePaths, target)
-            val right = next.loc.right()
-            if (right.x >= 0 && right.y >= 0) addPossiblePath(map,
-                next.loc.right(),
-                depth,
-                next,
-                nextPossiblePaths,
-                target)
-
+            val nextPossiblePaths = ArrayList<PossiblePath>()
+            addNewPathsThroughSwitchingGear(map, next, nextPossiblePaths, target)
+            addNewPathsThroughMoving(next, map, depth, nextPossiblePaths, target)
             val newPaths = nextPossiblePaths
                 .filter { it.loc.x >= 0 && it.loc.y >= 0 }
                 .filter { Pair(it.loc, it.gear) !in memo }
 
             memo.addAll(newPaths.map { it.loc to it.gear })
 
-            addPathsInOrder(paths, newPaths)
+            insertNewPaths(paths, newPaths)
         }
     }
 
-    private fun addPathsInOrder(paths: MutableList<PossiblePath>, newPaths: List<PossiblePath>) {
+    private fun addNewPathsThroughSwitchingGear(
+        map: HashMap<V2i, Region>,
+        next: PossiblePath,
+        nextPossiblePaths: ArrayList<PossiblePath>,
+        target: V2i,
+    ) {
+        when (map[next.loc]!!.type()) {
+            '.' -> {
+                if (next.gear != TORCH) nextPossiblePaths += nextPath(next, target, TORCH)
+                else if (next.gear != CLIMB) nextPossiblePaths += nextPath(next, target, CLIMB)
+            }
+            '=' -> {
+                if (next.gear != CLIMB) nextPossiblePaths += nextPath(next, target, CLIMB)
+                else if (next.gear != NONE) nextPossiblePaths += nextPath(next, target, NONE)
+            }
+            else -> {
+                if (next.gear != TORCH) nextPossiblePaths += nextPath(next, target, TORCH)
+                else if (next.gear != NONE) nextPossiblePaths += nextPath(next, target, NONE)
+            }
+        }
+    }
+
+    private fun addNewPathsThroughMoving(
+        next: PossiblePath,
+        map: HashMap<V2i, Region>,
+        depth: Int,
+        nextPossiblePaths: ArrayList<PossiblePath>,
+        target: V2i,
+    ) {
+        val u = next.loc.up()
+        if (u.x >= 0 && u.y >= 0) addPossiblePath(map, u, depth, next, nextPossiblePaths, target)
+        val d = next.loc.down()
+        if (d.x >= 0 && d.y >= 0) addPossiblePath(map, d, depth, next, nextPossiblePaths, target)
+        val l = next.loc.left()
+        if (l.x >= 0 && l.y >= 0) addPossiblePath(map, l, depth, next, nextPossiblePaths, target)
+        val r = next.loc.right()
+        if (r.x >= 0 && r.y >= 0) addPossiblePath(map, r, depth, next, nextPossiblePaths, target)
+    }
+
+    private fun nextPath(next: PossiblePath, target: V2i, gear: Gear) =
+        PossiblePath(next.loc, next.dt + 7, minTotalTime(next.loc, gear, next.dt + 7, target), gear,
+            "${next.track}|${next.gear}->$gear")
+
+    private fun insertNewPaths(paths: MutableList<PossiblePath>, newPaths: List<PossiblePath>) {
         newPaths.forEach {
             var idx = paths.binarySearch(it, { o1, o2 -> o1.minTotalTime.compareTo(o2.minTotalTime) })
-            if (idx < 0) {
-                idx = -idx - 1
-            }
+            if (idx < 0) idx = -idx - 1
             paths.add(idx, it)
         }
     }
@@ -97,15 +108,15 @@ class Day22 {
                 PossiblePath(to,
                     fromPath.dt + 1,
                     minTotalTime(to, fromPath.gear, fromPath.dt + 1, target),
-                    fromPath.gear)
+                    fromPath.gear, "${fromPath.track}|$to")
         }
     }
 
     private fun minTotalTime(loc: V2i, gear: Gear, mins: Int, target: V2i): Int =
         mins + (if (gear != TORCH) 7 else 0) + loc.dist(target)
 
-    class PossiblePath(val loc: V2i, val dt: Int, val minTotalTime: Int, val gear: Gear) {
-        override fun toString(): String = "$loc $gear dt=$dt minTotal=$minTotalTime"
+    class PossiblePath(val loc: V2i, val dt: Int, val minTotalTime: Int, val gear: Gear, val track: String) {
+        override fun toString(): String = "$loc $gear dt=$dt minTotal=$minTotalTime $track"
     }
 
     enum class Gear {
