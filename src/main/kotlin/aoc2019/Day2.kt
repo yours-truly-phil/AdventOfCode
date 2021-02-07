@@ -7,7 +7,11 @@ import kotlin.test.assertEquals
 
 class Day2 {
     fun valueInPos0(input: String, transform: Consumer<IntArray>): Int {
-        val arr = input.split(",").map { it.toInt() }.toIntArray()
+        val arr = parseMemory(input)
+        return run(transform, arr)
+    }
+
+    private fun run(transform: Consumer<IntArray>, arr: IntArray): Int {
         transform.accept(arr)
         for (i in arr.indices step 4) {
             when (arr[i]) {
@@ -17,6 +21,25 @@ class Day2 {
             }
         }
         return -1
+    }
+
+    private fun parseMemory(input: String) = input.split(",").map { it.toInt() }.toIntArray()
+
+    fun nounVerbForResult(input: String, num: Int): Int {
+        val arr = parseMemory(input)
+        for (noun in 0..99) {
+            for (verb in 0..99) {
+                if (run({ v ->
+                        run {
+                            v[1] = noun
+                            v[2] = verb
+                        }
+                    }, arr.clone()) == num) {
+                    return 100 * noun + verb
+                }
+            }
+        }
+        return 1
     }
 
     @Test
@@ -37,4 +60,10 @@ class Day2 {
             }
         })
     }
+
+    @Test
+    fun part2() {
+        assertEquals(9074, nounVerbForResult(File("files/2019/day2.txt").readText(), 19690720))
+    }
+
 }
