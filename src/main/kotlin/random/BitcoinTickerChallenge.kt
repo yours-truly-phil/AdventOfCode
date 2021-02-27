@@ -1,6 +1,7 @@
 package random
 
 import org.json.JSONObject
+import java.math.BigDecimal
 
 val prices = mapOf(
     "blockchain" to { blockchainSellPrice() },
@@ -15,14 +16,14 @@ fun main() {
     } while (readLine() != "q")
 }
 
-fun blockchainSellPrice(): Double = (khttp
+fun blockchainSellPrice(): BigDecimal = (khttp
     .get("https://blockchain.info/ticker")
     .jsonObject
     .get("USD") as JSONObject)
-    .get("sell").toString().toDouble()
+    .get("sell").toString().toBigDecimal()
 
-fun bitcoinComAskPrice(): Double = (khttp
+fun bitcoinComAskPrice(): BigDecimal = (khttp
     .get("https://api.exchange.bitcoin.com/api/2/public/ticker")
     .jsonArray
     .find { (it as JSONObject).get("symbol") == "BTCUSD" } as JSONObject)
-    .get("ask").toString().toDouble()
+    .get("ask").toString().toBigDecimal()
