@@ -6,7 +6,7 @@ import java.util.function.Consumer
 import kotlin.test.assertEquals
 
 class Day2 {
-    fun valueInPos0(input: String, transform: Consumer<IntArray>): Int {
+    private fun valueInPos0(input: String, transform: Consumer<IntArray>): Int {
         val arr = parseMemory(input)
         return run(transform, arr)
     }
@@ -25,7 +25,7 @@ class Day2 {
 
     private fun parseMemory(input: String) = input.split(",").map { it.toInt() }.toIntArray()
 
-    fun nounVerbForResult(input: String, num: Int): Int {
+    private fun nounVerbForResult(input: String, num: Int): Int {
         val arr = parseMemory(input)
         for (noun in 0..99) {
             for (verb in 0..99) {

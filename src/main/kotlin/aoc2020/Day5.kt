@@ -16,7 +16,7 @@ fun runDay5() {
 }
 
 fun day5part1(lines: List<String>): Int {
-    return lines.map { seatIdOf(it) }.maxOrNull()!!
+    return lines.maxOf { seatIdOf(it) }
 }
 
 fun day5part2(lines: List<String>, low: Int, high: Int): Int {

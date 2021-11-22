@@ -5,24 +5,18 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day1 {
-    fun sumFuelRequirements(input: String): Int =
-        input.lines()
-            .map { it.toInt() }
-            .map { it / 3 - 2 }.sum()
+    private fun sumFuelRequirements(input: String): Int =
+        input.lines().sumOf { it.toInt() / 3 - 2 }
 
-    fun fuelReqsPart2(input: String): Int {
-        return input.lines()
-            .map { it.toInt() }
-            .map { necessaryFuel(it) }
-            .sum()
-    }
+    private fun fuelReqsPart2(input: String): Int =
+        input.lines().sumOf { necessaryFuel(it.toInt()) }
 
-    fun necessaryFuel(mass: Int):Int {
+    private fun necessaryFuel(mass: Int): Int {
         var count = 0
         var cur = mass
-        while(cur > 0) {
+        while (cur > 0) {
             cur = cur / 3 - 2
-            if(cur > 0) count += cur
+            if (cur > 0) count += cur
         }
         return count
     }
