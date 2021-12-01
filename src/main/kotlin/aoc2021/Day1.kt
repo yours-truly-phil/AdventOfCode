@@ -7,19 +7,13 @@ import kotlin.test.assertEquals
 class Day1 {
     private fun numTimesDepthIncreases(input: String): Int {
         val nums = parseInput(input)
-        var res = 0
-        for (i in 1 until nums.size) {
-            if (nums[i] > nums[i - 1]) {
-                res++
-            }
-        }
-        return res
+        return (1 until nums.size).count { nums[it] > nums[it - 1] }
     }
 
     private fun numTimesSumTripletsIncreases(input: String): Int {
         val nums = parseInput(input)
         var res = 0
-        for (i in 1 until nums.size - 2) {
+        (1 until nums.size - 2).forEach { i ->
             val first = nums[i - 1] + nums[i] + nums[i + 1]
             val second = nums[i] + nums[i + 1] + nums[i + 2]
             if (first < second) {
