@@ -12,15 +12,9 @@ class Day1 {
 
     private fun numTimesSumTripletsIncreases(input: String): Int {
         val nums = parseInput(input)
-        var res = 0
-        (1 until nums.size - 2).forEach { i ->
-            val first = nums[i - 1] + nums[i] + nums[i + 1]
-            val second = nums[i] + nums[i + 1] + nums[i + 2]
-            if (first < second) {
-                res++
-            }
+        return (1 until nums.size - 2).count {
+            nums[it - 1] + nums[it] + nums[it + 1] < nums[it] + nums[it + 1] + nums[it + 2]
         }
-        return res
     }
 
     private fun parseInput(input: String) =
