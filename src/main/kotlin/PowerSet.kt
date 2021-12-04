@@ -41,6 +41,14 @@ class PowerSet<T>(storage: Iterator<T>) : Iterator<List<T>> {
         }
     }
 
+    fun toList(): List<List<T>> {
+        val result = ArrayList<List<T>>()
+        while (hasNext()) {
+            result.add(next())
+        }
+        return result
+    }
+
     init {
         when {
             storage.hasNext() -> {
