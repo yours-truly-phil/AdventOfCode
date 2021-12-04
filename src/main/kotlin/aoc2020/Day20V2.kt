@@ -148,7 +148,7 @@ class Day20Vis {
 
         fun width(): Int = chars[0].size
         fun height(): Int = chars.size
-        fun noSharps(): Int = chars.map { it.filter { c -> c == '#' }.count() }.sum()
+        fun noSharps(): Int = chars.sumOf { it.count { c -> c == '#' } }
     }
 
     class Tile(input: String) {
@@ -172,7 +172,7 @@ class Day20Vis {
                 .also { lines = it }
         }
 
-        fun noSharps(): Int = lines.map { it.filter { c -> c == '#' }.count() }.sum()
+        fun noSharps(): Int = lines.sumOf { it.count { c -> c == '#' } }
 
         fun rot(): Tile {
             val rotated = Array(lines.size) { CharArray(lines.size) }
