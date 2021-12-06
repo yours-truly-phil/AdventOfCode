@@ -1,4 +1,5 @@
-import java.util.*
+import java.util.Optional
+import kotlin.collections.ArrayList
 
 fun main() {
     listOf(5, 5, 3, 2, 1).apply {
