@@ -26,6 +26,7 @@ dependencies {
     implementation("khttp:khttp:1.0.0")
     implementation("org.jetbrains.kotlinx:multik-api:0.1.1")
     implementation("org.jetbrains.kotlinx:multik-default:0.1.1")
+    implementation("com.google.guava:guava:31.0.1-jre")
 }
 
 sourceSets.test {
