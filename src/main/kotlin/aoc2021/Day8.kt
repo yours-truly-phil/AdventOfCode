@@ -30,7 +30,7 @@ class Day8 {
 
     private fun sumOutputValuesLine(
         input: Pair<List<String>, List<String>>,
-        permutations: MutableCollection<List<String>>
+        permutations: Collection<List<String>>
     ): Int {
         for (perm in permutations) {
             val transformedInput = input.first.map { transform(it, perm).toCharArray().sorted().joinToString("") }
