@@ -32,42 +32,34 @@ class Day10 {
 
     private fun solvePart2(input: List<String>): Long {
         val scores = input.filter { getFirstIllegalChar(it) == null }
-            .map { getMissingChars(it) }
-            .map { getTotalScore(it) }
+            .map(::getMissingChars)
+            .map(::getTotalScore)
             .sorted()
         return scores[scores.size / 2]
     }
 
-    private fun getMissingChars(line: String): ArrayDeque<Char> {
-        val deque = ArrayDeque<Char>()
-        line.forEach {
-            when (it) {
-                '(' -> deque.addFirst(')')
-                '[' -> deque.addFirst(']')
-                '{' -> deque.addFirst('}')
-                '<' -> deque.addFirst('>')
-                ')', ']', '}', '>' -> deque.removeFirst()
-                else -> throw IllegalArgumentException("Unexpected character: $it")
-            }
-        }
-        return deque
-    }
-
-    private fun getTotalScore(deque: ArrayDeque<Char>): Long {
-        var score = 0L
-        while (deque.isNotEmpty()) {
-            score *= 5
-            val c = deque.removeFirst()
-            score += when (c) {
+    private fun getTotalScore(missingChars: ArrayDeque<Char>) =
+        missingChars.fold(0L) { acc, c ->
+            acc * 5 + when (c) {
                 ')' -> 1
                 ']' -> 2
                 '}' -> 3
-                '>' -> 4
-                else -> throw IllegalArgumentException("Unexpected character: $c")
+                else -> 4
             }
         }
-        return score
-    }
+
+    private fun getMissingChars(line: String): ArrayDeque<Char> =
+        ArrayDeque<Char>().also { deque ->
+            line.forEach {
+                when (it) {
+                    '(' -> deque.addFirst(')')
+                    '[' -> deque.addFirst(']')
+                    '{' -> deque.addFirst('}')
+                    '<' -> deque.addFirst('>')
+                    else -> deque.removeFirst()
+                }
+            }
+        }
 
     @Test
     fun part1() {

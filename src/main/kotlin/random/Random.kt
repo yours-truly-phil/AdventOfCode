@@ -1,6 +1,4 @@
 package random
 
 fun main() {
-
-
 }
