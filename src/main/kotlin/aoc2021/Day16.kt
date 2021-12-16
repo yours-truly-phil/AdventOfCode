@@ -4,22 +4,24 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
 
+fun hexToBinary(hex: String): String {
+    val s = hex.toBigInteger(16).toString(2)
+    return String.format("%${hex.length * 4}s", s).replace(" ", "0")
+}
+
 class Day16 {
     private fun solvePart1(input: String): Int {
-        val s = input.toBigInteger(16).toString(2)
-        return parsePacket(String.format("%${input.length * 4}s", s).replace(" ", "0")).res
+        return sumVersions(hexToBinary(input)).versionSum
     }
 
-    class ParseRes(val remain: String, val res: Int)
+    class Part1ParseResult(val remain: String, val versionSum: Int)
 
-    private fun parsePacket(s: String): ParseRes {
+    private fun sumVersions(s: String): Part1ParseResult {
         val version = s.substring(0, 3).toInt(2)
-        println("version: $version")
         val typeId = s.substring(3, 6).toInt(2)
         var index = 6
         if (typeId == 4) {
             // literal value
-            println("literal value version $version")
             val res = arrayListOf<String>()
             while (index < s.length) {
                 res.add(s.substring(index + 1, index + 5))
@@ -28,7 +30,7 @@ class Day16 {
                     break
                 }
             }
-            return ParseRes(s.substring(index), version)
+            return Part1ParseResult(s.substring(index), version)
         } else {
             // operator
             val lengthId = s.substring(6, 7).toInt(2)
@@ -38,59 +40,41 @@ class Day16 {
                 var remain = s.substring(22)
                 var sum = 0
                 while (lengthLeft > 0) {
-                    val res = parsePacket(remain)
+                    val res = sumVersions(remain)
                     lengthLeft -= remain.length - res.remain.length
-                    sum += res.res
+                    sum += res.versionSum
                     remain = res.remain
                 }
-                return ParseRes(remain, sum + version)
+                return Part1ParseResult(remain, sum + version)
             } else {
                 // next 11 bits are number of sub-packets immediately contained by this packet
                 val numSubPackets = s.substring(7, 18).toInt(2)
                 var remain = s.substring(18)
                 var sum = 0
-                repeat(numSubPackets) { subPackNum ->
-                    val res = parsePacket(remain)
-                    sum += res.res
+                repeat(numSubPackets) {
+                    val res = sumVersions(remain)
+                    sum += res.versionSum
                     remain = res.remain
                 }
-                return ParseRes(remain, sum + version)
+                return Part1ParseResult(remain, sum + version)
             }
         }
     }
 
-    class ParseRes2(val remain: String, val res: Long)
+    class Part2ParseRes(val remain: String, val resultNum: Long)
 
     private fun solvePart2(input: String): Long {
-        val s = input.toBigInteger(16).toString(2)
-        return parsePacket2(String.format("%${input.length * 4}s", s).replace(" ", "0")).res
+        return parse(hexToBinary(input)).resultNum
     }
 
-    private fun parsePacket2(s: String): ParseRes2 {
-        val version = s.substring(0, 3).toInt(2)
-        println("version: $version")
-        val typeId = s.substring(3, 6).toInt(2)
-        var index = 6
-
-        when (typeId) {
-            0 -> {
-                // sum packets
-                return operator(s) { it.sum() }
-            }
-            1 -> {
-                // product packets
-                return operator(s) { it.reduce { acc, l -> acc * l } }
-            }
-            2 -> {
-                // min
-                return operator(s) { it.minOrNull()!! }
-            }
-            3 -> {
-                // max
-                return operator(s) { it.maxOrNull()!! }
-            }
+    private fun parse(s: String): Part2ParseRes {
+        return when (val typeId = s.substring(3, 6).toInt(2)) {
+            0 -> operator(s) { it.sum() }
+            1 -> operator(s) { it.reduce { acc, l -> acc * l } }
+            2 -> operator(s) { it.minOrNull()!! }
+            3 -> operator(s) { it.maxOrNull()!! }
             4 -> {
-                // literal value
+                var index = 6
                 val res = arrayListOf<String>()
                 while (index < s.length) {
                     val bits = s.substring(index + 1, index + 5)
@@ -102,51 +86,39 @@ class Day16 {
                 }
                 val remain = s.substring(index)
                 val total = res.joinToString("").toLong(2)
-                return ParseRes2(remain, total)
+                Part2ParseRes(remain, total)
             }
-            5 -> {
-                // greater than (1 if value first sub > value of second sub, 0 otherwise)
-                return operator(s) { if (it[0] > it[1]) 1 else 0 }
-            }
-            6 -> {
-                // less than (1 if value first sub < value of second sub, 0 otherwise)
-                return operator(s) { if (it[0] < it[1]) 1 else 0 }
-            }
-            7 -> {
-                // equal (1 if value first sub == value of second sub, 0 otherwise)
-                return operator(s) { if (it[0] == it[1]) 1 else 0 }
-            }
+            5 -> operator(s) { if (it[0] > it[1]) 1 else 0 }
+            6 -> operator(s) { if (it[0] < it[1]) 1 else 0 }
+            7 -> operator(s) { if (it[0] == it[1]) 1 else 0 }
+            else -> throw IllegalStateException("unknown typeId $typeId")
         }
-        throw IllegalStateException("should not reach here")
     }
 
-    private fun operator(s: String, packetFun: (packets: List<Long>) -> Long): ParseRes2 {
-        val lengthId = s.substring(6, 7).toInt(2)
-        if (lengthId == 0) {
+    private fun operator(s: String, packetFun: (packets: List<Long>) -> Long): Part2ParseRes {
+        return if (s.substring(6, 7).toInt(2) == 0) {
             // next 15 bits are total length in bits
             var lengthLeft = s.substring(7, 22).toInt(2)
             var remain = s.substring(22)
             val packets: MutableList<Long> = mutableListOf()
             while (lengthLeft > 0) {
-                val res = parsePacket2(remain)
+                val res = parse(remain)
                 lengthLeft -= remain.length - res.remain.length
-                packets.add(res.res)
+                packets.add(res.resultNum)
                 remain = res.remain
             }
-            val total = packetFun(packets)
-            return ParseRes2(remain, total)
+            Part2ParseRes(remain, packetFun(packets))
         } else {
             // next 11 bits are number of sub-packets immediately contained by this packet
             val numSubPackets = s.substring(7, 18).toInt(2)
             var remain = s.substring(18)
             val packets: MutableList<Long> = mutableListOf()
-            repeat(numSubPackets) { subPackNum ->
-                val res = parsePacket2(remain)
-                packets.add(res.res)
+            repeat(numSubPackets) {
+                val res = parse(remain)
+                packets.add(res.resultNum)
                 remain = res.remain
             }
-            val total = packetFun(packets)
-            return ParseRes2(remain, total)
+            Part2ParseRes(remain, packetFun(packets))
         }
     }
 
