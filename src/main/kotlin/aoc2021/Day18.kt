@@ -20,18 +20,18 @@ class Day18 {
 
     private fun solvePart2(input: String): Int {
         val lines = input.lines()
-        var curMax = Int.MIN_VALUE
-        for (i in lines.indices) {
-            for (y in lines.indices) {
-                if (i != y) {
-                    val s = "[${lines[i]},${lines[y]}]"
+        return lines.maxOf { a ->
+            lines.maxOf { b ->
+                if (a != b) {
+                    val s = "[${a},${b}]"
                     val cur = parseLine(s)
                     reduce(cur)
-                    curMax = maxOf(curMax, cur.resolve())
+                    cur.resolve()
+                } else {
+                    Int.MIN_VALUE
                 }
             }
         }
-        return curMax
     }
 
     private fun reduce(node: SFNode) {
