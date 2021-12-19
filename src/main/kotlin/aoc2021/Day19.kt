@@ -7,8 +7,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class Day19 {
-    private var numOverlaps: Int = 12
-
     private fun allPossibleRotations(set: Set<Vec3i>): Set<Set<Vec3i>> {
         val allRotations = set.map {
             val x = it.x
@@ -56,114 +54,20 @@ class Day19 {
     }
 
     private fun solvePart1(input: String, numOverlaps: Int = 12): Int {
-        this.numOverlaps = numOverlaps
-
         val scanners = input.split("\n\n").map { Scanner(it) }
-        val first = scanners.first()
-        val fullMap = first.beacons.toMutableSet()
-        val matchedScanners = arrayListOf(first)
-        val newMatches = mutableSetOf(first)
-        while (newMatches.isNotEmpty()) {
-            val a = newMatches.first()
-            val unMatchedScanners = scanners.filterNot { matchedScanners.contains(it) }
-
-            for (b in unMatchedScanners) {
-                val aBeacons = a.beacons
-                val bBeacons = b.beacons
-
-                val allPossibleRotations = allPossibleRotations(bBeacons)
-                for (rotatedBeacons in allPossibleRotations) {
-                    for (moveTarget in aBeacons) {
-                        for (rotatedBeacon in rotatedBeacons) {
-                            val moveVec3i = Vec3i(
-                                moveTarget.x - rotatedBeacon.x,
-                                moveTarget.y - rotatedBeacon.y,
-                                moveTarget.z - rotatedBeacon.z
-                            )
-                            val rotatedMovedBeacons =
-                                rotatedBeacons.map {
-                                    Vec3i(
-                                        it.x + moveVec3i.x,
-                                        it.y + moveVec3i.y,
-                                        it.z + moveVec3i.z
-                                    )
-                                }
-                                    .toSet()
-                            val overlappingBeacons = overlaps(aBeacons, rotatedMovedBeacons)
-                            if (overlappingBeacons.size == numOverlaps) {
-                                b.beacons = rotatedMovedBeacons
-                                newMatches.add(b)
-                                fullMap.addAll(rotatedMovedBeacons)
-                            }
-                        }
-                    }
-                }
-            }
-            newMatches.remove(a)
-            matchedScanners.add(a)
-        }
+        val fullMap = getFullMap(scanners, numOverlaps)
         return fullMap.size
     }
 
     private fun solvePart2(input: String, numOverlaps: Int = 12): Int {
-        println("Part 1, numOverlaps: $numOverlaps")
-        this.numOverlaps = numOverlaps
-
         val scanners = input.split("\n\n").map { Scanner(it) }
-        val first = scanners.first()
-        val fullMap = first.beacons.toMutableSet()
-        val matchedScanners = arrayListOf(first)
-        val newMatches = mutableSetOf(first)
-
-        val positions = arrayListOf(Vec3i(0, 0, 0))
-
-        while (newMatches.isNotEmpty()) {
-            val a = newMatches.first()
-            val unMatchedScanners = scanners.filterNot { matchedScanners.contains(it) }
-
-            for (b in unMatchedScanners) {
-                println("${a.id} vs ${b.id}")
-                val aBeacons = a.beacons
-                val bBeacons = b.beacons
-
-                val allPossibleRotations = allPossibleRotations(bBeacons)
-                for (rotatedBeacons in allPossibleRotations) {
-                    for (moveTarget in aBeacons) {
-                        for (rotatedBeacon in rotatedBeacons) {
-                            val moveVec3i = Vec3i(
-                                moveTarget.x - rotatedBeacon.x,
-                                moveTarget.y - rotatedBeacon.y,
-                                moveTarget.z - rotatedBeacon.z
-                            )
-                            val rotatedMovedBeacons =
-                                rotatedBeacons.map {
-                                    Vec3i(
-                                        it.x + moveVec3i.x,
-                                        it.y + moveVec3i.y,
-                                        it.z + moveVec3i.z
-                                    )
-                                }
-                                    .toSet()
-                            val overlappingBeacons = overlaps(aBeacons, rotatedMovedBeacons)
-                            if (overlappingBeacons.size == numOverlaps) {
-                                b.beacons = rotatedMovedBeacons
-                                newMatches.add(b)
-                                fullMap.addAll(rotatedMovedBeacons)
-                                positions.add(moveVec3i)
-                            }
-                        }
-                    }
-                }
-            }
-            newMatches.remove(a)
-            matchedScanners.add(a)
-        }
+        getFullMap(scanners, numOverlaps)
 
         var max = Int.MIN_VALUE
-        for (a in positions) {
-            for (b in positions) {
+        for (a in scanners) {
+            for (b in scanners) {
                 if (a != b) {
-                    max = maxOf(a.dist(b), max)
+                    max = maxOf(a.position.dist(b.position), max)
                 }
             }
         }
@@ -171,10 +75,63 @@ class Day19 {
         return max
     }
 
+    private fun getFullMap(
+        scanners: List<Scanner>,
+        numOverlaps: Int
+    ): MutableSet<Vec3i> {
+        val first = scanners.first()
+        val fullMap = first.beacons.toMutableSet()
+        val matchedScanners = arrayListOf(first)
+        val newMatches = mutableSetOf(first)
+
+        while (newMatches.isNotEmpty()) {
+            val a = newMatches.first()
+            val unMatchedScanners = scanners.filterNot { matchedScanners.contains(it) }
+
+            for (b in unMatchedScanners) {
+                val aBeacons = a.beacons
+                val bBeacons = b.beacons
+
+                val allPossibleRotations = allPossibleRotations(bBeacons)
+                for (rotatedBeacons in allPossibleRotations) {
+                    for (moveTarget in aBeacons) {
+                        for (rotatedBeacon in rotatedBeacons) {
+                            val moveVec3i = Vec3i(
+                                moveTarget.x - rotatedBeacon.x,
+                                moveTarget.y - rotatedBeacon.y,
+                                moveTarget.z - rotatedBeacon.z
+                            )
+                            val rotatedMovedBeacons =
+                                rotatedBeacons.map {
+                                    Vec3i(
+                                        it.x + moveVec3i.x,
+                                        it.y + moveVec3i.y,
+                                        it.z + moveVec3i.z
+                                    )
+                                }
+                                    .toSet()
+                            val overlappingBeacons = overlaps(aBeacons, rotatedMovedBeacons)
+                            if (overlappingBeacons.size == numOverlaps) {
+                                b.beacons = rotatedMovedBeacons
+                                newMatches.add(b)
+                                fullMap.addAll(rotatedMovedBeacons)
+                                b.position = moveVec3i
+                            }
+                        }
+                    }
+                }
+            }
+            newMatches.remove(a)
+            matchedScanners.add(a)
+        }
+        return fullMap
+    }
+
     private fun overlaps(a: Set<Vec3i>, b: Set<Vec3i>): Set<Vec3i> = a.intersect(b)
 
     data class Scanner(val input: String) {
         val id: String
+        var position = Vec3i(0, 0, 0)
         var beacons: Set<Vec3i>
 
         init {
