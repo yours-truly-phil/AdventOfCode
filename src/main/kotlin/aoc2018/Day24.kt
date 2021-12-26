@@ -3,41 +3,95 @@ package aoc2018
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class Day24 {
     private fun solvePart1(input: String): Int {
-        val (immuneSystem, infection) = input.split("\n\n")
-            .map { it.lines().drop(1).map { line -> parseGroup(line) } }
+        var (immuneSystem, infection) = input.split("\n\n").mapIndexed { t, system ->
+                system.lines().drop(1).mapIndexed { i, line ->
+                        val name = if (t == 0) "Immune ${i + 1}" else "Infection ${i + 1}"
+                        parseGroup(name, line)
+                    }
+            }
         while (immuneSystem.any(Group::isInCombat) && infection.any(Group::isInCombat)) {
-            throw IllegalStateException("Not yet implemented")
+            immuneSystem = immuneSystem.filter { it.isInCombat() }
+            infection = infection.filter { it.isInCombat() }
+
+            val sortedImmuneSystem = sortForTargetSelection(immuneSystem)
+            val sortedInfection = sortForTargetSelection(infection)
+
+            val targetsInfection = ArrayList(infection)
+            val targetsImmuneSystem = ArrayList(immuneSystem)
+
+            for (immuneGroup in sortedImmuneSystem) {
+                immuneGroup.setTarget(targetsInfection)
+            }
+            for (infectionGroup in sortedInfection) {
+                infectionGroup.setTarget(targetsImmuneSystem)
+            }
+
+            val sortedAttacking = listOf(immuneSystem, infection).flatten().sortedByDescending { it.initiative }
+            for (group in sortedAttacking) {
+                group.attack()
+            }
         }
-        return 0
+        return if (immuneSystem.any(Group::isInCombat)) {
+            immuneSystem.sumBy { it.numUnits }
+        } else {
+            infection.sumBy { it.numUnits }
+        }
     }
 
-    private fun parseGroup(line: String): Group {
+    private fun sortForTargetSelection(groups: List<Group>) =
+        groups.groupBy { it.effectivePower() }.toSortedMap { o1, o2 -> o2.compareTo(o1) }
+            .mapValues { it.value.sortedByDescending(Group::initiative) }.map { it.value }.flatten()
+
+    @Test
+    fun sortForTargetSelectionTest() {
+        val groups = listOf(
+            Group("1", 1, 1, 1, "", 1, listOf(), listOf()),
+            Group("2", 1, 1, 1, "", 2, listOf(), listOf()),
+            Group("3", 1, 1, 1, "", 3, listOf(), listOf()),
+            Group("4", 1, 1, 2, "", 1, listOf(), listOf()),
+            Group("5", 1, 1, 2, "", 2, listOf(), listOf()),
+            Group("6", 1, 1, 2, "", 3, listOf(), listOf()),
+        )
+        val sorted = sortForTargetSelection(groups)
+        assertEquals(groups[5], sorted[0])
+        assertEquals(groups[4], sorted[1])
+        assertEquals(groups[3], sorted[2])
+        assertEquals(groups[2], sorted[3])
+        assertEquals(groups[1], sorted[4])
+        assertEquals(groups[0], sorted[5])
+    }
+
+    private fun parseGroup(id: String, line: String): Group {
         val words = line.split(" ")
         val numUnits = words[0].toInt()
         val hp = words[4].toInt()
         val attackDmg = words[words.lastIndex - 5].toInt()
         val attackType = words[words.lastIndex - 4]
         val initiative = words[words.lastIndex].toInt()
-        val extras = line.substring(line.indexOf("(") + 1, line.indexOf(")")).split("; ").map { it.split(", ") }
         val immunities = ArrayList<String>()
         val weaknesses = ArrayList<String>()
-        for (extra in extras) {
-            if (extra[0].startsWith("immune")) {
-                immunities.add(extra[0].substring(10))
-                immunities.addAll(extra.drop(1))
-            } else {
-                weaknesses.add(extra[0].substring(8))
-                weaknesses.addAll(extra.drop(1))
+        if (line.contains("(")) {
+            val extras = line.substring(line.indexOf("(") + 1, line.indexOf(")")).split("; ").map { it.split(", ") }
+            for (extra in extras) {
+                if (extra[0].startsWith("immune")) {
+                    immunities.add(extra[0].substring(10))
+                    immunities.addAll(extra.drop(1))
+                } else {
+                    weaknesses.add(extra[0].substring(8))
+                    weaknesses.addAll(extra.drop(1))
+                }
             }
         }
-        return Group(numUnits, hp, attackDmg, attackType, initiative, immunities, weaknesses)
+        return Group(id, numUnits, hp, attackDmg, attackType, initiative, immunities, weaknesses)
     }
 
-    class Group(
-        val numUnits: Int,
+    data class Group(
+        val id: String,
+        var numUnits: Int,
         val hp: Int,
         val attackDmg: Int,
         val attackType: String,
@@ -45,8 +99,62 @@ class Day24 {
         val immunities: List<String>,
         val weaknesses: List<String>
     ) {
+        var target: Group? = null
+
         fun effectivePower() = numUnits * attackDmg
         fun isInCombat() = numUnits > 0
+
+        fun setTarget(possibleTargets: MutableList<Group>) {
+            if (possibleTargets.isNotEmpty()) {
+                val byPotentialDmg = possibleTargets.groupBy { potentialDamage(it) }.maxByOrNull { it.key }!!.value
+                val byEffectivePower = byPotentialDmg.groupBy { it.effectivePower() }.maxByOrNull { it.key }!!.value
+                target = byEffectivePower.sortedByDescending { it.initiative }[0]
+                possibleTargets.remove(target)
+            } else {
+                target = null
+            }
+        }
+
+        fun attack() {
+            target?.let {
+                val damage = potentialDamage(it)
+                it.numUnits -= damage / it.hp
+                if (it.numUnits <= 0) {
+                    it.numUnits = 0
+                }
+            }
+        }
+
+        fun potentialDamage(target: Group): Int {
+            if (target.immunities.contains(attackType)) {
+                return 0
+            }
+            val damage = effectivePower()
+            return if (target.weaknesses.contains(attackType)) {
+                2 * damage
+            } else {
+                damage
+            }
+        }
+    }
+
+    @Test
+    fun setTargetTest() {
+        val g = Group("attacker", 1, 1, 1, "a", 1, listOf(), listOf())
+        val target = Group("target", 1, 1, 2, "", 2, listOf(), listOf("a"))
+        val targets = mutableListOf(
+            Group("1", 1, 1, 1, "", 1, listOf(), listOf("a")),
+            Group("2", 1, 1, 1, "", 2, listOf(), listOf("a")),
+            Group("3", 1, 1, 2, "", 1, listOf(), listOf("a")),
+            target,
+            Group("5", 1, 1, 1, "", 3, listOf("a"), listOf()),
+            Group("6", 1, 1, 1, "", 1, listOf(), listOf()),
+            Group("7", 1, 1, 1, "", 2, listOf(), listOf()),
+            Group("8", 1, 1, 1, "", 3, listOf(), listOf()),
+        )
+        g.setTarget(targets)
+        assertEquals(g.target, target)
+        assertTrue(!targets.contains(target))
     }
 
     @Test
@@ -63,6 +171,6 @@ Infection:
 4485 units each with 2961 hit points (immune to radiation; weak to fire, cold) with an attack that does 12 slashing damage at initiative 4""".trimIndent()
             )
         )
-        assertEquals(-1, solvePart1(File("files/2018/day24.txt").readText()))
+        assertEquals(21127, solvePart1(File("files/2018/day24.txt").readText()))
     }
 }
