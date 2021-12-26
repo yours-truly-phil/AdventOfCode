@@ -7,21 +7,37 @@ import kotlin.test.assertTrue
 
 class Day24 {
     private fun solvePart1(input: String): Int {
-        var (immuneSystem, infection) = input.split("\n\n").mapIndexed { t, system ->
-                system.lines().drop(1).mapIndexed { i, line ->
-                        val name = if (t == 0) "Immune ${i + 1}" else "Infection ${i + 1}"
-                        parseGroup(name, line)
-                    }
-            }
-        while (immuneSystem.any(Group::isInCombat) && infection.any(Group::isInCombat)) {
-            immuneSystem = immuneSystem.filter { it.isInCombat() }
-            infection = infection.filter { it.isInCombat() }
+        var (immuneSystem, infection) = parse(input)
 
-            val sortedImmuneSystem = sortForTargetSelection(immuneSystem)
-            val sortedInfection = sortForTargetSelection(infection)
+        val pair = run(immuneSystem, infection)
+        immuneSystem = pair.first
+        infection = pair.second
 
-            val targetsInfection = ArrayList(infection)
-            val targetsImmuneSystem = ArrayList(immuneSystem)
+        return if (immuneSystem.any(Group::isInCombat)) {
+            immuneSystem.sumBy { it.numUnits }
+        } else {
+            infection.sumBy { it.numUnits }
+        }
+    }
+
+    private fun run(
+        immuneSystem: List<Group>,
+        infection: List<Group>
+    ): Pair<List<Group>, List<Group>> {
+        var immuneSystem1 = immuneSystem
+        var infection1 = infection
+        var noDraw = true
+        while (noDraw && immuneSystem1.any(Group::isInCombat) && infection1.any(Group::isInCombat)) {
+            immuneSystem1 = immuneSystem1.filter { it.isInCombat() }
+            infection1 = infection1.filter { it.isInCombat() }
+//            println("Immune System:\n${immuneSystem1.joinToString("\n") { "${it.id} contains ${it.numUnits} units" }}")
+//            println("Infection:\n${infection1.joinToString("\n") { "${it.id} contains ${it.numUnits} units" }}")
+
+            val sortedImmuneSystem = sortForTargetSelection(immuneSystem1)
+            val sortedInfection = sortForTargetSelection(infection1)
+
+            val targetsInfection = ArrayList(infection1)
+            val targetsImmuneSystem = ArrayList(immuneSystem1)
 
             for (immuneGroup in sortedImmuneSystem) {
                 immuneGroup.setTarget(targetsInfection)
@@ -30,15 +46,50 @@ class Day24 {
                 infectionGroup.setTarget(targetsImmuneSystem)
             }
 
-            val sortedAttacking = listOf(immuneSystem, infection).flatten().sortedByDescending { it.initiative }
+            val sortedAttacking = listOf(immuneSystem1, infection1).flatten().filter { it.target != null }
+                .sortedByDescending { it.initiative }
+            noDraw = false
             for (group in sortedAttacking) {
-                group.attack()
+                val numKilled = group.attack()
+//                println("${group.id} attacks defending group ${group.target?.id} killing $numKilled units")
+                noDraw = (numKilled > 0) || noDraw
+            }
+//            println()
+        }
+        return Pair(immuneSystem1, infection1)
+    }
+
+    private fun solvePart2(input: String): Int {
+        var max = 10000
+        var min = 0
+        var curMinRemain = Int.MAX_VALUE
+        var boost: Int
+        while (max - min > 1) {
+            boost = (max + min + 1) / 2
+            var (immuneSystem, infection) = parse(input, boost)
+
+            val pair = run(immuneSystem, infection)
+            immuneSystem = pair.first
+            infection = pair.second
+            if (immuneSystem.any { it.isInCombat() } && !infection.any { it.isInCombat() }) {
+                // too much boost
+                curMinRemain = minOf(curMinRemain, immuneSystem.sumBy { it.numUnits })
+                max = boost
+            } else {
+                // not enough boost
+                min = boost
             }
         }
-        return if (immuneSystem.any(Group::isInCombat)) {
-            immuneSystem.sumBy { it.numUnits }
-        } else {
-            infection.sumBy { it.numUnits }
+        return curMinRemain
+    }
+
+    private fun parse(
+        input: String,
+        boost: Int = 0
+    ) = input.split("\n\n").mapIndexed { t, system ->
+        system.lines().drop(1).mapIndexed { i, line ->
+            val name = if (t == 0) "Immune ${i + 1}" else "Infection ${i + 1}"
+            parseGroup(name, line, if (t == 0) boost else 0)
         }
     }
 
@@ -65,11 +116,11 @@ class Day24 {
         assertEquals(groups[0], sorted[5])
     }
 
-    private fun parseGroup(id: String, line: String): Group {
+    private fun parseGroup(id: String, line: String, boost: Int = 0): Group {
         val words = line.split(" ")
         val numUnits = words[0].toInt()
         val hp = words[4].toInt()
-        val attackDmg = words[words.lastIndex - 5].toInt()
+        val attackDmg = words[words.lastIndex - 5].toInt() + boost
         val attackType = words[words.lastIndex - 4]
         val initiative = words[words.lastIndex].toInt()
         val immunities = ArrayList<String>()
@@ -108,20 +159,29 @@ class Day24 {
             if (possibleTargets.isNotEmpty()) {
                 val byPotentialDmg = possibleTargets.groupBy { potentialDamage(it) }.maxByOrNull { it.key }!!.value
                 val byEffectivePower = byPotentialDmg.groupBy { it.effectivePower() }.maxByOrNull { it.key }!!.value
-                target = byEffectivePower.sortedByDescending { it.initiative }[0]
-                possibleTargets.remove(target)
+                val potentialTarget = byEffectivePower.sortedByDescending { it.initiative }[0]
+                if (potentialDamage(potentialTarget) > 0) {
+                    target = potentialTarget
+                    possibleTargets.remove(target)
+                } else {
+                    target = null
+                }
             } else {
                 target = null
             }
         }
 
-        fun attack() {
-            target?.let {
-                val damage = potentialDamage(it)
-                it.numUnits -= damage / it.hp
-                if (it.numUnits <= 0) {
-                    it.numUnits = 0
+        fun attack(): Int {
+            if (target != null) {
+                val damage = potentialDamage(target!!)
+                if (damage == 0 || target!!.numUnits <= 0) {
+                    return 0
                 }
+                val killed = minOf(target!!.numUnits, damage / target!!.hp)
+                target!!.numUnits -= killed
+                return killed
+            } else {
+                return 0
             }
         }
 
@@ -172,5 +232,34 @@ Infection:
             )
         )
         assertEquals(21127, solvePart1(File("files/2018/day24.txt").readText()))
+    }
+
+    @Test
+    fun part2() {
+        assertEquals(
+            51, solvePart1(
+                """
+Immune System:
+17 units each with 5390 hit points (weak to radiation, bludgeoning) with an attack that does 6077 fire damage at initiative 2
+989 units each with 1274 hit points (immune to fire; weak to bludgeoning, slashing) with an attack that does 1595 slashing damage at initiative 3
+
+Infection:
+801 units each with 4706 hit points (weak to radiation) with an attack that does 116 bludgeoning damage at initiative 1
+4485 units each with 2961 hit points (immune to radiation; weak to fire, cold) with an attack that does 12 slashing damage at initiative 4""".trimIndent()
+            )
+        )
+        assertEquals(
+            51, solvePart2(
+                """
+Immune System:
+17 units each with 5390 hit points (weak to radiation, bludgeoning) with an attack that does 4507 fire damage at initiative 2
+989 units each with 1274 hit points (immune to fire; weak to bludgeoning, slashing) with an attack that does 25 slashing damage at initiative 3
+
+Infection:
+801 units each with 4706 hit points (weak to radiation) with an attack that does 116 bludgeoning damage at initiative 1
+4485 units each with 2961 hit points (immune to radiation; weak to fire, cold) with an attack that does 12 slashing damage at initiative 4""".trimIndent()
+            )
+        )
+        assertEquals(2456, solvePart2(File("files/2018/day24.txt").readText()))
     }
 }
