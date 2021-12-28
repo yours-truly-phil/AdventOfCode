@@ -12,34 +12,17 @@ class Day10 {
         val (instructions, bots, outputs) = parseInput(input)
 
         while (bots.count { it.value.size == 2 } != 0) {
-            bots.filter { it.value.size == 2 }
-                .forEach { (k, v) ->
+            bots.filter { it.value.size == 2 }.forEach { (k, v) ->
                     if (v.containsAll(containsNums)) return k
-                    v.sort()
-                    instructions[k]!!.also {
-                        when {
-                            it.lowIsOut -> outputs.computeIfAbsent(it.lowToId) { ArrayList() }
-                                .apply { this += v.removeFirst() }
-                            else -> bots.computeIfAbsent(it.lowToId) { ArrayList() }
-                                .apply { this += v.removeFirst() }
-                        }
-                        when {
-                            it.highIsOut -> outputs.computeIfAbsent(it.highToId) { ArrayList() }
-                                .apply { this += v.removeLast() }
-                            else -> bots.computeIfAbsent(it.highToId) { ArrayList() }
-                                .apply { this += v.removeLast() }
-                        }
-                    }
+                    foo(v, instructions, k, outputs, bots)
                 }
         }
         return -1
     }
 
     private fun parseInput(input: String): Triple<Map<Int, Instruction>, HashMap<Int, ArrayList<Int>>, HashMap<Int, ArrayList<Int>>> {
-        val instructions = input.lines()
-            .filter { it.startsWith("bot") }
-            .map { Instruction(it) }
-            .map { it.fromId to it }.toMap()
+        val instructions =
+            input.lines().filter { it.startsWith("bot") }.map { Instruction(it) }.associateBy { it.fromId }
         val bots = initBots(input.lines().filter { it.startsWith("value") })
         val outputs = HashMap<Int, ArrayList<Int>>()
         return Triple(instructions, bots, outputs)
@@ -49,26 +32,31 @@ class Day10 {
         val (instructions, bots, outputs) = parseInput(input)
 
         while (bots.count { it.value.size == 2 } != 0) {
-            bots.filter { it.value.size == 2 }
-                .forEach { (k, v) ->
-                    v.sort()
-                    instructions[k]!!.also {
-                        when {
-                            it.lowIsOut -> outputs.computeIfAbsent(it.lowToId) { ArrayList() }
-                                .apply { this += v.removeFirst() }
-                            else -> bots.computeIfAbsent(it.lowToId) { ArrayList() }
-                                .apply { this += v.removeFirst() }
-                        }
-                        when {
-                            it.highIsOut -> outputs.computeIfAbsent(it.highToId) { ArrayList() }
-                                .apply { this += v.removeLast() }
-                            else -> bots.computeIfAbsent(it.highToId) { ArrayList() }
-                                .apply { this += v.removeLast() }
-                        }
-                    }
+            bots.filter { it.value.size == 2 }.forEach { (k, v) ->
+                    foo(v, instructions, k, outputs, bots)
                 }
         }
         return outputs[0]!![0] * outputs[1]!![0] * outputs[2]!![0]
+    }
+
+    private fun foo(
+        v: java.util.ArrayList<Int>,
+        instructions: Map<Int, Instruction>,
+        k: Int,
+        outputs: HashMap<Int, ArrayList<Int>>,
+        bots: HashMap<Int, ArrayList<Int>>
+    ) {
+        v.sort()
+        instructions[k]!!.also {
+            when {
+                it.lowIsOut -> outputs.computeIfAbsent(it.lowToId) { ArrayList() }.apply { this += v.removeFirst() }
+                else -> bots.computeIfAbsent(it.lowToId) { ArrayList() }.apply { this += v.removeFirst() }
+            }
+            when {
+                it.highIsOut -> outputs.computeIfAbsent(it.highToId) { ArrayList() }.apply { this += v.removeLast() }
+                else -> bots.computeIfAbsent(it.highToId) { ArrayList() }.apply { this += v.removeLast() }
+            }
+        }
     }
 
     class Instruction(val input: String) {
@@ -88,14 +76,13 @@ class Day10 {
         }
     }
 
-    private fun initBots(initLines: List<String>) =
-        HashMap<Int, ArrayList<Int>>().apply {
-            initLines.forEach {
-                val parts = it.split(" ")
-                val botId = parts.last().toInt()
-                this.computeIfAbsent(botId) { ArrayList() }
-                this[botId]!! += parts[1].toInt()
-            }
-
+    private fun initBots(initLines: List<String>) = HashMap<Int, ArrayList<Int>>().apply {
+        initLines.forEach {
+            val parts = it.split(" ")
+            val botId = parts.last().toInt()
+            this.computeIfAbsent(botId) { ArrayList() }
+            this[botId]!! += parts[1].toInt()
         }
+
+    }
 }

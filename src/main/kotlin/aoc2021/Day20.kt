@@ -22,7 +22,7 @@ class Day20 {
             }
             cur = next
         }
-        return cur.sumBy { it.count { p -> p == 1 } }
+        return cur.sumOf { it.count { p -> p == 1 } }
     }
 
     private fun convertToInt(c: Char) = when (c) {

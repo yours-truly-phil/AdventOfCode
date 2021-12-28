@@ -5,14 +5,14 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day22 {
+    @Suppress("SameParameterValue")
     private fun countBurstsToInfected(input: String, bursts: Int): Int {
-        val nodes =
-            input.lines().mapIndexed { row, s ->
-                s.mapIndexed { col, c ->
-                    val offset = input.lines().size / 2
-                    Pos(col - offset, row - offset) to (c == '#')
-                }
-            }.flatten().toMap().toMutableMap()
+        val nodes = input.lines().mapIndexed { row, s ->
+            s.mapIndexed { col, c ->
+                val offset = input.lines().size / 2
+                Pos(col - offset, row - offset) to (c == '#')
+            }
+        }.flatten().toMap().toMutableMap()
         val carrier = Carrier(Pos(0, 0), 0) // 0 = N, 1 = E, 2 = S, 3 = W
         var count = 0
         repeat(bursts) {
@@ -32,14 +32,14 @@ class Day22 {
         return count
     }
 
+    @Suppress("SameParameterValue")
     private fun countBurstsToInfectedPart2(input: String, bursts: Int): Int {
-        val nodes =
-            input.lines().mapIndexed { row, s ->
-                s.mapIndexed { col, c ->
-                    val offset = input.lines().size / 2
-                    Pos(col - offset, row - offset) to c
-                }
-            }.flatten().toMap().toMutableMap()
+        val nodes = input.lines().mapIndexed { row, s ->
+            s.mapIndexed { col, c ->
+                val offset = input.lines().size / 2
+                Pos(col - offset, row - offset) to c
+            }
+        }.flatten().toMap().toMutableMap()
         val carrier = Carrier(Pos(0, 0), 0) // 0 = N, 1 = E, 2 = S, 3 = W
         var count = 0
         repeat(bursts) {
@@ -65,19 +65,6 @@ class Day22 {
         return count
     }
 
-    private fun printGrid(carrier: Carrier, nodes: MutableMap<Pos, Boolean>) {
-        for (y in -4..4) {
-            for (x in -4..4) {
-                val p = Pos(x, y)
-
-                if (carrier.pos == p) print("[") else print(" ")
-                if (nodes.contains(p) && nodes[p]!!) print("#") else print(".")
-                if (carrier.pos == p) print("]") else print(" ")
-            }
-            println()
-        }
-    }
-
     data class Carrier(val pos: Pos, var dir: Int) {
         fun forward() {
             when (dir) {
@@ -92,7 +79,7 @@ class Day22 {
     data class Pos(var x: Int, var y: Int)
 
     @Test
-    fun `part 2 sample`() {
+    fun part2Sample() {
         assertEquals(2511944, countBurstsToInfectedPart2("..#\n" +
                 "#..\n" +
                 "...", 10000000))

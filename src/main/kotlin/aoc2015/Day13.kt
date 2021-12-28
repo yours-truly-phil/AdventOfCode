@@ -12,8 +12,7 @@ class Day13 {
 
         val people = input.lines()
             .map { it.split(" ")[0] }
-            .distinct()
-            .map { it to Person(it) }.toMap().toMutableMap()
+            .distinct().associateWith { Person(it) }.toMutableMap()
 
         input.lines()
             .forEach {
@@ -41,7 +40,7 @@ class Day13 {
             val seating = i.toString(listOfPeople.size).padStart(listOfPeople.size, '0')
             var possibleSeating = true
             for (p in listOfPeople.indices) {
-                if (seating.filter { Integer.parseInt(it.toString()) == p }.count() != 1) {
+                if (seating.count { Integer.parseInt(it.toString()) == p } != 1) {
                     possibleSeating = false
                     break
                 }

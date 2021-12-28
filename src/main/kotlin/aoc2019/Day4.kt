@@ -3,6 +3,7 @@ package aoc2019
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
+@Suppress("SameParameterValue")
 class Day4 {
     private fun solvePart1(input: String): Int {
         val (min, max) = input.split("-").map { it.toInt() }

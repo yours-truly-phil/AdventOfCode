@@ -4,7 +4,8 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day25 {
-    fun diagnosticChecksum(steps: Int): Int {
+    @Suppress("SameParameterValue", "KotlinConstantConditions")
+    private fun diagnosticChecksum(steps: Int): Int {
         val reg = HashMap<Int, Boolean>()
         var v = 'a'
         var i = 0

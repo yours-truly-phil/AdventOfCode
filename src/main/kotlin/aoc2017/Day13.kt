@@ -5,10 +5,9 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day13 {
-    fun severity(input: String): Int {
+    private fun severity(input: String): Int {
         val map = input.lines()
-            .map { FireWall(it) }
-            .map { it.id to it }.toMap()
+            .map { FireWall(it) }.associateBy { it.id }
         val max = map.keys.maxOf { it }
         var severity = 0
         for (i in 0..max) {
@@ -20,10 +19,9 @@ class Day13 {
         return severity
     }
 
-    fun minDelay(input: String): Int {
+    private fun minDelay(input: String): Int {
         val map = input.lines()
-            .map { FireWall(it) }
-            .map { it.id to it }.toMap()
+            .map { FireWall(it) }.associateBy { it.id }
         val max = map.keys.maxOf { it }
 
         var delay = 0
@@ -36,7 +34,7 @@ class Day13 {
         return delay
     }
 
-    fun isUncaught(map: Map<Int, FireWall>, max: Int): Boolean {
+    private fun isUncaught(map: Map<Int, FireWall>, max: Int): Boolean {
         for (i in 0..max) {
             if (map.containsKey(i) && map[i]!!.pos == 0) {
                 return false
@@ -99,7 +97,7 @@ class Day13 {
     }
 
     @Test
-    fun `part 2 sample`() {
+    fun part2Sample() {
         assertEquals(10, minDelay("0: 3\n" +
                 "1: 2\n" +
                 "4: 4\n" +

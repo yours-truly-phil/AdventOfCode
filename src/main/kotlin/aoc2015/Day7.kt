@@ -23,9 +23,7 @@ class Day7 {
     }
 
     private fun parseToMap(input: String) = input.lines()
-        .map { it.split(" -> ") }
-        .map { it[1] to it[0] }
-        .toMap()
+        .map { it.split(" -> ") }.associate { it[1] to it[0] }
 
     fun part2(input: String, wire: String, override: String, value: Int): Int {
         parseToMap(input)

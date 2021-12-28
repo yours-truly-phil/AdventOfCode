@@ -5,7 +5,7 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day21 {
-    fun countPixelsOn(input: String, steps: Int): Int {
+    private fun countPixelsOn(input: String, steps: Int): Int {
         var square = Square(".#./..#/###")
 
         val rules = input.lines().map {
@@ -116,6 +116,7 @@ class Day21 {
             s.forEach { it.reverse() }
         }
 
+        @Suppress("DuplicatedCode")
         fun rot() {
             val rotated = Array(s.size) { CharArray(s.size) }
             for (rowIdx in s.indices) {
@@ -131,12 +132,12 @@ class Day21 {
         }
 
         fun countOn(): Int {
-            return s.map { it.filter { c -> c == '#' }.count() }.sum()
+            return s.sumOf { it.count { c -> c == '#' } }
         }
     }
 
     @Test
-    fun `apply rule`() {
+    fun applyRule() {
         val rules = mapOf(2 to listOf(Pair(Square("../.#"), Square("##./#../..."))),
             3 to listOf(Pair(Square(".#./..#/###"), Square("#..#/..../..../#..#"))))
         val square = Square(".#./..#/###")
@@ -145,7 +146,7 @@ class Day21 {
     }
 
     @Test
-    fun `apply rule flip and rot`() {
+    fun applyRuleFlipAndRot() {
         val rules = mapOf(2 to listOf(Pair(Square("../.#"), Square("##./#../..."))),
             3 to listOf(Pair(Square(".#./..#/###"), Square("#..#/..../..../#..#"))))
         val square = Square("###/..#/.#.")
@@ -154,7 +155,7 @@ class Day21 {
     }
 
     @Test
-    fun `merge squares to one`() {
+    fun mergeSquareToOne() {
         val squares = arrayListOf(arrayListOf(Square("##/##"), Square("AA/AA")),
             arrayListOf(Square("BB/BB"), Square("CC/CC")))
         val merged = mergeSquares(squares)
@@ -162,13 +163,13 @@ class Day21 {
     }
 
     @Test
-    fun `rotate square by 90 deg`() {
+    fun rotateSquareBy90Deg() {
         val square = Square("..#/.#./#..").also { it.rot() }
         assertEquals("#../.#./..#", square.toString())
     }
 
     @Test
-    fun `partition square into sub squares`() {
+    fun partitionSquareIntoSubSquares() {
         val twos = divideIntoSquares(Square("#..#/.##./.##./####"), 2)
         assertEquals("#./.#", twos[0][0].toString())
         assertEquals(".#/#.", twos[0][1].toString())
@@ -182,7 +183,7 @@ class Day21 {
     }
 
     @Test
-    fun `create sub square at idx with size`() {
+    fun createSubSquareAtIdxWithSize() {
         assertEquals("#./.#", createSubSquare(0, 0, 2, Square("#..#/.#../..#./####")).toString())
         assertEquals("#./##", createSubSquare(1, 1, 2, Square("#..#/.#../..#./####")).toString())
         assertEquals(".../###/...", createSubSquare(0, 0, 3, Square(".../###/...")).toString())

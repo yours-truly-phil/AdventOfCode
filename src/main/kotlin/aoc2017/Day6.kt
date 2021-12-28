@@ -53,14 +53,14 @@ class Day6 {
     }
 
     @Test
-    fun `redistribute value in memory`() {
+    fun redistributeValueInMemory() {
         val arr = intArrayOf(0, 2, 7, 0)
         redistribute(2, arr)
         assertTrue(arr[0] == 2 && arr[1] == 4 && arr[2] == 1 && arr[3] == 2)
     }
 
     @Test
-    fun `index of max value`() {
+    fun indexOfMaxValue() {
         assertEquals(0, idxOfMaxValue(intArrayOf()))
         assertEquals(0, idxOfMaxValue(intArrayOf(1)))
         assertEquals(2, idxOfMaxValue(intArrayOf(1, 2, 3)))
@@ -73,7 +73,7 @@ class Day6 {
     }
 
     @Test
-    fun `loop size of sample input`() {
+    fun loopSizeOfSampleInput() {
         assertEquals(4, loopSize("0\t2\t7\t0"))
     }
 

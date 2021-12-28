@@ -2,7 +2,6 @@ package aoc2020
 
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 
 fun main() {
     runDay10()
@@ -15,8 +14,8 @@ fun runDay10() {
         .sorted()
         .toIntArray()
 
-    println("day10part1=${micros(Callable { day10part1(input) })}")
-    println("day10part2=${micros(Callable { day10part2(input) })}")
+    println("day10part1=${micros { day10part1(input) }}")
+    println("day10part2=${micros { day10part2(input) }}")
 }
 
 fun day10part1(sortedArr: IntArray): Int {

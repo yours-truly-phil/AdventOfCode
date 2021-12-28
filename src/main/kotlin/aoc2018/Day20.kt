@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package aoc2018
 
 import org.junit.jupiter.api.Test
@@ -5,6 +7,7 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@Suppress("DANGEROUS_CHARACTERS")
 class Day20 {
     private fun maxDoorsToReachRoom(input: String): Int {
         val map = createMap(input)
@@ -35,6 +38,7 @@ class Day20 {
         return distMap
     }
 
+    @Suppress("SameParameterValue")
     private fun noRoomsShortestPathAtLeastNumOfDoors(input: String, numDoors: Int): Int {
         val map = createMap(input)
         val distMap = distanceMap(map)
@@ -136,14 +140,18 @@ class Day20 {
         val cur = StringBuilder()
         for (c in block) {
             if (dpth == 0) {
-                if (c in "NEWS") {
-                    cur.append(c)
-                } else if (c == '(') {
-                    dpth++
-                    cur.append(c)
-                } else if (c == '|' || c == ')') {
-                    parts.add(cur.toString())
-                    cur.clear()
+                when (c) {
+                    in "NEWS" -> {
+                        cur.append(c)
+                    }
+                    '(' -> {
+                        dpth++
+                        cur.append(c)
+                    }
+                    '|', ')' -> {
+                        parts.add(cur.toString())
+                        cur.clear()
+                    }
                 }
             } else {
                 if (c == ')') {
@@ -159,7 +167,7 @@ class Day20 {
     }
 
     @Test
-    fun `split string in parts in parenthesis and remainding string`() {
+    fun splitStringInPartsInParenthesisAndRemaindingString() {
         val (r1, p1) = splitInPartsAndRest("(E|)NN", 3)
         assertTrue(p1.containsAll(listOf("E", "")))
         assertEquals("NN", r1)
@@ -178,10 +186,10 @@ class Day20 {
     class Map {
         val map = HashMap<Loc, HashSet<Int>>()
 
-        fun maxX(): Int = map.maxOf { it.key.x }
-        fun minX(): Int = map.minOf { it.key.x }
-        fun maxY(): Int = map.maxOf { it.key.y }
-        fun minY(): Int = map.minOf { it.key.y }
+        private fun maxX(): Int = map.maxOf { it.key.x }
+        private fun minX(): Int = map.minOf { it.key.x }
+        private fun maxY(): Int = map.maxOf { it.key.y }
+        private fun minY(): Int = map.minOf { it.key.y }
 
         override fun toString(): String {
             val arr = Array(2 * (maxY() - minY() + 1) + 1) {
@@ -224,66 +232,70 @@ class Day20 {
 
     @Test
     fun `map of ^ENWWW(NEEE|SSE(EE|N))$`() {
-        assertEquals("#########\n" +
-                "#.|.|.|.#\n" +
-                "#-#######\n" +
-                "#.|.|.|.#\n" +
-                "#-#####-#\n" +
-                "#.#.#X|.#\n" +
-                "#-#-#####\n" +
-                "#.|.|.|.#\n" +
-                "#########", createMap("^ENWWW(NEEE|SSE(EE|N))\$").toString())
+        assertEquals(
+            """#########
+#.|.|.|.#
+#-#######
+#.|.|.|.#
+#-#####-#
+#.#.#X|.#
+#-#-#####
+#.|.|.|.#
+#########""", createMap("^ENWWW(NEEE|SSE(EE|N))\$").toString())
     }
 
     @Test
     fun `map of ^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN$`() {
-        assertEquals("###########\n" +
-                "#.|.#.|.#.#\n" +
-                "#-###-#-#-#\n" +
-                "#.|.|.#.#.#\n" +
-                "#-#####-#-#\n" +
-                "#.#.#X|.#.#\n" +
-                "#-#-#####-#\n" +
-                "#.#.|.|.|.#\n" +
-                "#-###-###-#\n" +
-                "#.|.|.#.|.#\n" +
-                "###########", createMap("^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN\$").toString())
+        assertEquals(
+            """###########
+#.|.#.|.#.#
+#-###-#-#-#
+#.|.|.#.#.#
+#-#####-#-#
+#.#.#X|.#.#
+#-#-#####-#
+#.#.|.|.|.#
+#-###-###-#
+#.|.|.#.|.#
+###########""", createMap("^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN\$").toString())
     }
 
     @Test
     fun `map of ^ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))$`() {
-        assertEquals("#############\n" +
-                "#.|.|.|.|.|.#\n" +
-                "#-#####-###-#\n" +
-                "#.#.|.#.#.#.#\n" +
-                "#-#-###-#-#-#\n" +
-                "#.#.#.|.#.|.#\n" +
-                "#-#-#-#####-#\n" +
-                "#.#.#.#X|.#.#\n" +
-                "#-#-#-###-#-#\n" +
-                "#.|.#.|.#.#.#\n" +
-                "###-#-###-#-#\n" +
-                "#.|.#.|.|.#.#\n" +
-                "#############", createMap("^ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))\$").toString())
+        assertEquals(
+            """#############
+#.|.|.|.|.|.#
+#-#####-###-#
+#.#.|.#.#.#.#
+#-#-###-#-#-#
+#.#.#.|.#.|.#
+#-#-#-#####-#
+#.#.#.#X|.#.#
+#-#-#-###-#-#
+#.|.#.|.#.#.#
+###-#-###-#-#
+#.|.#.|.|.#.#
+#############""", createMap("^ESSWWN(E|NNENN(EESS(WNSE|)SSS|WWWSSSSE(SW|NNNE)))\$").toString())
     }
 
     @Test
     fun `map of ^WSSEESWWWNW(S|NENNEEEENN(ESSSSW(NWSW|SSEN)|WSWWN(E|WWS(E|SS))))$`() {
-        assertEquals("###############\n" +
-                "#.|.|.|.#.|.|.#\n" +
-                "#-###-###-#-#-#\n" +
-                "#.|.#.|.|.#.#.#\n" +
-                "#-#########-#-#\n" +
-                "#.#.|.|.|.|.#.#\n" +
-                "#-#-#########-#\n" +
-                "#.#.#.|X#.|.#.#\n" +
-                "###-#-###-#-#-#\n" +
-                "#.|.#.#.|.#.|.#\n" +
-                "#-###-#####-###\n" +
-                "#.|.#.|.|.#.#.#\n" +
-                "#-#-#####-#-#-#\n" +
-                "#.#.|.|.|.#.|.#\n" +
-                "###############",
+        assertEquals(
+            """###############
+#.|.|.|.#.|.|.#
+#-###-###-#-#-#
+#.|.#.|.|.#.#.#
+#-#########-#-#
+#.#.|.|.|.|.#.#
+#-#-#########-#
+#.#.#.|X#.|.#.#
+###-#-###-#-#-#
+#.|.#.#.|.#.|.#
+#-###-#####-###
+#.|.#.|.|.#.#.#
+#-#-#####-#-#-#
+#.#.|.|.|.#.|.#
+###############""",
             createMap("^WSSEESWWWNW(S|NENNEEEENN(ESSSSW(NWSW|SSEN)|WSWWN(E|WWS(E|SS))))\$").toString())
     }
 

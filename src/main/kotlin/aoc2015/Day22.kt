@@ -32,9 +32,9 @@ class Day22 {
         if (spent >= best) return best
         if (part2 && myTurn && player.hp == 1) return best
 
-        player.mana += spells.sumBy { it.mana }
-        boss.hp -= spells.sumBy { it.dmg }
-        player.armor = spells.sumBy { it.armor }
+        player.mana += spells.sumOf { it.mana }
+        boss.hp -= spells.sumOf { it.dmg }
+        player.armor = spells.sumOf { it.armor }
         if (boss.hp <= 0) return spent
 
         spells.forEach { it.dur-- }

@@ -25,6 +25,7 @@ class Day2 {
 
     private fun parseMemory(input: String) = input.split(",").map { it.toInt() }.toIntArray()
 
+    @Suppress("SameParameterValue")
     private fun nounVerbForResult(input: String, num: Int): Int {
         val arr = parseMemory(input)
         for (noun in 0..99) {
@@ -52,8 +53,7 @@ class Day2 {
 
     @Test
     fun part1() {
-        assertEquals(2842648, valueInPos0(File("files/2019/day2.txt").readText())
-        { arr ->
+        assertEquals(2842648, valueInPos0(File("files/2019/day2.txt").readText()) { arr ->
             run {
                 arr[1] = 12
                 arr[2] = 2

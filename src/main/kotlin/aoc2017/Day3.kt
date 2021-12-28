@@ -7,7 +7,7 @@ import kotlin.math.sqrt
 import kotlin.test.assertEquals
 
 class Day3 {
-    fun countSteps(num: Int): Int {
+    private fun countSteps(num: Int): Int {
         var size = ceil(sqrt(num.toDouble())).toInt()
         if (size % 2 == 0) size++
 

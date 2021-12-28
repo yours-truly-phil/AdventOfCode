@@ -57,6 +57,6 @@ class Day9 {
                 i++
             }
         }
-        return multis.map { it.toLong() }.sum()
+        return multis.sumOf { it.toLong() }
     }
 }

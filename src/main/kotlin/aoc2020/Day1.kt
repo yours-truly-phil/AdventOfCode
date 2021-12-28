@@ -3,7 +3,6 @@ package aoc2020
 import micros
 import java.io.File
 import java.lang.System.nanoTime
-import java.util.concurrent.Callable
 
 fun main() {
     runDay1()
@@ -19,8 +18,8 @@ fun runDay1() {
     val diff = nanoTime() - start
     println("Parsing and sorting input: ${diff / 1000}µs")
 
-    println("day1part1=${micros(Callable { day1part1(arr, 2020) })}")
-    println("day1part2=${micros(Callable { day1part2(arr, 2020) })}")
+    println("day1part1=${micros { day1part1(arr, 2020) }}")
+    println("day1part2=${micros { day1part2(arr, 2020) }}")
 }
 
 fun day1part1(arr: IntArray, total: Int): Int {

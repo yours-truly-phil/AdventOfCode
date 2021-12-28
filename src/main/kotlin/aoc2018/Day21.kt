@@ -8,12 +8,7 @@ class Day21 {
     private fun minRegValueToHaltWithFewestInstructions(input: String): Int {
         val startVal = 4682012
         val mem = intArrayOf(startVal, 0, 0, 0, 0, 0)
-        val lines = input.lines()
-        val ipBind = lines[0].split(" ")[1].toInt()
-        val instructions = lines.subList(1, lines.size)
-            .map { it.split(" ") }
-            .map { Day19.Instruction(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
-            .toTypedArray()
+        val (ipBind, instructions) = parseInstructions(input)
 
         var ip = 0
         while (ip in instructions.indices) {
@@ -46,12 +41,7 @@ class Day21 {
     private fun mostInstructionsToHalt(input: String): Int {
         val memo = mutableSetOf<Int>()
         val mem = intArrayOf(0, 0, 0, 0, 0, 0)
-        val lines = input.lines()
-        val ipBind = lines[0].split(" ")[1].toInt()
-        val instructions = lines.subList(1, lines.size)
-            .map { it.split(" ") }
-            .map { Day19.Instruction(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
-            .toTypedArray()
+        val (ipBind, instructions) = parseInstructions(input)
 
         var ip = 0
         while (ip in instructions.indices) {
@@ -79,6 +69,16 @@ class Day21 {
             ip++
         }
         return -1
+    }
+
+    private fun parseInstructions(input: String): Pair<Int, Array<Day19.Instruction>> {
+        val lines = input.lines()
+        val ipBind = lines[0].split(" ")[1].toInt()
+        val instructions = lines.subList(1, lines.size)
+            .map { it.split(" ") }
+            .map { Day19.Instruction(it[0], it[1].toInt(), it[2].toInt(), it[3].toInt()) }
+            .toTypedArray()
+        return Pair(ipBind, instructions)
     }
 
     @Test

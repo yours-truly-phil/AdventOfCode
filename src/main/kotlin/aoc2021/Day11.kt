@@ -9,7 +9,7 @@ class Day11 {
         val grid = input.map { it.map { c -> c.toString().toInt() }.toIntArray() }.toTypedArray()
 //        println(grid.joinToString("\n", "Before any steps:\n", "\n") { it.joinToString("") })
         var flashes = 0
-        repeat(steps) { step ->
+        repeat(steps) {
             var roundDone = false
             grid.indices.forEach { y -> grid[y].indices.forEach { x -> grid[y][x] += 1 } }
             while (!roundDone) {

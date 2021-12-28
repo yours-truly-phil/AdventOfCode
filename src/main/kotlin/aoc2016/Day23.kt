@@ -4,8 +4,9 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
 
+@Suppress("DuplicatedCode")
 class Day23 {
-    fun valueForSafe(input: String, register: HashMap<String, Int>): Int {
+    private fun valueForSafe(input: String, register: HashMap<String, Int>): Int {
         val insts = input.lines().mapIndexed { i, s -> i to Instruction(s) }.toMap()
 
         executeInstructions(insts, register)
@@ -13,7 +14,7 @@ class Day23 {
         return register["a"]!!
     }
 
-    fun executeInstructions(insts: Map<Int, Instruction>, reg: HashMap<String, Int>) {
+    private fun executeInstructions(insts: Map<Int, Instruction>, reg: HashMap<String, Int>) {
         var idx = 0
         while (true) {
             if (idx >= insts.size || idx < 0) return
@@ -96,95 +97,80 @@ class Day23 {
 
     @Test
     fun sample() {
-        assertEquals(3, valueForSafe("cpy 2 a\n" +
-                "tgl a\n" +
-                "tgl a\n" +
-                "tgl a\n" +
-                "cpy 1 a\n" +
-                "dec a\n" +
-                "dec a", hashMapOf("a" to 7, "b" to 0, "c" to 0, "d" to 0)))
+        assertEquals(
+            3, valueForSafe(
+                "cpy 2 a\ntgl a\ntgl a\ntgl a\ncpy 1 a\ndec a\ndec a", hashMapOf("a" to 7, "b" to 0, "c" to 0, "d" to 0)
+            )
+        )
     }
 
     @Test
-    fun `input from day12`() {
-        assertEquals(318117, valueForSafe("cpy 1 a\n" +
-                "cpy 1 b\n" +
-                "cpy 26 d\n" +
-                "jnz c 2\n" +
-                "jnz 1 5\n" +
-                "cpy 7 c\n" +
-                "inc d\n" +
-                "dec c\n" +
-                "jnz c -2\n" +
-                "cpy a c\n" +
-                "inc a\n" +
-                "dec b\n" +
-                "jnz b -2\n" +
-                "cpy c b\n" +
-                "dec d\n" +
-                "jnz d -6\n" +
-                "cpy 17 c\n" +
-                "cpy 18 d\n" +
-                "inc a\n" +
-                "dec d\n" +
-                "jnz d -2\n" +
-                "dec c\n" +
-                "jnz c -5", hashMapOf("a" to 7, "b" to 0, "c" to 0, "d" to 0)))
-        assertEquals(9227771, valueForSafe("cpy 1 a\n" +
-                "cpy 1 b\n" +
-                "cpy 26 d\n" +
-                "jnz c 2\n" +
-                "jnz 1 5\n" +
-                "cpy 7 c\n" +
-                "inc d\n" +
-                "dec c\n" +
-                "jnz c -2\n" +
-                "cpy a c\n" +
-                "inc a\n" +
-                "dec b\n" +
-                "jnz b -2\n" +
-                "cpy c b\n" +
-                "dec d\n" +
-                "jnz d -6\n" +
-                "cpy 17 c\n" +
-                "cpy 18 d\n" +
-                "inc a\n" +
-                "dec d\n" +
-                "jnz d -2\n" +
-                "dec c\n" +
-                "jnz c -5", hashMapOf("a" to 7, "b" to 0, "c" to 1, "d" to 0)))
+    fun inputFromDay12() {
+        assertEquals(
+            318117, valueForSafe(
+                "cpy 1 a\ncpy 1 b\ncpy 26 d\njnz c 2\njnz 1 5\ncpy 7 c\ninc d\ndec c\njnz c -2\ncpy a c\ninc a\ndec b\njnz b -2\ncpy c b\ndec d\njnz d -6\ncpy 17 c\ncpy 18 d\ninc a\ndec d\njnz d -2\ndec c\njnz c -5",
+                hashMapOf("a" to 7, "b" to 0, "c" to 0, "d" to 0)
+            )
+        )
+        assertEquals(
+            9227771, valueForSafe(
+                "cpy 1 a\ncpy 1 b\ncpy 26 d\njnz c 2\njnz 1 5\ncpy 7 c\ninc d\ndec c\njnz c -2\ncpy a c\ninc a\ndec b\njnz b -2\ncpy c b\ndec d\njnz d -6\ncpy 17 c\ncpy 18 d\ninc a\ndec d\njnz d -2\ndec c\njnz c -5",
+                hashMapOf("a" to 7, "b" to 0, "c" to 1, "d" to 0)
+            )
+        )
     }
 
     @Test
     fun part1() {
-        assertEquals(14445, valueForSafe(File("files/2016/day23.txt").readText(),
-            hashMapOf("a" to 7, "b" to 0, "c" to 0, "d" to 0)))
+        assertEquals(
+            14445, valueForSafe(
+                File("files/2016/day23.txt").readText(), hashMapOf("a" to 7, "b" to 0, "c" to 0, "d" to 0)
+            )
+        )
     }
 
     @Test
     fun part2() {
-        println("7=${
-            valueForSafe(File("files/2016/day23.txt").readText(),
-                hashMapOf("a" to 7, "b" to 0, "c" to 0, "d" to 0))
-        }")
-        println("8=${
-            valueForSafe(File("files/2016/day23.txt").readText(),
-                hashMapOf("a" to 8, "b" to 0, "c" to 0, "d" to 0))
-        }")
-        println("9=${
-            valueForSafe(File("files/2016/day23.txt").readText(),
-                hashMapOf("a" to 9, "b" to 0, "c" to 0, "d" to 0))
-        }")
-        println("10=${
-            valueForSafe(File("files/2016/day23.txt").readText(),
-                hashMapOf("a" to 10, "b" to 0, "c" to 0, "d" to 0))
-        }")
-        println("11=${
-            valueForSafe(File("files/2016/day23.txt").readText(),
-                hashMapOf("a" to 11, "b" to 0, "c" to 0, "d" to 0))
-        }")
-        assertEquals(479011005, valueForSafe(File("files/2016/day23.txt").readText(),
-            hashMapOf("a" to 12, "b" to 0, "c" to 0, "d" to 0)))
+        println(
+            "7=${
+                valueForSafe(
+                    File("files/2016/day23.txt").readText(), hashMapOf("a" to 7, "b" to 0, "c" to 0, "d" to 0)
+                )
+            }"
+        )
+        println(
+            "8=${
+                valueForSafe(
+                    File("files/2016/day23.txt").readText(), hashMapOf("a" to 8, "b" to 0, "c" to 0, "d" to 0)
+                )
+            }"
+        )
+        println(
+            "9=${
+                valueForSafe(
+                    File("files/2016/day23.txt").readText(), hashMapOf("a" to 9, "b" to 0, "c" to 0, "d" to 0)
+                )
+            }"
+        )
+        println(
+            "10=${
+                valueForSafe(
+                    File("files/2016/day23.txt").readText(), hashMapOf("a" to 10, "b" to 0, "c" to 0, "d" to 0)
+                )
+            }"
+        )
+        println(
+            "11=${
+                valueForSafe(
+                    File("files/2016/day23.txt").readText(), hashMapOf("a" to 11, "b" to 0, "c" to 0, "d" to 0)
+                )
+            }"
+        )
+        assertEquals(
+            479011005, valueForSafe(
+                File("files/2016/day23.txt").readText(), hashMapOf("a" to 12, "b" to 0, "c" to 0, "d" to 0)
+            )
+        )
 
         // or just 65 * 99 + 12! = 479011005 (because cpy 95 c and jnz 99 d and start of a=12
     }

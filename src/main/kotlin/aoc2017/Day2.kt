@@ -5,19 +5,19 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day2 {
-    fun checksum(input: String): Int {
-        return input.lines().sumBy {
+    private fun checksum(input: String): Int {
+        return input.lines().sumOf {
             it.split("\\s+".toRegex()).maxOf { num -> num.toInt() } -
                     it.split("\\s+".toRegex()).minOf { num -> num.toInt() }
         }
     }
 
-    fun checksumEvenlyDivisables(input: String): Int {
+    private fun checksumEvenlyDivisables(input: String): Int {
         return input.lines()
-            .sumBy { evenlyDivide(it.split("\\s+".toRegex()).map { s -> s.toInt() }.toIntArray()) }
+            .sumOf { evenlyDivide(it.split("\\s+".toRegex()).map { s -> s.toInt() }.toIntArray()) }
     }
 
-    fun evenlyDivide(nums: IntArray): Int {
+    private fun evenlyDivide(nums: IntArray): Int {
         nums.forEach { i -> nums.forEach { j -> if (i != j && i % j == 0) return i / j } }
         throw Exception("no numbers found")
     }
@@ -30,7 +30,7 @@ class Day2 {
     }
 
     @Test
-    fun `part2 sample`() {
+    fun part2Sample() {
         assertEquals(9, checksumEvenlyDivisables("5 9 2 8\n" +
                 "9 4 7 3\n" +
                 "3 8 6 5"))

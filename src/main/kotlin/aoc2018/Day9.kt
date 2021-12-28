@@ -6,7 +6,7 @@ import kotlin.collections.ArrayDeque
 import kotlin.test.assertEquals
 
 class Day9 {
-    fun scoreOfWinner(noPlayers: Int, valueLastMarble: Int): Long {
+    private fun scoreOfWinner(noPlayers: Int, valueLastMarble: Int): Long {
         val start = System.currentTimeMillis()
         val scores = LongArray(noPlayers)
         var idx = 0

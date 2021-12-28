@@ -10,14 +10,14 @@ fun main() {
 
 class Day8 {
     fun part1(input: String): Int {
-        val noChars = input.lines().map { it.length }.sum()
-        val noUnescapedChars = input.lines().map { unescapedStringLength(it) }.sum()
+        val noChars = input.lines().sumOf { it.length }
+        val noUnescapedChars = input.lines().sumOf { unescapedStringLength(it) }
         return noChars - noUnescapedChars
     }
 
     fun part2(input: String): Int {
-        val noChars = input.lines().map { it.length }.sum()
-        val noEscapedChars = input.lines().map { escapedStringLength(it) }.sum()
+        val noChars = input.lines().sumOf { it.length }
+        val noEscapedChars = input.lines().sumOf { escapedStringLength(it) }
         return noEscapedChars - noChars
     }
 

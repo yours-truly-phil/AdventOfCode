@@ -5,6 +5,7 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day19 {
+    @Suppress("SameParameterValue")
     private fun regValue(input: String, regNo: Int, mem: IntArray): Int {
         val lines = input.lines()
         val ipBind = lines[0].split(" ")[1].toInt()
@@ -14,9 +15,9 @@ class Day19 {
             .toTypedArray()
 
         var ip = 0
-        val limit = 2
-        var count = 0
-        var seven = false
+//        val limit = 2
+//        var count = 0
+//        var seven = false
         while (ip in instructions.indices) {
             val inst = instructions[ip]
 
@@ -119,14 +120,15 @@ x 35 seti 0 4 1   -> whole block puts 10551261 in reg d and then doesn't get exe
 
     @Test
     fun sample() {
-        assertEquals(6, regValue("#ip 0\n" +
-                "seti 5 0 1\n" +
-                "seti 6 0 2\n" +
-                "addi 0 1 0\n" +
-                "addr 1 2 3\n" +
-                "setr 1 0 0\n" +
-                "seti 8 0 4\n" +
-                "seti 9 0 5", 0, IntArray(6) { 0 }))
+        assertEquals(6, regValue(
+            """#ip 0
+seti 5 0 1
+seti 6 0 2
+addi 0 1 0
+addr 1 2 3
+setr 1 0 0
+seti 8 0 4
+seti 9 0 5""", 0, IntArray(6) { 0 }))
     }
 
     @Test
@@ -140,7 +142,8 @@ x 35 seti 0 4 1   -> whole block puts 10551261 in reg d and then doesn't get exe
     which more or less immediately gave away that it sums up all factors of the number I already found which gets put
     in register d from that second part of the instructions.
      */
-    fun sumFactors(num: Int): Int {
+    @Suppress("SameParameterValue")
+    private fun sumFactors(num: Int): Int {
         return (1..num).filter { num % it == 0 }.sum()
     }
 

@@ -12,11 +12,11 @@ class Day2(path: String) {
     val lines = File(path).readLines()
 
     fun part1(): Int {
-        return lines.map { Box(it).calcWrappingAmount() }.sum()
+        return lines.sumOf { Box(it).calcWrappingAmount() }
     }
 
     fun part2(): Int {
-        return lines.map { Box(it).ribbon() }.sum()
+        return lines.sumOf { Box(it).ribbon() }
     }
 
     class Box(line: String) {

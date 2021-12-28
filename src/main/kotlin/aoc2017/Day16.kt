@@ -6,7 +6,7 @@ import java.util.function.Consumer
 import kotlin.test.assertEquals
 
 class Day16 {
-    fun orderOfPrograms(letters: String, input: String): String {
+    private fun orderOfPrograms(letters: String, input: String): String {
         val mem = letters.toCharArray()
         input.split(",").forEach {
             when {
@@ -18,7 +18,7 @@ class Day16 {
         return mem.joinToString("")
     }
 
-    fun instructions(input: String): Array<Consumer<CharArray>> {
+    private fun instructions(input: String): Array<Consumer<CharArray>> {
         val res = ArrayList<Consumer<CharArray>>()
         input.split(",").forEach {
             when {
@@ -46,7 +46,8 @@ class Day16 {
         return res.toTypedArray()
     }
 
-    fun part2RepeatDancesWithParsing(num: Int, letters: String, input: String): String {
+    @Suppress("SameParameterValue")
+    private fun part2RepeatDancesWithParsing(num: Int, letters: String, input: String): String {
         var order = letters
         val memo = HashMap<String, Int>()
         var idx = 0
@@ -64,7 +65,8 @@ class Day16 {
         return order
     }
 
-    fun part2WithoutRepeatedParsing(num: Int, letters: String, input: String): String {
+    @Suppress("SameParameterValue")
+    private fun part2WithoutRepeatedParsing(num: Int, letters: String, input: String): String {
         val instructions = instructions(input)
         val memo = HashMap<String, Int>()
         val order = letters.toCharArray()
@@ -121,28 +123,28 @@ class Day16 {
     }
 
     @Test
-    fun `spin by amount`() {
+    fun spinByAmount() {
         val arr = "abcde".toCharArray()
         spinByAmount(3, arr)
         assertEquals("cdeab", arr.joinToString(""))
     }
 
     @Test
-    fun `partner in array`() {
+    fun partnerInArray() {
         val arr = "eabdc".toCharArray()
         partner("pe/b", arr)
         assertEquals("baedc", arr.joinToString(""))
     }
 
     @Test
-    fun `exchange in array`() {
+    fun exchangeInArray() {
         val arr = "eabcd".toCharArray()
         exchange("x3/4", arr)
         assertEquals("eabdc", arr.joinToString(""))
     }
 
     @Test
-    fun `spin array`() {
+    fun spinArray() {
         val arr = "abcde".toCharArray()
         spin("s1", arr)
         assertEquals("eabcd", arr.joinToString(""))

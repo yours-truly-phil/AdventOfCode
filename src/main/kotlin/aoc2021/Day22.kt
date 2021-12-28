@@ -60,7 +60,7 @@ class Day22 {
         return onCubes.filter { it.on }.sumOf { it.volume() }
     }
 
-    fun aWithoutB(a: Cube, b: Cube): List<Cube> {
+    private fun aWithoutB(a: Cube, b: Cube): List<Cube> {
         val res = mutableListOf<Cube>()
 
         val topOrigin = Vec3i(a.pos.x, b.y2() + 1, a.pos.z)
@@ -95,7 +95,7 @@ class Day22 {
         return res
     }
 
-    fun intersection(a: Cube, b: Cube, isOn: Boolean): Cube? {
+    private fun intersection(a: Cube, b: Cube, isOn: Boolean): Cube? {
         val origin = Vec3i(maxOf(a.pos.x, b.pos.x), maxOf(a.pos.y, b.pos.y), maxOf(a.pos.z, b.pos.z))
         val size = Vec3i(
             minOf(a.x2(), b.x2()) - origin.x + 1,
@@ -227,21 +227,21 @@ class Day22 {
             0L
         }
 
-        fun fbl() = pos
-        fun fbr() = Vec3i(x2(), pos.y, pos.z)
-        fun ftl() = Vec3i(pos.x, y2(), pos.z)
-        fun ftr() = Vec3i(x2(), y2(), pos.z)
-        fun bbl() = Vec3i(pos.x, pos.y, z2())
-        fun bbr() = Vec3i(x2(), pos.y, z2())
-        fun btl() = Vec3i(pos.x, y2(), z2())
-        fun btr() = Vec3i(x2(), y2(), z2())
+        private fun fbl() = pos
+        private fun fbr() = Vec3i(x2(), pos.y, pos.z)
+        private fun ftl() = Vec3i(pos.x, y2(), pos.z)
+        private fun ftr() = Vec3i(x2(), y2(), pos.z)
+        private fun bbl() = Vec3i(pos.x, pos.y, z2())
+        private fun bbr() = Vec3i(x2(), pos.y, z2())
+        private fun btl() = Vec3i(pos.x, y2(), z2())
+        private fun btr() = Vec3i(x2(), y2(), z2())
 
         fun intersects(o: Cube): Boolean {
             return within(o.fbl()) || within(o.fbr()) || within(o.ftl()) || within(o.ftr())
                     || within(o.bbl()) || within(o.bbr()) || within(o.btl()) || within(o.btr())
         }
 
-        fun within(o: Vec3i): Boolean {
+        private fun within(o: Vec3i): Boolean {
             return o.x in pos.x..x2()
                     && o.y in pos.y..y2()
                     && o.z in pos.z..z2()

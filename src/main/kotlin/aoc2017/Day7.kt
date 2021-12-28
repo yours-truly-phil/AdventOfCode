@@ -5,13 +5,12 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day7 {
-    fun nameOfRoot(input: String): String {
+    private fun nameOfRoot(input: String): String {
         val nodes = parseNodes(input)
         return root(nodes).name
     }
 
-    private fun root(nodes: Map<String, Node>) =
-        nodes.filter { it.value.parent == null }.values.first()
+    private fun root(nodes: Map<String, Node>) = nodes.filter { it.value.parent == null }.values.first()
 
     private fun parseNodes(input: String): Map<String, Node> {
         val nodes = input.lines().map {
@@ -20,7 +19,7 @@ class Day7 {
             val name = left[0]
             val weight = left[1].substring(1, left[1].length - 1).toInt()
             Node(name, weight, ArrayList())
-        }.map { it.name to it }.toMap()
+        }.associateBy { it.name }
         input.lines().forEach {
             val parts = it.split(" -> ")
             val root = parts[0].split(" ")[0]
@@ -40,22 +39,21 @@ class Day7 {
         var parent: Node? = null
     }
 
-    fun correctWeight(input: String): Int {
+    private fun correctWeight(input: String): Int {
         val nodes = parseNodes(input)
         for (node in nodes) {
             println("node ${node.key} (${node.value.weight}) children:")
-            println(node.value.nodes.map { "${it.name} (${weight(it)})" }.joinToString(", "))
+            println(node.value.nodes.joinToString(", ") { "${it.name} (${weight(it)})" })
         }
         val unweightedNode = unweightedNode(nodes.values)!!
-        val childrenWeights = unweightedNode.nodes
-            .map { it to weight(it) }.sortedBy { it.second }
+        val childrenWeights = unweightedNode.nodes.map { it to weight(it) }.sortedBy { it.second }
 
         childrenWeights.forEach {
             println("${it.first.name}(${it.first.weight}) - total=${it.second}")
         }
 
-        val overweight = childrenWeights.last().second - childrenWeights.first().second
-        val heaviest = childrenWeights.last().first
+//        val overweight = childrenWeights.last().second - childrenWeights.first().second
+//        val heaviest = childrenWeights.last().first
 
         // instead of programmatically following the tree to the heaviest child
         // until all children are equal
@@ -90,19 +88,11 @@ class Day7 {
 
     @Test
     fun sample() {
-        assertEquals("tknk", nameOfRoot("pbga (66)\n" +
-                "xhth (57)\n" +
-                "ebii (61)\n" +
-                "havc (66)\n" +
-                "ktlj (57)\n" +
-                "fwft (72) -> ktlj, cntj, xhth\n" +
-                "qoyq (66)\n" +
-                "padx (45) -> pbga, havc, qoyq\n" +
-                "tknk (41) -> ugml, padx, fwft\n" +
-                "jptl (61)\n" +
-                "ugml (68) -> gyxo, ebii, jptl\n" +
-                "gyxo (61)\n" +
-                "cntj (57)"))
+        assertEquals(
+            "tknk", nameOfRoot(
+                "pbga (66)\nxhth (57)\nebii (61)\nhavc (66)\nktlj (57)\nfwft (72) -> ktlj, cntj, xhth\nqoyq (66)\npadx (45) -> pbga, havc, qoyq\ntknk (41) -> ugml, padx, fwft\njptl (61)\nugml (68) -> gyxo, ebii, jptl\ngyxo (61)\ncntj (57)"
+            )
+        )
     }
 
     @Test

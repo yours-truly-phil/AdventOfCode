@@ -2,7 +2,6 @@ package aoc2020
 
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 
 fun main() {
     runDay7()
@@ -11,8 +10,8 @@ fun main() {
 fun runDay7() {
     val lines = File("files/2020/day7.txt").readLines()
 
-    println("day7part1=${micros(Callable { day7part1(lines) })}")
-    println("day7part2=${micros(Callable { day7part2(lines) })}")
+    println("day7part1=${micros { day7part1(lines) }}")
+    println("day7part2=${micros { day7part2(lines) }}")
 }
 
 fun day7part1(lines: List<String>): Int {
@@ -24,9 +23,8 @@ fun day7part2(lines: List<String>): Int {
 }
 
 fun countBagAndChildren(bags: Map<String, Bag>, color: String): Int {
-    return bags[color]!!.contains.entries
-        .map { it.value * countBagAndChildren(bags, it.key.color) }
-        .fold(1, { acc, i -> acc + i })
+    return bags[color]!!.contains.entries.map { it.value * countBagAndChildren(bags, it.key.color) }
+        .fold(1) { acc, i -> acc + i }
 }
 
 private fun initBags(lines: List<String>): Map<String, Bag> {
@@ -61,16 +59,11 @@ fun parseContaining(line: String): List<Pair<Int, String>> {
     val c = "contain "
     val l = line.substring(line.indexOf(c) + c.length, line.length - 1)
     if (l == "no other bags") return ArrayList()
-    return l.split(", ")
-        .map { it.split(" ") }
-        .map { Pair(it[0].toInt(), "${it[1]} ${it[2]}") }
+    return l.split(", ").map { it.split(" ") }.map { Pair(it[0].toInt(), "${it[1]} ${it[2]}") }
 }
 
 fun createBags(lines: List<String>): Map<String, Bag> {
-    return lines.map { parseColor(it) }
-        .map { Bag(it) }
-        .map { it.color to it }
-        .toMap()
+    return lines.map { parseColor(it) }.map { Bag(it) }.associateBy { it.color }
 }
 
 fun parseColor(line: String): String {

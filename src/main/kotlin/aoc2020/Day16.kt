@@ -2,7 +2,6 @@ package aoc2020
 
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 
 fun main() {
     runDay16()
@@ -13,8 +12,8 @@ fun runDay16() {
 
     val day16 = Day16(content)
 
-    println("day16part1=${micros(Callable { day16.part1() })}")
-    println("day16part2=${micros(Callable { day16.part2() })}")
+    println("day16part1=${micros { day16.part1() }}")
+    println("day16part2=${micros { day16.part2() }}")
 }
 
 class Day16(input: String) {

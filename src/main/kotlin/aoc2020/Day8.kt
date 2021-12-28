@@ -3,7 +3,7 @@ package aoc2020
 import aoc2020.Type.*
 import micros
 import java.io.File
-import java.util.concurrent.Callable
+import java.util.*
 
 fun main() {
     runDay8()
@@ -13,8 +13,8 @@ fun runDay8() {
     val lines = File("files/2020/day8.txt").readLines()
     val instructions = lines.map { Instruction(it) }.toTypedArray()
 
-    println("day8part1=${micros(Callable { day8part1(instructions) })}")
-    println("day8part2=${micros(Callable { day8part2(instructions) })}")
+    println("day8part1=${micros { day8part1(instructions) }}")
+    println("day8part2=${micros { day8part2(instructions) }}")
 }
 
 fun day8part1(instructions: Array<Instruction>): Int {
@@ -87,7 +87,7 @@ class Instruction(line: String) {
 
     init {
         val parts = line.split(" ")
-        type = valueOf(parts[0].toUpperCase())
+        type = valueOf(parts[0].uppercase(Locale.getDefault()))
         value = parts[1].toInt()
     }
 }

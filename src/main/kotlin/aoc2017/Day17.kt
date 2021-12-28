@@ -5,7 +5,7 @@ import java.util.*
 import kotlin.test.assertEquals
 
 class Day17 {
-    fun circularBufVal(steps: Int): Int {
+    private fun circularBufVal(steps: Int): Int {
         var idx = 0
         val buf = LinkedList<Int>().apply { add(0) }
         repeat(2017) {
@@ -15,7 +15,8 @@ class Day17 {
         return buf[(idx + 1) % buf.size]
     }
 
-    fun valueAfterZero(steps: Int): Int {
+    @Suppress("SameParameterValue")
+    private fun valueAfterZero(steps: Int): Int {
         var idx = 0
         var size = 1
         var idxZero = 0

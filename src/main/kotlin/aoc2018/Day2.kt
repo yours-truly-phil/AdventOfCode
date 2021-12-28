@@ -6,12 +6,12 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day2 {
-    fun checksum(input: String): Int {
+    private fun checksum(input: String): Int {
         val freqMap = input.lines().map { frequencyMap(it.toCharArray().toTypedArray()) }
-        return freqMap.filter { it.containsValue(2) }.count() * freqMap.filter { it.containsValue(3) }.count()
+        return freqMap.count { it.containsValue(2) } * freqMap.count { it.containsValue(3) }
     }
 
-    fun findCommonChars(input: String): String {
+    private fun findCommonChars(input: String): String {
         val ids = input.lines().sorted().toTypedArray()
         for (i in 0 until ids.size - 1) {
             var countDifferences = 0

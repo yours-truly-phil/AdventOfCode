@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class Day16 {
-    fun checksumForDisc(input: String, length: Int): String {
+    private fun checksumForDisc(input: String, length: Int): String {
         var res = input
         while (res.length < length) {
             res = foldDragonCurve(res)
@@ -48,7 +48,7 @@ class Day16 {
     }
 
     @Test
-    fun `fold dragon curve`() {
+    fun foldDragonCurve() {
         assertEquals("100", foldDragonCurve("1"))
         assertEquals("001", foldDragonCurve("0"))
         assertEquals("11111000000", foldDragonCurve("11111"))
@@ -56,12 +56,12 @@ class Day16 {
     }
 
     @Test
-    fun `generate checksum`() {
+    fun generateChecksumTest() {
         assertEquals("100", generateChecksum("110010110100"))
     }
 
     @Test
-    fun `generate checksum for disc`() {
+    fun generateChecksumForDiscTest() {
         assertEquals("01100", checksumForDisc("10000", 20))
     }
 }

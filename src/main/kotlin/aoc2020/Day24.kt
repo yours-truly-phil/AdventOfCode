@@ -91,7 +91,7 @@ class Day24 {
 
         val newValues = HashMap<Pos, TileColor>()
         tiles.forEach {
-            val countBlack = neighbors(it.key, tiles).filter { col -> col == BLACK }.count()
+            val countBlack = neighbors(it.key, tiles).count { col -> col == BLACK }
             when {
                 it.value == BLACK && (countBlack == 0 || countBlack > 2) -> newValues[it.key] = WHITE
                 it.value == WHITE && countBlack == 2 -> newValues[it.key] = BLACK
@@ -156,7 +156,7 @@ class Day24 {
             }
             println()
         }
-        println("Black Tiles: ${tiles.values.filter { it == BLACK }.count()}")
+        println("Black Tiles: ${tiles.values.count { it == BLACK }}")
     }
 }
 

@@ -48,12 +48,12 @@ class Day14 {
 
     class Reindeer(input: String) {
         val name: String
-        val flyVel: Int
-        val flyDur: Int
-        val restDur: Int
-        var resting = false
-        var flyTime = 0
-        var restTime = 0
+        private val flyVel: Int
+        private val flyDur: Int
+        private val restDur: Int
+        private var resting = false
+        private var flyTime = 0
+        private var restTime = 0
         var dist = 0L
         var points = 0L
 

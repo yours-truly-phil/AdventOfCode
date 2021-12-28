@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
 
+@Suppress("DuplicatedCode")
 class Day25 {
 
     //cpy a d
@@ -39,25 +40,28 @@ class Day25 {
 
     var last = 1
 
-    fun minAForClockSignal(input: String): Int {
+    private fun minAForClockSignal(input: String): Int {
         val insts = input.lines().mapIndexed { i, s -> i to Instruction(s) }.toMap()
 
         for (i in 0 until 1000) {
-            println("i=$i")
             last = 1
             val register = hashMapOf("a" to i, "b" to 0, "c" to 0, "d" to 0)
             try {
-                executeInstructions(insts, register)
-            } catch (e: Exception) {
+                val res = executeInstructions(insts, register)
+                if (res != -1) {
+                    return i
+                }
+            } catch (_: Exception) {
             }
         }
-        return 196 // for 196 it kept alternating from 0,1,0,1,0 and so forth
+        throw IllegalStateException("No solution found")
     }
 
-    fun executeInstructions(insts: Map<Int, Instruction>, reg: HashMap<String, Int>) {
+    private fun executeInstructions(insts: Map<Int, Instruction>, reg: HashMap<String, Int>): Int {
         var idx = 0
+        val memo = mutableSetOf<String>()
         while (true) {
-            if (idx >= insts.size || idx < 0) return
+            if (idx >= insts.size || idx < 0) return -1
 
             val inst = insts[idx]!!
             when (inst.type) {
@@ -68,7 +72,17 @@ class Day25 {
                 "tgl" -> idx += tgl(reg, inst, idx, insts)
                 "out" -> idx += printOut(reg, inst)
             }
+            val hash = hashRegister(reg, idx)
+            if (memo.contains(hash)) {
+                return idx
+            } else {
+                memo.add(hash)
+            }
         }
+    }
+
+    private fun hashRegister(reg: HashMap<String, Int>, idx: Int): String {
+        return "$idx:${reg.map { "${it.key}=${it.value}" }.joinToString(",")}"
     }
 
     private fun printOut(reg: HashMap<String, Int>, inst: Instruction): Int {
@@ -140,13 +154,11 @@ class Day25 {
             for (i in 1 until parts.size) args.add(parts[i])
         }
 
-        override fun toString(): String {
-            return "Instruction(type='$type', args=$args)"
-        }
+        override fun toString(): String = "Instruction(type='$type', args=$args)"
     }
 
     @Test
     fun part1() {
-        assertEquals(-1, minAForClockSignal(File("files/2016/day25.txt").readText()))
+        assertEquals(196, minAForClockSignal(File("files/2016/day25.txt").readText()))
     }
 }

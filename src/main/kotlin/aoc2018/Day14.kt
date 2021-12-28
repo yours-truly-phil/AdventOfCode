@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day14 {
-    fun scoresOfRecipesAfter(offset: Int): String {
+    private fun scoresOfRecipesAfter(offset: Int): String {
         val scores = ArrayList<Int>(offset + 10)
         scores += 3
         scores += 7
@@ -28,7 +28,7 @@ class Day14 {
         return scores.subList(offset, offset + 10).joinToString("")
     }
 
-    fun appearsAfter(num: String): Int {
+    private fun appearsAfter(num: String): Int {
         val scores = ArrayList<Byte>()
         scores += 3
         scores += 7
@@ -82,7 +82,7 @@ class Day14 {
     }
 
     @Test
-    fun `part 2 sample`() {
+    fun part2Sample() {
         assertEquals(9, appearsAfter("51589"))
         assertEquals(5, appearsAfter("01245"))
         assertEquals(18, appearsAfter("92510"))

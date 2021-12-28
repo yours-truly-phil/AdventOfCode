@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day15 {
-    fun finalCount(genA: Long, genB: Long): Int {
+    private fun finalCount(genA: Long, genB: Long): Int {
         var a = genA
         var b = genB
         var count = 0
@@ -16,7 +16,7 @@ class Day15 {
         return count
     }
 
-    fun finalCountPart2(genA: Long, genB: Long): Int {
+    private fun finalCountPart2(genA: Long, genB: Long): Int {
         var a = genA
         var b = genB
         var count = 0
@@ -39,7 +39,7 @@ class Day15 {
     }
 
     @Test
-    fun `part 2 sample`() {
+    fun part2Sample() {
         assertEquals(309, finalCountPart2(65, 8921))
     }
 

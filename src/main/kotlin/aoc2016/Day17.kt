@@ -7,12 +7,12 @@ import kotlin.test.assertEquals
 
 class Day17 {
 
-    val md = MessageDigest.getInstance("MD5")!!
+    private val md = MessageDigest.getInstance("MD5")!!
 
     private fun hash(s: String): String = BigInteger(1, md.digest(s.toByteArray()))
         .toString(16).padStart(32, '0')
 
-    fun findShortestPath(prefix: String, from: Pos, to: Pos): Path {
+    private fun findShortestPath(prefix: String, from: Pos, to: Pos): Path {
         val paths = ArrayDeque<Path>().apply { add(Path("", from)) }
         while (paths.isNotEmpty()) {
             paths.sort()
@@ -23,7 +23,7 @@ class Day17 {
         throw Exception("no possible path from $from to $to")
     }
 
-    fun findLongestPath(prefix: String, from: Pos, to: Pos): Path {
+    private fun findLongestPath(prefix: String, from: Pos, to: Pos): Path {
         val paths = ArrayDeque<Path>().apply { add(Path("", from)) }
         val result = ArrayList<Path>()
         while (paths.isNotEmpty()) {
@@ -71,7 +71,7 @@ class Day17 {
     }
 
     @Test
-    fun `add paths from`() {
+    fun addPathsFromTest() {
         val pre = "hijkl"
         val paths = ArrayDeque<Path>().apply { add(Path("", Pos(0, 0))) }
         val newPaths = pathsFrom(pre, paths.first())
@@ -80,18 +80,18 @@ class Day17 {
     }
 
     @Test
-    fun `generate hex md5 hash`() {
+    fun generateHexMd5HashTest() {
         assertEquals("ced9fc52441937264674bca3f4ba7588", hash("hijkl"))
     }
 
     @Test
-    fun `find path`() {
+    fun findPathTest() {
         assertEquals("DDRRRD", findShortestPath("ihgpwlah", Pos(0, 0), Pos(3, 3)).s)
         assertEquals("DDUDRLRRUDRD", findShortestPath("kglvqrro", Pos(0, 0), Pos(3, 3)).s)
     }
 
     @Test
-    fun `find the longest path`() {
+    fun findTheLongestPathTest() {
         assertEquals(830, findLongestPath("ulqzkmiv", Pos(0, 0), Pos(3, 3)).s.length)
         assertEquals(370, findLongestPath("ihgpwlah", Pos(0, 0), Pos(3, 3)).s.length)
         assertEquals(492, findLongestPath("kglvqrro", Pos(0, 0), Pos(3, 3)).s.length)

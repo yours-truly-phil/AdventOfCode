@@ -20,7 +20,7 @@ class Day8 {
     private fun valueOfRootNode(input: String): Int = parseRoot(input).nodeValue()
 
     private fun sumMeta(node: Node): Int {
-        return node.meta.sum() + node.children.map { sumMeta(it) }.sum()
+        return node.meta.sum() + node.children.sumOf { sumMeta(it) }
     }
 
     private fun parseNodes(idx: Int, nums: IntArray, parent: Node): Int {
@@ -66,7 +66,7 @@ class Day8 {
     }
 
     @Test
-    fun `part 2 sample`() {
+    fun part2Sample() {
         assertEquals(66, valueOfRootNode("2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2"))
     }
 

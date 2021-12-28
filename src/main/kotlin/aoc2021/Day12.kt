@@ -43,7 +43,9 @@ class Day12 {
     ) {
         var neighbors = caves[cur.split(",").last()]!!
         if (!canVisitedAny) {
-            neighbors = neighbors.filter { it !in visited.split(",").filter { !it.any { c -> c.isUpperCase() } } }
+            neighbors = neighbors.filter { neighbor ->
+                neighbor !in visited.split(",").filter { !it.any { c -> c.isUpperCase() } }
+            }
         }
         for (neighbor in neighbors) {
             val path = "$visited,$neighbor"

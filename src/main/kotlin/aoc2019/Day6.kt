@@ -6,8 +6,7 @@ import kotlin.test.assertEquals
 
 class Day6 {
     private fun solvePart1(input: String): Int {
-        val orbits = input.lines().map { it.split(")") }
-            .groupBy { it[0] }
+        val orbits = input.lines().map { it.split(")") }.groupBy { it[0] }
             .map { it.key to it.value.flatten().filter { v -> v != it.key } }.toMap()
         val first = orbits["COM"]!!
         val deque = ArrayDeque<Pair<String, Int>>()

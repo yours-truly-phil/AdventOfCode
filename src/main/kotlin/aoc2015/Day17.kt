@@ -13,22 +13,21 @@ class Day17 {
 
     fun part2(input: String): Int = perms2(150, input.lines().map { it.toInt() }.toIntArray())
 
-    fun perms2(num: Int, nums: IntArray): Int {
-        val res = arrayListOf(ArrayList<Int>())
-            .also { combinations(nums, it) }
-            .also { it.sortBy { comb -> comb.size } }
+    @Suppress("SameParameterValue")
+    private fun perms2(num: Int, nums: IntArray): Int {
+        val res = arrayListOf(ArrayList<Int>()).also { combinations(nums, it) }.also { it.sortBy { comb -> comb.size } }
             .filter { it.sum() == num }
         val minLength = res.minOf { it.size }
-        return res.filter { it.size == minLength }.count()
+        return res.count { it.size == minLength }
     }
 
-    fun perms(num: Int, nums: IntArray): Int = arrayListOf(ArrayList<Int>())
-        .also { combinations(nums, it) }
-        .filter { it.sum() == num }
-        .count()
+    fun perms(num: Int, nums: IntArray): Int =
+        arrayListOf(ArrayList<Int>()).also { combinations(nums, it) }.count { it.sum() == num }
 
     private fun combinations(nums: IntArray, combinations: ArrayList<ArrayList<Int>>) {
-        nums.indices.forEach { addNumToCombinations(combinations, nums, it) }
+        nums.indices.forEach {
+            addNumToCombinations(combinations, nums, it)
+        }
     }
 
     private fun addNumToCombinations(combinations: ArrayList<ArrayList<Int>>, nums: IntArray, i: Int) {

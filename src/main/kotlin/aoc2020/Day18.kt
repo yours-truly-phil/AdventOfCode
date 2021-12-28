@@ -3,7 +3,6 @@ package aoc2020
 import aoc2020.Day18.Op.*
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 
 fun main() {
     runDay18()
@@ -13,14 +12,14 @@ fun runDay18() {
     val lines = File("files/2020/day18.txt").readLines()
 
     val day18 = Day18()
-    println("day18part1=${micros(Callable { day18.part1(lines) })}")
+    println("day18part1=${micros { day18.part1(lines) }}")
     val day18Part2 = Day18Part2()
-    println("day18part2=${micros(Callable { day18Part2.part2(lines) })}")
+    println("day18part2=${micros { day18Part2.part2(lines) }}")
 }
 
 class Day18 {
     fun part1(lines: List<String>): Long {
-        return lines.map { calculate(it) }.sum()
+        return lines.sumOf { calculate(it) }
     }
 
     enum class Op {
@@ -57,8 +56,7 @@ class Day18 {
                 curChar == '+' -> curOp = PLUS
                 curChar == '-' -> curOp = MINUS
                 curChar == '*' -> curOp = MULTI
-                curChar.toString()
-                    .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                curChar.toString().matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
                     val num = curChar.toString().toInt()
                     when (curOp) {
                         PLUS -> result += num
@@ -83,9 +81,10 @@ class Day18 {
     }
 }
 
+@Suppress("DuplicatedCode")
 class Day18Part2 {
     fun part2(lines: List<String>): Long {
-        return lines.map { calculate(it) }.sum()
+        return lines.sumOf { calculate(it) }
     }
 
     fun calculate(str: String): Long {
@@ -116,8 +115,7 @@ class Day18Part2 {
                 when {
                     charList[i] == '(' -> countOpen++
                     charList[i] == ')' -> countOpen--
-                    charList[i].toString()
-                        .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                    charList[i].toString().matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
                         pastFirstNum = true
                     }
                 }
@@ -138,8 +136,7 @@ class Day18Part2 {
                 when {
                     charList[i] == ')' -> countClosing++
                     charList[i] == '(' -> countClosing--
-                    charList[i].toString()
-                        .matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
+                    charList[i].toString().matches("^'0'|[1-9][0-9]*\$".toRegex()) -> {
                         pastFirstNum = true
                     }
                 }

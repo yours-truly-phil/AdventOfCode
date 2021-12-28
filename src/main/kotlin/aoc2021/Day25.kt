@@ -5,7 +5,8 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day25 {
-    private fun solvePart1(input: String): Int {
+    @Suppress("DuplicatedCode")
+    private fun solve(input: String): Int {
         val map = input.lines().map { it.toCharArray() }.toTypedArray()
         val tmp = Array(map.size) { CharArray(map[0].size) }
         var count = 0
@@ -52,7 +53,7 @@ class Day25 {
     @Test
     fun part1() {
         assertEquals(
-            58, solvePart1(
+            58, solve(
                 """
 v...>>.vv>
 .vv>>.vv..
@@ -65,6 +66,6 @@ v.v..>>v.v
 ....v..v.>""".trimIndent()
             )
         )
-        assertEquals(441, solvePart1(File("files/2021/day25.txt").readText()))
+        assertEquals(441, solve(File("files/2021/day25.txt").readText()))
     }
 }

@@ -29,7 +29,7 @@ class Day5 {
         while (pw.size < 8) {
             val md5 = md5f(input.plus(i))
             if (md5.startsWith("00000")) {
-                val pos = md5[5].toInt() - 48
+                val pos = md5[5].code - 48
                 if (pos < 8) {
                     pw.computeIfAbsent(pos) { md5[6] }
                 }

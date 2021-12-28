@@ -1,3 +1,5 @@
+@file:Suppress("DuplicatedCode")
+
 package aoc2018
 
 import org.junit.jupiter.api.Test
@@ -10,7 +12,7 @@ class Day17 {
     private fun retainedWater(input: String): Int {
         val state = runSimulation(input)
 
-        println("flowing=${state.water.filter { it.y in state.minY..state.maxY }.count()}")
+        println("flowing=${state.water.count { it.y in state.minY..state.maxY }}")
         println("retained=${state.environment.filter { it.value == '~' }.count()}")
         println(envToString(state.environment, state.water.filter { it.y <= state.maxY }.toSet()))
 
@@ -20,16 +22,16 @@ class Day17 {
     private fun countTilesReachWater(input: String): Int {
         val state = runSimulation(input)
 
-        println("flowing=${state.water.filter { it.y in state.minY..state.maxY }.count()}")
+        println("flowing=${state.water.count { it.y in state.minY..state.maxY }}")
         println(envToString(state.environment, state.water.filter { it.y <= state.maxY }.toSet()))
 
-        return state.water.filter { it.y in state.minY..state.maxY }.count()
+        return state.water.count { it.y in state.minY..state.maxY }
     }
 
     private fun runSimulation(input: String): State {
         val clays = input.lines().map { parseLine(it) }.flatten().toHashSet()
         val spring = V2i(500, 0)
-        val env = clays.map { it to '#' }.toMap().toMutableMap()
+        val env = clays.associateWith { '#' }.toMutableMap()
         val springs = ArrayList<V2i>().also { it.add(spring) }
         val maxY = env.maxOf { it.key.y }
         val minY = env.minOf { it.key.y }
@@ -134,7 +136,7 @@ class Day17 {
         return sb.toString()
     }
 
-    fun parseLine(line: String): List<V2i> {
+    private fun parseLine(line: String): List<V2i> {
         val xy = line.split(", ")
         if (xy[0].startsWith("x")) {
             val xe = xy[0]
@@ -172,36 +174,42 @@ class Day17 {
 
     @Test
     fun sample() {
-        assertEquals(57, countTilesReachWater("x=495, y=2..7\n" +
-                "y=7, x=495..501\n" +
-                "x=501, y=3..7\n" +
-                "x=498, y=2..4\n" +
-                "x=506, y=1..2\n" +
-                "x=498, y=10..13\n" +
-                "x=504, y=10..13\n" +
-                "y=13, x=498..504"))
+        assertEquals(57, countTilesReachWater(
+            """x=495, y=2..7
+y=7, x=495..501
+x=501, y=3..7
+x=498, y=2..4
+x=506, y=1..2
+x=498, y=10..13
+x=504, y=10..13
+y=13, x=498..504"""
+        ))
     }
 
     @Test
-    fun `part 2 sample`() {
-        assertEquals(29, retainedWater("x=495, y=2..7\n" +
-                "y=7, x=495..501\n" +
-                "x=501, y=3..7\n" +
-                "x=498, y=2..4\n" +
-                "x=506, y=1..2\n" +
-                "x=498, y=10..13\n" +
-                "x=504, y=10..13\n" +
-                "y=13, x=498..504"))
+    fun part2Sample() {
+        assertEquals(29, retainedWater(
+            """x=495, y=2..7
+y=7, x=495..501
+x=501, y=3..7
+x=498, y=2..4
+x=506, y=1..2
+x=498, y=10..13
+x=504, y=10..13
+y=13, x=498..504"""
+        ))
     }
 
     @Test
     fun urnInUrn() {
-        assertEquals(80, countTilesReachWater("x=495, y=2..10\n" +
-                "x=505, y=1..10\n" +
-                "y=10, x=495..505\n" +
-                "x=498, y=4..8\n" +
-                "x=502, y=5..8\n" +
-                "y=8, x=498..502"))
+        assertEquals(80, countTilesReachWater(
+            """x=495, y=2..10
+x=505, y=1..10
+y=10, x=495..505
+x=498, y=4..8
+x=502, y=5..8
+y=8, x=498..502"""
+        ))
     }
 
     @Test

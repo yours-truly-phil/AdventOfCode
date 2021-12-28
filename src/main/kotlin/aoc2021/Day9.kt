@@ -6,13 +6,13 @@ import kotlin.test.assertEquals
 
 class Day9 {
     private fun sumLowPoints(input: String): Int {
-        val arr = input.lines().map { line -> line.toCharArray().map { it.toInt() - 48 } }
+        val arr = input.lines().map { line -> line.toCharArray().map { it.code - 48 } }
         val map = Map(arr)
         return map.getLowPoints().sumOf { map.map[it]!! + 1 }
     }
 
     private fun threeLargestBasins(input: String): Int {
-        val arr = input.lines().map { line -> line.toCharArray().map { it.toInt() - 48 } }
+        val arr = input.lines().map { line -> line.toCharArray().map { it.code - 48 } }
         val map = Map(arr)
         val lowPoints = map.getLowPoints()
         val basins = map.getBasins(lowPoints).sortedByDescending { it.size }

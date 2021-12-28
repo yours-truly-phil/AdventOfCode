@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 
 class Day18 {
 
-    fun noSaveTiles(input: String, row: Int): Int {
+    private fun noSaveTiles(input: String, row: Int): Int {
         var cur = input
         var count = input.filter { it == '.' }.length
         repeat(row - 1) {
@@ -15,7 +15,7 @@ class Day18 {
         return count
     }
 
-    fun nextRow(row: String): String {
+    private fun nextRow(row: String): String {
         val trapPatterns = arrayOf("^^.", ".^^", "^..", "..^")
         val tr = ".$row."
         val sb = StringBuilder()

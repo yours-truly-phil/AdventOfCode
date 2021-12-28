@@ -54,7 +54,7 @@ class Day4 {
         fun hasWon(): Boolean = board.any { it.all(Cell::isChecked) }
                 || (board.indices).any { board.all { row -> row[it].isChecked } }
 
-        fun getSumUnchecked(): Int = board.sumBy { it.filterNot(Cell::isChecked).sumOf(Cell::num) }
+        fun getSumUnchecked(): Int = board.sumOf { it.filterNot(Cell::isChecked).sumOf(Cell::num) }
 
         fun check(num: Int): Boolean {
             outer@ for (row in board) {

@@ -5,7 +5,7 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day7 {
-    fun instructionOrder(input: String): String {
+    private fun instructionOrder(input: String): String {
         val order = getNodesInOrder(input)
         return order.joinToString("") { it.id }
     }
@@ -133,24 +133,27 @@ class Day7 {
 
     @Test
     fun sample() {
-        assertEquals("CABDFE", instructionOrder("Step C must be finished before step A can begin.\n" +
-                "Step C must be finished before step F can begin.\n" +
-                "Step A must be finished before step B can begin.\n" +
-                "Step A must be finished before step D can begin.\n" +
-                "Step B must be finished before step E can begin.\n" +
-                "Step D must be finished before step E can begin.\n" +
-                "Step F must be finished before step E can begin."))
+        assertEquals("CABDFE", instructionOrder(
+            """Step C must be finished before step A can begin.
+Step C must be finished before step F can begin.
+Step A must be finished before step B can begin.
+Step A must be finished before step D can begin.
+Step B must be finished before step E can begin.
+Step D must be finished before step E can begin.
+Step F must be finished before step E can begin."""
+        ))
     }
 
     @Test
-    fun `part 2 sample`() {
-        assertEquals(15, totalDuration("Step C must be finished before step A can begin.\n" +
-                "Step C must be finished before step F can begin.\n" +
-                "Step A must be finished before step B can begin.\n" +
-                "Step A must be finished before step D can begin.\n" +
-                "Step B must be finished before step E can begin.\n" +
-                "Step D must be finished before step E can begin.\n" +
-                "Step F must be finished before step E can begin.", 2, 0))
+    fun part2Sample() {
+        assertEquals(15, totalDuration(
+            """Step C must be finished before step A can begin.
+Step C must be finished before step F can begin.
+Step A must be finished before step B can begin.
+Step A must be finished before step D can begin.
+Step B must be finished before step E can begin.
+Step D must be finished before step E can begin.
+Step F must be finished before step E can begin.""", 2, 0))
     }
 
     @Test
@@ -158,7 +161,7 @@ class Day7 {
         assertEquals("IBJTUWGFKDNVEYAHOMPCQRLSZX", instructionOrder(File("files/2018/day7.txt").readText()))
     }
 
-    fun totalDuration(input: String, workers: Int, minDur: Int): Int {
+    private fun totalDuration(input: String, workers: Int, minDur: Int): Int {
         val times = "_ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         val nodes = getNodesInOrder(input)
         val noNodes = nodes.size

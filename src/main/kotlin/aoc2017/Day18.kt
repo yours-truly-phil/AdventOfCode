@@ -149,7 +149,7 @@ class Day18 {
     }
 
     @Test
-    fun `part 2 sample`() {
+    fun part2Sample() {
         assertEquals(3, countSendOnes("snd 1\n" +
                 "snd 2\n" +
                 "snd p\n" +

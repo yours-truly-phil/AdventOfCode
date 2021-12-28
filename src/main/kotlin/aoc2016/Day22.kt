@@ -5,15 +5,12 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day22 {
-    private fun countViablePairs(input: String): Int =
-        pairs(parseNodes(input)).filter {
-            it.first.used > 0 &&
-                    it.first.loc != it.second.loc &&
-                    it.second.avail() >= it.first.used
-        }.count()
+    private fun countViablePairs(input: String): Int = pairs(parseNodes(input)).count {
+        it.first.used > 0 && it.first.loc != it.second.loc && it.second.avail() >= it.first.used
+    }
 
     private fun minNumSteps(input: String, to: Loc, from: Loc): Int {
-        val grid = parseNodes(input).map { it.loc to it }.toMap()
+        val grid = parseNodes(input).associateBy { it.loc }
         val maxY = grid.values.maxOf { it.loc.y }
         val maxX = grid.values.maxOf { it.loc.x }
         printGrid(maxY, maxX, grid, to, from)
@@ -82,18 +79,15 @@ class Day22 {
     }
 
     private fun parseNodes(input: String): List<Node> =
-        input.lines().subList(2, input.lines().size)
-            .map { it.replace(" +".toRegex(), " ") }
-            .map { Node(it) }
+        input.lines().subList(2, input.lines().size).map { it.replace(" +".toRegex(), " ") }.map { Node(it) }
 
-    private fun pairs(nodes: List<Node>): List<Pair<Node, Node>> =
-        ArrayList<Pair<Node, Node>>().apply {
-            for (node in nodes) {
-                for (other in nodes) {
-                    add(Pair(node, other))
-                }
+    private fun pairs(nodes: List<Node>): List<Pair<Node, Node>> = ArrayList<Pair<Node, Node>>().apply {
+        for (node in nodes) {
+            for (other in nodes) {
+                add(Pair(node, other))
             }
         }
+    }
 
     class Node(input: String) {
         val loc: Loc
@@ -102,8 +96,7 @@ class Day22 {
         var used: Int
 
         init {
-            input.split(" ")
-                .also {
+            input.split(" ").also {
                     loc = parseLoc(it[0])
                     size = it[1].substring(0, it[1].length - 1).toInt()
                     used = it[2].substring(0, it[2].length - 1).toInt()
@@ -112,11 +105,11 @@ class Day22 {
 
         fun avail(): Int = size - used
 
-        fun parseLoc(input: String): Loc {
-            input.split("-")
-                .also {
-                    return Loc(it[1].substring(1).toInt(),
-                        it[2].substring(1).toInt())
+        private fun parseLoc(input: String): Loc {
+            input.split("-").also {
+                    return Loc(
+                        it[1].substring(1).toInt(), it[2].substring(1).toInt()
+                    )
                 }
         }
 
@@ -158,14 +151,17 @@ class Day22 {
 
     @Test
     fun part1() {
-        assertEquals(872,
-            countViablePairs(File("files/2016/day22.txt").readText()))
+        assertEquals(
+            872, countViablePairs(File("files/2016/day22.txt").readText())
+        )
     }
 
     @Test
     fun part2() {
-        assertEquals(211,
-            minNumSteps(File("files/2016/day22.txt").readText(),
-                Loc(0, 0), Loc(31, 0)))
+        assertEquals(
+            211, minNumSteps(
+                File("files/2016/day22.txt").readText(), Loc(0, 0), Loc(31, 0)
+            )
+        )
     }
 }

@@ -10,6 +10,14 @@ class Day24 {
         val poi = parsed.first
         val map = parsed.second
         val perms = permutationsOfPointsOfInterest(poi).filter { it[0] == '1' }
+        return getMin(perms, map, poi)
+    }
+
+    private fun getMin(
+        perms: List<String>,
+        map: Array<IntArray>,
+        poi: HashMap<Int, Loc>
+    ): Int {
         var min = Int.MAX_VALUE
         for (perm in perms) {
             var totalSteps = 0
@@ -28,17 +36,7 @@ class Day24 {
         val poi = parsed.first
         val map = parsed.second
         val perms = permutationsOfPointsOfInterest(poi).filter { it[0] == '1' }.map { it + "1" }
-        var min = Int.MAX_VALUE
-        for (perm in perms) {
-            var totalSteps = 0
-            for (i in 0 until perm.length - 1) {
-                val locFrom = perm[i].toString().toInt()
-                val locTo = perm[i + 1].toString().toInt()
-                totalSteps += shortestPath(map, poi[locFrom]!!, poi[locTo]!!)
-            }
-            min = minOf(min, totalSteps)
-        }
-        return min
+        return getMin(perms, map, poi)
     }
 
     private fun permutationsOfPointsOfInterest(poi: Map<Int, Loc>): ArrayList<String> {

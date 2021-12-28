@@ -2,7 +2,6 @@ package aoc2020
 
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 import java.util.function.Predicate
 
 fun main() {
@@ -12,8 +11,8 @@ fun main() {
 fun runDay4() {
     val lines = File("files/2020/day4.txt").readLines()
 
-    println("day4part1=${micros(Callable { day4part1(lines) })}")
-    println("day4part2=${micros(Callable { day4part2(lines) })}")
+    println("day4part1=${micros { day4part1(lines) }}")
+    println("day4part2=${micros { day4part2(lines) }}")
 }
 
 val passportChecks = listOf<Pair<String, Predicate<String>>>(

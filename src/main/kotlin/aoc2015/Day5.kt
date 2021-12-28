@@ -16,7 +16,7 @@ class Day5(path: String) {
     private val illegalStrings = arrayOf("ab", "cd", "pq", "xy")
 
     fun part1(): Int {
-        return lines.filter { isValid(it) }.count()
+        return lines.count { isValid(it) }
     }
 
     private fun isValid(str: String): Boolean {
@@ -37,7 +37,7 @@ class Day5Part2(path: String) {
     val lines = File(path).readLines()
 
     fun part2(): Int {
-        return lines.filter { isValid(it) }.count()
+        return lines.count { isValid(it) }
     }
 
     private fun isValid(str: String): Boolean {

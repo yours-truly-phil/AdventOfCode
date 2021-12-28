@@ -2,7 +2,6 @@ package aoc2020
 
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 
 fun main() {
     runDay6()
@@ -11,8 +10,8 @@ fun main() {
 fun runDay6() {
     val content = File("files/2020/day6.txt").readText()
 
-    println("day6part1=${micros(Callable { day6part1(content) })}")
-    println("day6part2=${micros(Callable { day6part2(content) })}")
+    println("day6part1=${micros { day6part1(content) }}")
+    println("day6part2=${micros { day6part2(content) }}")
 }
 
 fun day6part1(content: String): Long {

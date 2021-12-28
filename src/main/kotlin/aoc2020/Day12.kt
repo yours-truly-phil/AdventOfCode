@@ -2,7 +2,6 @@ package aoc2020
 
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -15,9 +14,9 @@ fun main() {
 fun runDay12() {
     val lines = File("files/2020/day12.txt").readLines()
     val day12 = Day12()
-    println("day12part1=${micros(Callable { day12.part1(lines) })}")
+    println("day12part1=${micros { day12.part1(lines) }}")
     val day12part2 = Day12Part2()
-    println("day12part2=${micros(Callable { day12part2.part2(lines) })}")
+    println("day12part2=${micros { day12part2.part2(lines) }}")
 }
 
 class Day12 {
@@ -69,7 +68,7 @@ class Day12Part2 {
     fun part2(lines: List<String>): Int {
         val ship = Ship()
         moveShip(lines, ship)
-        return ship.pos.manhattenDistance()
+        return ship.pos.manhattanDistance()
     }
 
     private fun moveShip(lines: List<String>, ship: Ship) {
@@ -96,7 +95,7 @@ class Day12Part2 {
             y = ry.roundToInt()
         }
 
-        fun manhattenDistance(): Int {
+        fun manhattanDistance(): Int {
             return x.absoluteValue + y.absoluteValue
         }
     }

@@ -4,14 +4,14 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day14 {
-    val day10 = Day10()
+    private val day10 = Day10()
     private fun usedSquares(input: String): Int =
-        constructGrid(input).map { it.filter { c -> c == '1' }.count() }.sum()
+        constructGrid(input).sumOf { it.count { c -> c == '1' } }
 
-    fun hashToBinary(s: String): String =
+    private fun hashToBinary(s: String): String =
         day10.knotHash(s).toBigInteger(16).toString(2).padStart(128, '0')
 
-    fun countRegions(input: String): Int {
+    private fun countRegions(input: String): Int {
         val grid = constructGrid(input)
             .mapIndexed { iRow, row ->
                 row.mapIndexed { iCol, c -> Pos(iRow, iCol, c == '1') }.toTypedArray()
@@ -43,13 +43,13 @@ class Day14 {
 
     data class Pos(val x: Int, val y: Int, val square: Boolean)
 
-    fun constructGrid(input: String): ArrayList<String> {
+    private fun constructGrid(input: String): ArrayList<String> {
         return ArrayList<String>()
             .apply { (0 until 128).mapTo(this) { hashToBinary("$input-$it") } }
     }
 
     @Test
-    fun `hash to binary`() {
+    fun hashToBinary() {
         assertEquals("1101010011110111" +
                 "0110101111011100" +
                 "1011111110000011" +
@@ -57,7 +57,8 @@ class Day14 {
                 "0001011011001100" +
                 "1111101010001011" +
                 "1100011011010001" +
-                "1111100111100110", hashToBinary("flqrgnkx-0"))
+                "1111100111100110", hashToBinary("flqrgnkx-0")
+        )
     }
 
     @Test
@@ -71,7 +72,7 @@ class Day14 {
     }
 
     @Test
-    fun `part 2 sample()`() {
+    fun part2Sample() {
         assertEquals(1242, countRegions("flqrgnkx"))
     }
 

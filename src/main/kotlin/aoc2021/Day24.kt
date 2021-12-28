@@ -6,351 +6,351 @@ import java.lang.Character.getNumericValue
 import kotlin.test.assertEquals
 
 class Day24 {
-    private fun playground(
-        n0: Int,
-        n1: Int,
-        n2: Int,
-        n3: Int,
-        n4: Int,
-        n5: Int,
-        n6: Int,
-        n7: Int,
-        n8: Int,
-        n9: Int,
-        n10: Int,
-        n11: Int,
-        n12: Int,
-        n13: Int
-    ): Int {
+//    private fun playground(
+//        n0: Int,
+//        n1: Int,
+//        n2: Int,
+//        n3: Int,
+//        n4: Int,
+//        n5: Int,
+//        n6: Int,
+//        n7: Int,
+//        n8: Int,
+//        n9: Int,
+//        n10: Int,
+//        n11: Int,
+//        n12: Int,
+//        n13: Int
+//    ): Int {
+//
+////        var x = 0
+////        var y = 0
+////        var z = 0
+////        var w = 0
+//
+//        //inp w => n0
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 1
+//        //add x 13
+//        //eql x w
+//        //eql x 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 0
+//        //mul y x
+//        //add z y
+////        val z0 = n0
+//
+//        //inp w => n1
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 1
+//        //add x 11
+//        //eql x w
+//        //eql x 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 3
+//        //mul y x
+//        //add z y
+////        val z1 = z0 * 26 + n1 + 3
+//
+//        //inp w => n2
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 1
+//        //add x 14
+//        //eql x w
+//        //eql x 0
+////        x = 1
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 8
+//        //mul y x
+//        //add z y
+////        z = (n0 * 26 + n1 + 3) * 26 + n2 + 8
+////        val z2 = (n0 * 26 + n1 + 3) * 26 + n2 + 8
+//
+//        //inp w => n3
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 26
+//        //add x -5
+//        //eql x w
+//        //eql x 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 5
+//        //mul y x
+////        y = (n3 + 5) * if ((n2 + 3) != n3) 1 else 0
+//        //add z y
+//        /**
+//         * should n3 be 3 larger than n2?
+//         */
+//        val z3 =
+//            (((n0 * 26 + n1 + 3) * 26 + n2 + 8) / 26) * (25 * (if ((n2 + 3) != n3) 1 else 0) + 1) + (n3 + 5) * if ((n2 + 3) != n3) 1 else 0
+//
+//        //inp w => n4
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 1
+//        //add x 14
+//        //eql x w
+//        //eql x 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 13
+//        //mul y x
+//        //add z y
+//        val z4 = z3 * 26 + n4 + 13
+//
+//        //inp w => n5
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 1
+//        //add x 10
+//        //eql x w
+//        //eql x 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 9
+//        //mul y x
+//        //add z y
+//        val z5 = z4 * 26 + n5 + 9
+//
+//        //inp w => n6
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 1
+//        //add x 12
+//        //eql x w
+//        //eql x 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 6
+//        //mul y x
+//        //add z y
+//        val z6 = z5 * 26 + n6 + 6
+//
+//        //inp w => n7
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 26
+//        //add x -14
+//        //eql x w
+//        //eql x 0
+////        x = if (z6 % 26 - 14 != n7) 1 else 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 1
+//        //mul y x
+//        //add z y
+//        val z7 = (z6 / 26) * (25 * (if (z6 % 26 - 14 != n7) 1 else 0) + 1) + (n7 + 1) * if (z6 % 26 - 14 != n7) 1 else 0
+//
+//        //inp w => n8
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 26
+//        //add x -8
+//        //eql x w
+//        //eql x 0
+////        x = if (z7 % 26 - 8 != n8) 1 else 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 1
+//        //mul y x
+//        //add z y
+//        val z8 = (z7 / 26) * (25 * (if (z7 % 26 - 8 != n8) 1 else 0) + 1) + (n8 + 1) * if (z7 % 26 - 8 != n8) 1 else 0
+//
+//        //inp w => n9
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 1
+//        //add x 13
+//        //eql x w
+//        //eql x 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 2
+//        //mul y x
+//        //add z y
+////        val z9 = z8 * 26 + n9 + 2
+//
+//        //inp w => n10
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+////        x = (z8 * 26 + n9 + 2) % 26
+////        x = (n9 + 2) % 26
+//        //div z 26
+////        z = (z8 * 26 + n9 + 2) / 26
+////        z = z8
+//        //add x 0
+//        //eql x w
+//        //eql x 0
+////        x = if ((n9 + 2) % 26 != n10) 1 else 0
+//        /**
+//         * should n10 be 2 larger than n9?
+//         */
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+////        z = z8 * (25 * (if ((n9 + 2) % 26 != n10) 1 else 0) + 1)
+//        //mul y 0
+//        //add y w
+//        //add y 7
+//        //mul y x
+////        y = (n10 + 7) * if ((n9 + 2) % 26 != n10) 1 else 0
+//        //add z y
+//        val z10 = z8 * (25 * (if ((n9 + 2) % 26 != n10) 1 else 0) + 1) + (n10 + 7) * if ((n9 + 2) % 26 != n10) 1 else 0
+//
+//        //inp w => n11
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 26
+////        z = z10 / 26
+//        //add x -5
+//        //eql x w
+//        //eql x 0
+////        x = if (z10 % 26 - 5 != n11) 1 else 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+////        z = (z10 / 26) * (25 * (if (z10 % 26 - 5 != n11) 1 else 0) + 1)
+//        //mul y 0
+//        //add y w
+//        //add y 5
+//        //mul y x
+////        y = (n11 + 5) * if (z10 % 26 - 5 != n11) 1 else 0
+//        //add z y
+//        val z11 =
+//            (z10 / 26) * (25 * (if (z10 % 26 - 5 != n11) 1 else 0) + 1) + (n11 + 5) * if (z10 % 26 - 5 != n11) 1 else 0
+//
+//        //inp w => n12
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 26
+////        z = z11 / 26
+//        //add x -9
+//        //eql x w
+//        //eql x 0
+////        x = if (z11 % 26 - 9 != n12) 1 else 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+//        //mul y 0
+//        //add y w
+//        //add y 8
+//        //mul y x
+//        //add z y
+//
+//        val z12 =
+//            z11 / 26 * (25 * (if (z11 % 26 - 9 != n12) 1 else 0) + 1) + (n12 + 8) * if (z11 % 26 - 9 != n12) 1 else 0
+//
+//        //inp w => n13
+//        //mul x 0
+//        //add x z
+//        //mod x 26
+//        //div z 26
+////        z = z12 / 26
+//        //add x -1
+//        //eql x w
+//        //eql x 0
+////        x = if (z12 % 26 - 1 != n13) 1 else 0
+//        //mul y 0
+//        //add y 25
+//        //mul y x
+//        //add y 1
+//        //mul z y
+////        z = z12 / 26 * (25 * (if (z12 % 26 - 1 != n13) 1 else 0) + 1)
+//        //mul y 0
+//        //add y w
+//        //add y 15
+//        //mul y x
+////        y = (n13 + 15) * if (z12 % 26 - 1 != n13) 1 else 0
+//        //add z y
+//        val z13 = z12 / 26 * (25 * (if (z12 % 26 - 1 != n13) 1 else 0) + 1) + (n13 + 15) * if (z12 % 26 - 1 != n13) 1 else 0
+//        // if (z12 % 26 - 1 != n13)
+////        z = z12 + n13 + 15 // won't be null so
+//        // z12 % 26 - 1 == n13
+//        /**
+//         * n13 = z12 % 26 - 1
+//         */
+////        val z13 = z12 / 26
+//
+//        return z13
+//    }
 
-//        var x = 0
-//        var y = 0
-//        var z = 0
-//        var w = 0
-
-        //inp w => n0
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 1
-        //add x 13
-        //eql x w
-        //eql x 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 0
-        //mul y x
-        //add z y
-//        val z0 = n0
-
-        //inp w => n1
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 1
-        //add x 11
-        //eql x w
-        //eql x 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 3
-        //mul y x
-        //add z y
-//        val z1 = z0 * 26 + n1 + 3
-
-        //inp w => n2
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 1
-        //add x 14
-        //eql x w
-        //eql x 0
-//        x = 1
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 8
-        //mul y x
-        //add z y
-//        z = (n0 * 26 + n1 + 3) * 26 + n2 + 8
-//        val z2 = (n0 * 26 + n1 + 3) * 26 + n2 + 8
-
-        //inp w => n3
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 26
-        //add x -5
-        //eql x w
-        //eql x 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 5
-        //mul y x
-//        y = (n3 + 5) * if ((n2 + 3) != n3) 1 else 0
-        //add z y
-        /**
-         * should n3 be 3 larger than n2?
-         */
-        val z3 =
-            (((n0 * 26 + n1 + 3) * 26 + n2 + 8) / 26) * (25 * (if ((n2 + 3) != n3) 1 else 0) + 1) + (n3 + 5) * if ((n2 + 3) != n3) 1 else 0
-
-        //inp w => n4
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 1
-        //add x 14
-        //eql x w
-        //eql x 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 13
-        //mul y x
-        //add z y
-        val z4 = z3 * 26 + n4 + 13
-
-        //inp w => n5
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 1
-        //add x 10
-        //eql x w
-        //eql x 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 9
-        //mul y x
-        //add z y
-        val z5 = z4 * 26 + n5 + 9
-
-        //inp w => n6
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 1
-        //add x 12
-        //eql x w
-        //eql x 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 6
-        //mul y x
-        //add z y
-        val z6 = z5 * 26 + n6 + 6
-
-        //inp w => n7
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 26
-        //add x -14
-        //eql x w
-        //eql x 0
-//        x = if (z6 % 26 - 14 != n7) 1 else 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 1
-        //mul y x
-        //add z y
-        val z7 = (z6 / 26) * (25 * (if (z6 % 26 - 14 != n7) 1 else 0) + 1) + (n7 + 1) * if (z6 % 26 - 14 != n7) 1 else 0
-
-        //inp w => n8
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 26
-        //add x -8
-        //eql x w
-        //eql x 0
-//        x = if (z7 % 26 - 8 != n8) 1 else 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 1
-        //mul y x
-        //add z y
-        val z8 = (z7 / 26) * (25 * (if (z7 % 26 - 8 != n8) 1 else 0) + 1) + (n8 + 1) * if (z7 % 26 - 8 != n8) 1 else 0
-
-        //inp w => n9
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 1
-        //add x 13
-        //eql x w
-        //eql x 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 2
-        //mul y x
-        //add z y
-//        val z9 = z8 * 26 + n9 + 2
-
-        //inp w => n10
-        //mul x 0
-        //add x z
-        //mod x 26
-//        x = (z8 * 26 + n9 + 2) % 26
-//        x = (n9 + 2) % 26
-        //div z 26
-//        z = (z8 * 26 + n9 + 2) / 26
-//        z = z8
-        //add x 0
-        //eql x w
-        //eql x 0
-//        x = if ((n9 + 2) % 26 != n10) 1 else 0
-        /**
-         * should n10 be 2 larger than n9?
-         */
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-//        z = z8 * (25 * (if ((n9 + 2) % 26 != n10) 1 else 0) + 1)
-        //mul y 0
-        //add y w
-        //add y 7
-        //mul y x
-//        y = (n10 + 7) * if ((n9 + 2) % 26 != n10) 1 else 0
-        //add z y
-        val z10 = z8 * (25 * (if ((n9 + 2) % 26 != n10) 1 else 0) + 1) + (n10 + 7) * if ((n9 + 2) % 26 != n10) 1 else 0
-
-        //inp w => n11
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 26
-//        z = z10 / 26
-        //add x -5
-        //eql x w
-        //eql x 0
-//        x = if (z10 % 26 - 5 != n11) 1 else 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-//        z = (z10 / 26) * (25 * (if (z10 % 26 - 5 != n11) 1 else 0) + 1)
-        //mul y 0
-        //add y w
-        //add y 5
-        //mul y x
-//        y = (n11 + 5) * if (z10 % 26 - 5 != n11) 1 else 0
-        //add z y
-        val z11 =
-            (z10 / 26) * (25 * (if (z10 % 26 - 5 != n11) 1 else 0) + 1) + (n11 + 5) * if (z10 % 26 - 5 != n11) 1 else 0
-
-        //inp w => n12
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 26
-//        z = z11 / 26
-        //add x -9
-        //eql x w
-        //eql x 0
-//        x = if (z11 % 26 - 9 != n12) 1 else 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-        //mul y 0
-        //add y w
-        //add y 8
-        //mul y x
-        //add z y
-
-        val z12 =
-            z11 / 26 * (25 * (if (z11 % 26 - 9 != n12) 1 else 0) + 1) + (n12 + 8) * if (z11 % 26 - 9 != n12) 1 else 0
-
-        //inp w => n13
-        //mul x 0
-        //add x z
-        //mod x 26
-        //div z 26
-//        z = z12 / 26
-        //add x -1
-        //eql x w
-        //eql x 0
-//        x = if (z12 % 26 - 1 != n13) 1 else 0
-        //mul y 0
-        //add y 25
-        //mul y x
-        //add y 1
-        //mul z y
-//        z = z12 / 26 * (25 * (if (z12 % 26 - 1 != n13) 1 else 0) + 1)
-        //mul y 0
-        //add y w
-        //add y 15
-        //mul y x
-//        y = (n13 + 15) * if (z12 % 26 - 1 != n13) 1 else 0
-        //add z y
-        val z13 = z12 / 26 * (25 * (if (z12 % 26 - 1 != n13) 1 else 0) + 1) + (n13 + 15) * if (z12 % 26 - 1 != n13) 1 else 0
-        // if (z12 % 26 - 1 != n13)
-//        z = z12 + n13 + 15 // won't be null so
-        // z12 % 26 - 1 == n13
-        /**
-         * n13 = z12 % 26 - 1
-         */
-//        val z13 = z12 / 26
-
-        return z13
-    }
-
-    fun part1Disassembled(
+    private fun part1Disassembled(
         n0: Int,
         n1: Int,
         n2: Int,
@@ -381,11 +381,10 @@ class Day24 {
             z11 / 26 * (25 * (if (z11 % 26 - 9 != n12) 1 else 0) + 1) + (n12 + 8) * if (z11 % 26 - 9 != n12) 1 else 0
 //        return z12 / 26
 
-        val z13 = z12 / 26 * (25 * (if (z12 % 26 - 1 != n13) 1 else 0) + 1) + (n13 + 15) * if (z12 % 26 - 1 != n13) 1 else 0
-        return z13
+        return z12 / 26 * (25 * (if (z12 % 26 - 1 != n13) 1 else 0) + 1) + (n13 + 15) * if (z12 % 26 - 1 != n13) 1 else 0
     }
 
-    fun solvePart1DisAssembled(): String {
+    private fun solvePart1DisAssembled(): String {
         for (n0 in 9 downTo 1) {
             for (n1 in 9 downTo 1) {
                 for (n2 in 6 downTo 1) {
@@ -436,7 +435,7 @@ class Day24 {
         throw IllegalStateException("No solution found")
     }
 
-    fun solvePart2DisAssembled(): String {
+    private fun solvePart2DisAssembled(): String {
         for (n0 in 1.. 9) {
             for (n1 in 1..9) {
                 for (n2 in 1..6) {
@@ -490,7 +489,7 @@ class Day24 {
     }
 
     class MONAD(modelNum: String, input: List<String>) {
-        var remain = modelNum
+        private var remain = modelNum
         val v = Vec4i(0, 0, 0, 0)
 
         val p = input.forEach {

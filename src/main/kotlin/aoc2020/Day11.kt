@@ -3,7 +3,6 @@ package aoc2020
 import aoc2020.Day11.SeatType.*
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 
 fun main() {
     runDay11()
@@ -13,7 +12,7 @@ fun runDay11() {
     val lines = File("files/2020/day11.txt").readLines()
 
     val day11 = Day11()
-    println("day11part1=${micros(Callable { day11.day11part1(lines) })}")
+    println("day11part1=${micros { day11.day11part1(lines) }}")
 }
 
 class Day11 {

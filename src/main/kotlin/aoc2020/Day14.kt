@@ -3,8 +3,6 @@ package aoc2020
 import micros
 import java.io.File
 import java.util.*
-import java.util.concurrent.Callable
-import kotlin.collections.HashMap
 
 fun main() {
     runDay14()
@@ -13,8 +11,8 @@ fun main() {
 fun runDay14() {
     val lines = File("files/2020/day14.txt").readLines()
 
-    println("day14part1=${micros(Callable { day14part1(lines) })}")
-    println("day14part2=${micros(Callable { day14part2(lines) })}")
+    println("day14part1=${micros { day14part1(lines) }}")
+    println("day14part2=${micros { day14part2(lines) }}")
 }
 
 fun day14part1(lines: List<String>): Long {

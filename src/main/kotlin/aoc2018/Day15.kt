@@ -5,8 +5,8 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day15 {
-    fun outcome(input: String): Int {
-        val (map, units) = parse(input)
+    private fun outcome(input: String): Int {
+        val (map, units) = init(input, 3)
         var oldState = printState(map, units)
         println(oldState)
 
@@ -72,7 +72,7 @@ class Day15 {
         return Pair(elfsDie, rounds * units.filter { !it.isDead() }.sumOf { it.hp })
     }
 
-    private fun init(input: String, ap: Int): Pair<Array<CharArray>, ArrayList<Entity>> {
+    private fun init(input: String, ap: Int = 3): Pair<Array<CharArray>, ArrayList<Entity>> {
         val lines = input.lines()
         val height = lines.size
         val width = lines.maxOf { it.length }
@@ -97,34 +97,9 @@ class Day15 {
         return Pair(map, units)
     }
 
-    private fun parse(input: String): Pair<Array<CharArray>, ArrayList<Entity>> {
-        val lines = input.lines()
-        val height = lines.size
-        val width = lines.maxOf { it.length }
-        val map = Array(height) { CharArray(width) }
-        val units = ArrayList<Entity>()
-        lines.forEachIndexed { y, row ->
-            row.forEachIndexed { x, c ->
-                when (c) {
-                    '#' -> map[y][x] = '#'
-                    '.' -> map[y][x] = '.'
-                    'G' -> {
-                        map[y][x] = '.'
-                        units += Entity(this, V2i(x, y), 200, 3, 'G')
-                    }
-                    'E' -> {
-                        map[y][x] = '.'
-                        units += Entity(this, V2i(x, y), 200, 3, 'E')
-                    }
-                }
-            }
-        }
-        return Pair(map, units)
-    }
-
     private fun printState(map: Array<CharArray>, units: ArrayList<Entity>): String {
         val sb = StringBuilder()
-        val unitLocs = units.filter { !it.isDead() }.map { it.loc to it }.toMap()
+        val unitLocs = units.filter { !it.isDead() }.associateBy { it.loc }
         map.forEachIndexed { y, row ->
             row.forEachIndexed { x, c ->
                 when {
@@ -139,15 +114,14 @@ class Day15 {
         return sb.toString()
     }
 
-    class Entity(val p: Day15, val loc: V2i, var hp: Int, var ap: Int, val type: Char) : Comparable<Entity> {
+    class Entity(val p: Day15, val loc: V2i, var hp: Int, private var ap: Int, val type: Char) : Comparable<Entity> {
         fun isDead(): Boolean = hp <= 0
 
         fun step(map: Array<CharArray>, units: List<Entity>): Boolean {
             val others = units.filter { it != this }.toSet()
 
             val enemyLocs = others.filter { it.type == if (type == 'G') 'E' else 'G' }
-                .filter { !it.isDead() }
-                .map { it.loc to it }.toMap()
+                .filter { !it.isDead() }.associateBy { it.loc }
 
             move(others, map, enemyLocs)
 
@@ -273,31 +247,37 @@ class Day15 {
 
     @Test
     fun sample() {
-        assertEquals(39514, outcome("#######\n" +
-                "#E..EG#\n" +
-                "#.#G.E#\n" +
-                "#E.##E#\n" +
-                "#G..#.#\n" +
-                "#..E#.#\n" +
-                "#######"))
-        assertEquals(36334, outcome("#######\n" +
-                "#G..#E#\n" +
-                "#E#E.E#\n" +
-                "#G.##.#\n" +
-                "#...#E#\n" +
-                "#...E.#\n" +
-                "#######"))
+        assertEquals(39514, outcome(
+            """#######
+#E..EG#
+#.#G.E#
+#E.##E#
+#G..#.#
+#..E#.#
+#######"""
+        ))
+        assertEquals(36334, outcome(
+            """#######
+#G..#E#
+#E#E.E#
+#G.##.#
+#...#E#
+#...E.#
+#######"""
+        ))
     }
 
     @Test
-    fun `part 2 sample`() {
-        assertEquals(4988, lowestApOutcome("#######\n" +
-                "#.G...#\n" +
-                "#...EG#\n" +
-                "#.#.#G#\n" +
-                "#..G#E#\n" +
-                "#.....#\n" +
-                "#######"))
+    fun part2Sample() {
+        assertEquals(4988, lowestApOutcome(
+            """#######
+#.G...#
+#...EG#
+#.#.#G#
+#..G#E#
+#.....#
+#######"""
+        ))
     }
 
     @Test

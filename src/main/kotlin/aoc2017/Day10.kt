@@ -5,7 +5,7 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day10 {
-    fun mulTwoNumbers(input: String, size: Int): Int {
+    private fun mulTwoNumbers(input: String, size: Int): Int {
         val arr = IntArray(size).also { for (i in 0 until size) it[i] = i }
         val nums = input.split(",").map { it.toInt() }.toIntArray()
         var pos = 0
@@ -17,7 +17,8 @@ class Day10 {
         return arr[0] * arr[1]
     }
 
-    fun part2WithAsciiCodes(input: String, size: Int): String {
+    @Suppress("SameParameterValue")
+    private fun part2WithAsciiCodes(input: String, size: Int): String {
         return generateHash(size, input)
     }
 
@@ -51,7 +52,7 @@ class Day10 {
     }
 
     private fun toPart2ASCIIArr(input: String): IntArray {
-        val list = input.map { it.toInt() }.toMutableList()
+        val list = input.map { it.code }.toMutableList()
         list.addAll(listOf(17, 31, 73, 47, 23))
         return list.toIntArray()
     }
@@ -75,19 +76,19 @@ class Day10 {
     }
 
     @Test
-    fun `reduce part of array with xor`() {
+    fun reducePartOfArrayWithXor() {
         assertEquals(64, reduceSlice(intArrayOf(65, 27, 9, 1, 4, 3, 40, 50, 91, 7, 6, 0, 2, 5, 68, 22), 0, 15))
     }
 
     @Test
-    fun `byte to hex string with leading zeros`() {
+    fun byteToHexStringWithLeadingZeros() {
         assertEquals("00", shortToHex(0))
         assertEquals("0f", shortToHex(15))
         assertEquals("ff", shortToHex(255))
     }
 
     @Test
-    fun `part 2 samples()`() {
+    fun part2Samples() {
         assertEquals("a2582a3a0e66e6e86e3812dcb672a272", generateHash(256, ""))
         assertEquals("33efeb34ea91902bb2f59c9920caa6cd", generateHash(256, "AoC 2017"))
         assertEquals("3efbe78a8d82f29979031a4aa0b16a9d", generateHash(256, "1,2,3"))
@@ -101,13 +102,13 @@ class Day10 {
     }
 
     @Test
-    fun `to part 2 type ascii arr`() {
+    fun toPart2TypeAsciiArr() {
         val arr = toPart2ASCIIArr("1,2,3")
         assertEquals("49,44,50,44,51,17,31,73,47,23", arr.joinToString(","))
     }
 
     @Test
-    fun `reverse without overlap`() {
+    fun reverseWithoutOverlap() {
         val arr = intArrayOf(0, 1, 2, 3, 4)
         reverse(arr, 1, 3)
         assertEquals("0,3,2,1,4", arr.joinToString(","))
@@ -117,7 +118,7 @@ class Day10 {
     }
 
     @Test
-    fun `reverse with overlap`() {
+    fun reverseWithOverlap() {
         val arr = intArrayOf(2, 1, 0, 3, 4)
         reverse(arr, 3, 4)
         assertEquals("4,3,0,1,2", arr.joinToString(","))

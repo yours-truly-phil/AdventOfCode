@@ -138,9 +138,9 @@ class Day21 {
         var hp = 100
         val items = HashSet<Item>()
 
-        fun dmg(): Int = items.map { it.dps }.sum()
-        fun def(): Int = items.map { it.armor }.sum()
-        fun cost(): Int = items.map { it.cost }.sum()
+        fun dmg(): Int = items.sumOf { it.dps }
+        fun def(): Int = items.sumOf { it.armor }
+        fun cost(): Int = items.sumOf { it.cost }
     }
 
     data class Item(val name: String, val cost: Int, val dps: Int, val armor: Int)

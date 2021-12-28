@@ -5,7 +5,8 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day12 {
-    fun numProgramsWithId(input: String, id: Int): Int {
+    @Suppress("SameParameterValue")
+    private fun numProgramsWithId(input: String, id: Int): Int {
         val nodes = parse(input)
         val connected = HashSet<Int>().also { it.add(id) }
         val unchecked = HashSet<Int>().also { it.add(id) }
@@ -25,7 +26,7 @@ class Day12 {
         return connected.size
     }
 
-    fun noOfGroups(input: String): Int {
+    private fun noOfGroups(input: String): Int {
         val nodes = parse(input)
         var count = 0
         val notInGroup = ArrayDeque<Int>().also { it.addAll(nodes.keys) }
@@ -53,9 +54,9 @@ class Day12 {
     }
 
     private fun parse(input: String): Map<Int, ArrayList<Int>> {
-        val res = input.split("\n").map {
+        val res = input.split("\n").associate {
             it.substring(0, it.indexOf(" ")).toInt() to ArrayList<Int>()
-        }.toMap()
+        }
         input.split("\n").forEach {
             val num = it.substring(0, it.indexOf(" ")).toInt()
             it.split(" <-> ")[1].split(", ")
@@ -76,7 +77,7 @@ class Day12 {
     }
 
     @Test
-    fun `part 2 sample()`() {
+    fun part2Sample() {
         assertEquals(2, noOfGroups("0 <-> 2\n" +
                 "1 <-> 1\n" +
                 "2 <-> 0, 3, 4\n" +

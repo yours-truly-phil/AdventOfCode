@@ -87,7 +87,7 @@ class Day9 {
     }
 
     @Test
-    fun `count non-canceled characters within garbage`() {
+    fun countNonCanceledCharactersWithinGarbage() {
         assertEquals(0, nonCanceledGarbage("<>"))
         assertEquals(17, nonCanceledGarbage("<random characters>"))
         assertEquals(3, nonCanceledGarbage("<<<<>"))
@@ -98,7 +98,7 @@ class Day9 {
     }
 
     @Test
-    fun `count groups`() {
+    fun countGroups() {
         val counts = countGroups("{{{},{},{{}}}}")
         assertEquals(1, counts[1])
         assertEquals(1, counts[2])
@@ -107,26 +107,26 @@ class Day9 {
     }
 
     @Test
-    fun `cleanup trash`() {
+    fun cleanupTrash() {
         assertEquals("", cleanup("<{o\"i!a,<{i<a>"))
         assertEquals("", cleanup("<random characters>"))
         assertEquals("{{},{},{},{}}", cleanup("{{<ab>},{<ab>},{<ab>},{<ab>}}"))
     }
 
     @Test
-    fun `remove ignored chars`() {
+    fun removeIgnoredChars() {
         assertEquals("<!!>", removeIgnoredChars("<!!!>>"))
         assertEquals("<!>", removeIgnoredChars("<!!>"))
     }
 
     @Test
-    fun `remove exclamation mark`() {
+    fun removeExclamationMark() {
         assertEquals("<>", removeExclamation("<!>"))
         assertEquals("<>", removeExclamation("<!!>"))
     }
 
     @Test
-    fun `calculate score`() {
+    fun calculateScore() {
         assertEquals(1, totalScore("{}"))
         assertEquals(6, totalScore("{{{}}}"))
         assertEquals(5, totalScore("{{},{}}"))

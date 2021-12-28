@@ -2,7 +2,6 @@ package aoc2020
 
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 
 fun main() {
     runDay9()
@@ -11,8 +10,8 @@ fun main() {
 fun runDay9() {
     val nums = File("files/2020/day9.txt").readLines().map { it.toLong() }.toLongArray()
 
-    println("day9part1=${micros(Callable { day9part1(nums, 25) })}")
-    println("day9part2=${micros(Callable { day9part2(nums, 25) })}")
+    println("day9part1=${micros { day9part1(nums, 25) }}")
+    println("day9part2=${micros { day9part2(nums, 25) }}")
 }
 
 fun day9part1(arr: LongArray, range: Int): Long {

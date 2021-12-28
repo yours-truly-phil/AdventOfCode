@@ -4,10 +4,11 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day11 {
+    @Suppress("SameParameterValue")
     private fun posSquareMaxPower(serial: Int, gridSize: Int, squareSize: Int): String {
         val powerLvls = computePowerLvls(gridSize, serial)
 
-        var (maxIdx, maxPower) = maxPowerForSquareSize(powerLvls, squareSize)
+        val (maxIdx, maxPower) = maxPowerForSquareSize(powerLvls, squareSize)
         println("idx: $maxIdx total power: $maxPower")
         return maxIdx
     }
@@ -35,6 +36,7 @@ class Day11 {
         return Pair(maxIdx, maxPower)
     }
 
+    @Suppress("SameParameterValue")
     private fun maxSquare(serial: Int, gridSize: Int): String {
         val powerLvls = computePowerLvls(gridSize, serial)
 
@@ -63,7 +65,7 @@ class Day11 {
         return powerLvls
     }
 
-    fun powerLvl(pos: V2i, serial: Int): Int {
+    private fun powerLvl(pos: V2i, serial: Int): Int {
         val num = (((pos.x + 10) * pos.y + serial) * (pos.x + 10)).toString()
         return when {
             num.length < 3 -> -5
@@ -74,7 +76,7 @@ class Day11 {
     data class V2i(val x: Int, val y: Int)
 
     @Test
-    fun `calculate power lvl at pos`() {
+    fun calculatePowerLvlAtPos() {
         assertEquals(4, powerLvl(V2i(3, 5), 8))
         assertEquals(-5, powerLvl(V2i(122, 79), 57))
         assertEquals(0, powerLvl(V2i(217, 196), 39))
@@ -82,13 +84,13 @@ class Day11 {
     }
 
     @Test
-    fun `max power in 3x3 field`() {
+    fun maxPowerIn3x3Field() {
         assertEquals("33,45", posSquareMaxPower(18, 300, 3))
         assertEquals("21,61", posSquareMaxPower(42, 300, 3))
     }
 
     @Test
-    fun `max square`() {
+    fun maxSquare() {
         assertEquals("90,269,16", maxSquare(18, 300))
         assertEquals("232,251,12", maxSquare(42, 300))
     }

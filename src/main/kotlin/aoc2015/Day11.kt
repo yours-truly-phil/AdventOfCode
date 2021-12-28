@@ -1,6 +1,7 @@
 package aoc2015
 
 import java.io.File
+import java.util.*
 
 fun main() {
     Day11().also { println(it.part1(File("files/2015/day11.txt").readText())) }
@@ -38,7 +39,7 @@ class Day11 {
     private fun isValid(pw: String): Boolean {
         if (pw.length != 8) return false
         if (pw.contains("i") || pw.contains("o") || pw.contains("l")) return false
-        if (pw != pw.toLowerCase()) return false
+        if (pw != pw.lowercase(Locale.getDefault())) return false
         if (!threeInRow(pw)) return false
         if (!twoPairs(pw)) return false
 

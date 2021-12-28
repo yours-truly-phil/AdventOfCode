@@ -11,7 +11,7 @@ fun main() {
 
 class Day19(content: String) {
 
-    private val rulesMap: HashMap<Int, Rule>
+    private val rulesMap: Map<Int, Rule>
     private val codes: List<String>
 
     init {
@@ -19,10 +19,7 @@ class Day19(content: String) {
         val rulesPart = fileParts[0]
         codes = fileParts[1].lines()
 
-        rulesMap = HashMap()
-        rulesPart.lines()
-                .map { Rule(it) }
-                .map { it.no to it }.toMap(rulesMap)
+        rulesMap = rulesPart.lines().map { Rule(it) }.associateBy { it.no }
 
         for (rule in rulesMap.values) {
             for (listOfRuleNums in rule.links) {
@@ -71,8 +68,7 @@ class Day19(content: String) {
                 else -> {
                     parts = parts[1].split("|")
                     parts.mapTo(links) { nums ->
-                        nums.split(" ").filter { it.isNotEmpty() }
-                                .map { it.toInt() }.toList()
+                        nums.split(" ").filter { it.isNotEmpty() }.map { it.toInt() }.toList()
                     }
                 }
             }
@@ -105,8 +101,7 @@ class Day19(content: String) {
                     else -> {
                         res += rules.joinToString(separator = "|") { ruleList ->
                             "(${
-                                ruleList.map { it.toRegexPart2(rulesMap) }
-                                        .joinToString(separator = "") { it }
+                                ruleList.map { it.toRegexPart2(rulesMap) }.joinToString(separator = "") { it }
                             })"
                         }
                     }
@@ -117,14 +112,11 @@ class Day19(content: String) {
         }
 
         fun toRegex(rulesMap: Map<Int, Rule>): String {
-            return if (value.isNotEmpty()) {
-                value
-            } else {
+            return value.ifEmpty {
                 var res = "("
                 res += rules.joinToString(separator = "|") { ruleList ->
                     "(${
-                        ruleList.map { it.toRegex(rulesMap) }
-                                .joinToString(separator = "") { it }
+                        ruleList.map { it.toRegex(rulesMap) }.joinToString(separator = "") { it }
                     })"
                 }
                 res += ")"

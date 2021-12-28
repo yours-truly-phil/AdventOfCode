@@ -2,7 +2,6 @@ package aoc2020
 
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 
 fun main() {
     runDay17()
@@ -17,14 +16,14 @@ fun runDay17() {
     val dur = System.nanoTime() - start
     println("parsed world in ${dur / 1000}µs")
 
-    println("day17part1=${micros(Callable { day17part1(world, cycles) })}")
+    println("day17part1=${micros { day17part1(world, cycles) }}")
 }
 
 fun day17part1(world: World, cycles: Int): Int {
     for (i in 0 until cycles) {
         world.step()
     }
-    return world.worldMap.entries.filter { it.value.state[world.idx] }.count()
+    return world.worldMap.entries.count { it.value.state[world.idx] }
 }
 
 class World(val lines: List<String>, cycles: Int) {

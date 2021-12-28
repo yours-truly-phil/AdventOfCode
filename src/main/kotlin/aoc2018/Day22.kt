@@ -6,14 +6,14 @@ import kotlin.math.abs
 import kotlin.test.assertEquals
 
 class Day22 {
-    fun totalRiskLvl(depth: Int, target: V2i): Int {
+    private fun totalRiskLvl(depth: Int, target: V2i): Int {
         val map = parseMap(depth, target)
 
         println(mapToString(map, target))
         return totalRiskOfRect(map, V2i(0, 0), target)
     }
 
-    fun shortestPath(depth: Int, target: V2i): Int {
+    private fun shortestPath(depth: Int, target: V2i): Int {
         val map = parseMap(depth, target)
 
         val memo = HashMap<Pair<V2i, Gear>, Int>().also { it[Pair(V2i(0, 0), TORCH)] = 0 }
@@ -55,16 +55,16 @@ class Day22 {
     ) {
         when (map[next.loc]!!.type()) {
             '.' -> {
-                if (next.gear != TORCH) nextPossiblePaths += nextPath(next, target, TORCH)
-                else if (next.gear != CLIMB) nextPossiblePaths += nextPath(next, target, CLIMB)
+                nextPossiblePaths += if (next.gear != TORCH) nextPath(next, target, TORCH)
+                else nextPath(next, target, CLIMB)
             }
             '=' -> {
-                if (next.gear != CLIMB) nextPossiblePaths += nextPath(next, target, CLIMB)
-                else if (next.gear != NONE) nextPossiblePaths += nextPath(next, target, NONE)
+                nextPossiblePaths += if (next.gear != CLIMB) nextPath(next, target, CLIMB)
+                else nextPath(next, target, NONE)
             }
             '|' -> {
-                if (next.gear != TORCH) nextPossiblePaths += nextPath(next, target, TORCH)
-                else if (next.gear != NONE) nextPossiblePaths += nextPath(next, target, NONE)
+                nextPossiblePaths += if (next.gear != TORCH) nextPath(next, target, TORCH)
+                else nextPath(next, target, NONE)
             }
         }
     }
@@ -222,7 +222,7 @@ class Day22 {
     }
 
     @Test
-    fun `insert new path in sorted list`() {
+    fun insertNewPathInSortedList() {
         val sorted = ArrayList<String>()
         val insert = listOf("k",
             "c",
@@ -260,7 +260,7 @@ class Day22 {
     }
 
     @Test
-    fun `sample part 2`() {
+    fun samplePart2() {
         assertEquals(45, shortestPath(510, V2i(10, 10)))
     }
 

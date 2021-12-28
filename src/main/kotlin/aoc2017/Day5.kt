@@ -5,7 +5,7 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day5 {
-    fun countStepsToExit(input: String): Int {
+    private fun countStepsToExit(input: String): Int {
         val instructions = input.lines().map { it.toInt() }.toIntArray()
         var idx = 0
         var steps = 0
@@ -18,7 +18,7 @@ class Day5 {
         return steps
     }
 
-    fun countStepsStrangerToExit(input: String):Int {
+    private fun countStepsStrangerToExit(input: String): Int {
         val instructions = input.lines().map { it.toInt() }.toIntArray()
         var idx = 0
         var steps = 0
@@ -36,20 +36,12 @@ class Day5 {
 
     @Test
     fun sample() {
-        assertEquals(5, countStepsToExit("0\n" +
-                "3\n" +
-                "0\n" +
-                "1\n" +
-                "-3"))
+        assertEquals(5, countStepsToExit("0\n3\n0\n1\n-3"))
     }
 
     @Test
-    fun `part2 sample`() {
-        assertEquals(10, countStepsStrangerToExit("0\n" +
-                "3\n" +
-                "0\n" +
-                "1\n" +
-                "-3"))
+    fun part2Sample() {
+        assertEquals(10, countStepsStrangerToExit("0\n3\n0\n1\n-3"))
     }
 
     @Test

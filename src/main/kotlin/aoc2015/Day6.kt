@@ -11,47 +11,33 @@ fun main() {
 
 class Day6 {
     fun part1(input: String, width: Int, height: Int): Int {
-        return Array(height) { Array(width) { OFF } }
-            .also { grid ->
-                input.lines()
-                    .map { it.split(" ") }
-                    .forEach {
+        return Array(height) { Array(width) { OFF } }.also { grid ->
+                input.lines().map { it.split(" ") }.forEach {
                         executeInstructions(it, grid)
                     }
-            }
-            .sumBy { it.count { b -> b == ON } }
+            }.sumOf { it.count { b -> b == ON } }
     }
 
     fun part2(input: String, width: Int, height: Int): Int {
-        return Array(height) { Array(width) { 0 } }
-            .also { grid ->
-                input.lines()
-                    .map { it.split(" ") }
-                    .forEach {
+        return Array(height) { Array(width) { 0 } }.also { grid ->
+                input.lines().map { it.split(" ") }.forEach {
                         executeInstructions2(it, grid)
                     }
-            }
-            .sumBy { it.sum() }
+            }.sumOf { it.sum() }
     }
 
     private fun executeInstructions2(parts: List<String>, grid: Array<Array<Int>>) {
         when {
             parts[0] == "turn" -> when {
-                parts[1] == "on" -> parseNums(2, parts)
-                    .also {
-                        apply2(it.first[0], it.first[1], it.second[0], it.second[1], grid)
-                        { i -> i + 1 }
+                parts[1] == "on" -> parseNums(2, parts).also {
+                        apply2(it.first[0], it.first[1], it.second[0], it.second[1], grid) { i -> i + 1 }
                     }
-                parts[1] == "off" -> parseNums(2, parts)
-                    .also {
-                        apply2(it.first[0], it.first[1], it.second[0], it.second[1], grid)
-                        { i -> maxOf(i - 1, 0) }
+                parts[1] == "off" -> parseNums(2, parts).also {
+                        apply2(it.first[0], it.first[1], it.second[0], it.second[1], grid) { i -> maxOf(i - 1, 0) }
                     }
             }
-            parts[0] == "toggle" -> parseNums(1, parts)
-                .also {
-                    apply2(it.first[0], it.first[1], it.second[0], it.second[1], grid)
-                    { i -> i + 2 }
+            parts[0] == "toggle" -> parseNums(1, parts).also {
+                    apply2(it.first[0], it.first[1], it.second[0], it.second[1], grid) { i -> i + 2 }
                 }
         }
     }
@@ -59,13 +45,26 @@ class Day6 {
     private fun executeInstructions(parts: List<String>, grid: Array<Array<State>>) {
         when {
             parts[0] == "turn" -> when {
-                parts[1] == "on" -> parseNums(2, parts)
-                    .also { apply(it.first[0], it.first[1], it.second[0], it.second[1], grid) { ON } }
-                parts[1] == "off" -> parseNums(2, parts)
-                    .also { apply(it.first[0], it.first[1], it.second[0], it.second[1], grid) { OFF } }
+                parts[1] == "on" -> parseNums(2, parts).also {
+                        apply(
+                            it.first[0],
+                            it.first[1],
+                            it.second[0],
+                            it.second[1],
+                            grid
+                        ) { ON }
+                    }
+                parts[1] == "off" -> parseNums(2, parts).also {
+                        apply(
+                            it.first[0],
+                            it.first[1],
+                            it.second[0],
+                            it.second[1],
+                            grid
+                        ) { OFF }
+                    }
             }
-            parts[0] == "toggle" -> parseNums(1, parts)
-                .also {
+            parts[0] == "toggle" -> parseNums(1, parts).also {
                     apply(it.first[0], it.first[1], it.second[0], it.second[1], grid) { value ->
                         when (value) {
                             ON -> OFF
@@ -77,10 +76,8 @@ class Day6 {
     }
 
     private fun parseNums(idx: Int, it: List<String>): Pair<List<Int>, List<Int>> {
-        val lower = it[idx].split(",")
-            .map { num -> num.toInt() }
-        val upper = it[idx + 2].split(",")
-            .map { num -> num.toInt() }
+        val lower = it[idx].split(",").map { num -> num.toInt() }
+        val upper = it[idx + 2].split(",").map { num -> num.toInt() }
         return Pair(lower, upper)
     }
 

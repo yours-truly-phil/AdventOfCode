@@ -9,15 +9,7 @@ fun main() {
 
 class Day6 {
     fun part1(input: String): String {
-        val freq = HashMap<Int, HashMap<Char, Int>>()
-        input.lines().map { it.toCharArray() }
-            .forEach {
-                for (i in it.indices) {
-                    freq.computeIfAbsent(i) { HashMap() }
-                    freq[i]!!.computeIfAbsent(it[i]) { 0 }
-                    freq[i]?.set(it[i], freq[i]!![it[i]]!! + 1)
-                }
-            }
+        val freq = parseInput(input)
         var pw = ""
         for (col in freq) {
             var max = 'a'
@@ -34,15 +26,7 @@ class Day6 {
     }
 
     fun part2(input: String): String {
-        val freq = HashMap<Int, HashMap<Char, Int>>()
-        input.lines().map { it.toCharArray() }
-            .forEach {
-                for (i in it.indices) {
-                    freq.computeIfAbsent(i) { HashMap() }
-                    freq[i]!!.computeIfAbsent(it[i]) { 0 }
-                    freq[i]?.set(it[i], freq[i]!![it[i]]!! + 1)
-                }
-            }
+        val freq = parseInput(input)
         var pw = ""
         for (col in freq) {
             var min = '#'
@@ -56,5 +40,17 @@ class Day6 {
             pw += min
         }
         return pw
+    }
+
+    private fun parseInput(input: String): HashMap<Int, HashMap<Char, Int>> {
+        val freq = HashMap<Int, HashMap<Char, Int>>()
+        input.lines().map { it.toCharArray() }.forEach {
+                for (i in it.indices) {
+                    freq.computeIfAbsent(i) { HashMap() }
+                    freq[i]!!.computeIfAbsent(it[i]) { 0 }
+                    freq[i]?.set(it[i], freq[i]!![it[i]]!! + 1)
+                }
+            }
+        return freq
     }
 }

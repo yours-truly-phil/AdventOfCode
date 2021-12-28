@@ -14,9 +14,9 @@ class Day24 {
         infection = pair.second
 
         return if (immuneSystem.any(Group::isInCombat)) {
-            immuneSystem.sumBy { it.numUnits }
+            immuneSystem.sumOf { it.numUnits }
         } else {
-            infection.sumBy { it.numUnits }
+            infection.sumOf { it.numUnits }
         }
     }
 
@@ -73,7 +73,7 @@ class Day24 {
             infection = pair.second
             if (immuneSystem.any { it.isInCombat() } && !infection.any { it.isInCombat() }) {
                 // too much boost
-                curMinRemain = minOf(curMinRemain, immuneSystem.sumBy { it.numUnits })
+                curMinRemain = minOf(curMinRemain, immuneSystem.sumOf { it.numUnits })
                 max = boost
             } else {
                 // not enough boost
@@ -185,7 +185,7 @@ class Day24 {
             }
         }
 
-        fun potentialDamage(target: Group): Int {
+        private fun potentialDamage(target: Group): Int {
             if (target.immunities.contains(attackType)) {
                 return 0
             }

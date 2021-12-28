@@ -16,13 +16,10 @@ class Day21(lines: List<String>) {
 
     init {
         lines.forEach { line ->
-            val allergensInLine = line.substring(line.indexOf("(") + 10, line.indexOf(")"))
-                .split(", ")
-                .map { allergen -> allergens.computeIfAbsent(allergen) { Allergen(it) } }
-                .map { it.name to it }.toMap()
+            val allergensInLine = line.substring(line.indexOf("(") + 10, line.indexOf(")")).split(", ")
+                .map { allergen -> allergens.computeIfAbsent(allergen) { Allergen(it) } }.associateBy { it.name }
             val food = Food(
-                line.substring(0, line.indexOf("(") - 1)
-                    .split(" "), allergensInLine
+                line.substring(0, line.indexOf("(") - 1).split(" "), allergensInLine
             )
             foods.add(food)
             food.ingredients.forEach {
@@ -60,9 +57,7 @@ class Day21(lines: List<String>) {
     }
 
     private fun getDangerousIngredientList(): String {
-        return allergens.values
-            .sortedBy { it.name }
-            .joinToString(",") { it.ingredient }
+        return allergens.values.sortedBy { it.name }.joinToString(",") { it.ingredient }
     }
 
     private fun countUnAssignedIngredients(): Int {

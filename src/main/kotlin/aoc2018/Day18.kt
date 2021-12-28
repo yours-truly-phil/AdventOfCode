@@ -5,7 +5,7 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day18 {
-    fun totalValueLumberCollection(input: String, mins: Int): Int {
+    private fun totalValueLumberCollection(input: String, mins: Int): Int {
         val world = input.lines().map { it.toCharArray() }.toTypedArray()
         val memo = HashMap<String, Int>()
         var curRep = 0
@@ -40,8 +40,8 @@ class Day18 {
             }
         }
 
-        val noWood = world.map { it.count { c -> c == '|' } }.sum()
-        val noYards = world.map { it.count { c -> c == '#' } }.sum()
+        val noWood = world.sumOf { it.count { c -> c == '|' } }
+        val noYards = world.sumOf { it.count { c -> c == '#' } }
         return noWood * noYards
     }
 
@@ -57,16 +57,17 @@ class Day18 {
 
     @Test
     fun sample() {
-        assertEquals(1147, totalValueLumberCollection(".#.#...|#.\n" +
-                ".....#|##|\n" +
-                ".|..|...#.\n" +
-                "..|#.....#\n" +
-                "#.#|||#|#|\n" +
-                "...#.||...\n" +
-                ".|....|...\n" +
-                "||...#|.#|\n" +
-                "|.||||..|.\n" +
-                "...#.|..|.", 10))
+        assertEquals(1147, totalValueLumberCollection(
+            """.#.#...|#.
+.....#|##|
+.|..|...#.
+..|#.....#
+#.#|||#|#|
+...#.||...
+.|....|...
+||...#|.#|
+|.||||..|.
+...#.|..|.""", 10))
     }
 
     @Test

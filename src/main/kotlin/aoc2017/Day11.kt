@@ -6,17 +6,8 @@ import kotlin.math.abs
 import kotlin.test.assertEquals
 
 class Day11 {
-    fun minSteps(input: String): Int {
-        val path = input.split(",").map {
-            when (it) {
-                "n" -> Pair(2, 0)
-                "ne" -> Pair(1, 1)
-                "se" -> Pair(-1, 1)
-                "s" -> Pair(-2, 0)
-                "sw" -> Pair(-1, -1)
-                else -> Pair(1, -1)
-            }
-        }
+    private fun minSteps(input: String): Int {
+        val path = getPath(input)
         var x = 0
         var y = 0
         path.forEach {
@@ -27,17 +18,8 @@ class Day11 {
         return (abs(x) + abs(y)) / 2
     }
 
-    fun maxDist(input: String): Int {
-        val path = input.split(",").map {
-            when (it) {
-                "n" -> Pair(2, 0)
-                "ne" -> Pair(1, 1)
-                "se" -> Pair(-1, 1)
-                "s" -> Pair(-2, 0)
-                "sw" -> Pair(-1, -1)
-                else -> Pair(1, -1)
-            }
-        }
+    private fun maxDist(input: String): Int {
+        val path = getPath(input)
         var x = 0
         var max = 0
         var y = 0
@@ -48,6 +30,20 @@ class Day11 {
         }
 
         return max
+    }
+
+    private fun getPath(input: String): List<Pair<Int, Int>> {
+        val path = input.split(",").map {
+            when (it) {
+                "n" -> Pair(2, 0)
+                "ne" -> Pair(1, 1)
+                "se" -> Pair(-1, 1)
+                "s" -> Pair(-2, 0)
+                "sw" -> Pair(-1, -1)
+                else -> Pair(1, -1)
+            }
+        }
+        return path
     }
 
     @Test

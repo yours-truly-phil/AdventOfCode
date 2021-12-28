@@ -17,27 +17,16 @@ class Day13 {
         return totalInRange(num, steps)
     }
 
-    fun totalInRange(num: Int, steps: Int): Int {
+    private fun totalInRange(num: Int, steps: Int): Int {
         val paths = HashMap<P, Int>().apply { this[P(1, 1)] = 0 }
         while (paths.filter { it.value < steps && !it.key.neighborsChecked }.isNotEmpty()) {
             val p = paths.filter { !it.key.neighborsChecked && it.value < steps }.minByOrNull { it.value }!!
-            val neighbors = arrayOf(p.key.up(), p.key.down(), p.key.left(), p.key.right())
-            for (neighbor in neighbors) {
-                if (isOpen(neighbor, num) && neighbor.x >= 0 && neighbor.y >= 0) {
-                    if (paths.containsKey(neighbor)) {
-                        if (paths[neighbor]!! > p.value + 1) {
-                            paths[neighbor] = p.value + 1
-                        }
-                    }
-                    paths.computeIfAbsent(neighbor) { p.value + 1 }
-                }
-            }
-            p.key.neighborsChecked = true
+            foo(p, num, paths)
         }
         return printGrid(paths, steps)
     }
 
-    fun printGrid(grid: HashMap<P, Int>, steps: Int):Int {
+    private fun printGrid(grid: HashMap<P, Int>, steps: Int): Int {
         var count = 0
         for (y in 0..grid.maxOf { it.key.y }) {
             for (x in 0..grid.maxOf { it.key.x }) {
@@ -58,33 +47,37 @@ class Day13 {
         return count
     }
 
-    fun numStepsTo(target: P, num: Int): Int {
+    private fun numStepsTo(target: P, num: Int): Int {
         val paths = HashMap<P, Int>().apply { this[P(1, 1)] = 0 }
         while (!paths.containsKey(target)) {
             val p = paths.filter { !it.key.neighborsChecked }.minByOrNull { it.value }!!
-            val neighbors = arrayOf(p.key.up(), p.key.down(), p.key.left(), p.key.right())
-            for (neighbor in neighbors) {
-                if (isOpen(neighbor, num) && neighbor.x >= 0 && neighbor.y >= 0) {
-                    if (paths.containsKey(neighbor)) {
-                        if (paths[neighbor]!! > p.value + 1) {
-                            paths[neighbor] = p.value + 1
-                        }
-                    }
-                    paths.computeIfAbsent(neighbor) { p.value + 1 }
-                }
-            }
-            p.key.neighborsChecked = true
+            foo(p, num, paths)
         }
         return paths[target]!!
     }
 
-    fun isOpen(p: P, num: Int): Boolean {
-        return (magicNum(p) + num)
-            .toString(2)
-            .count { it != '0' } % 2 == 0
+    private fun foo(
+        p: Map.Entry<P, Int>, num: Int, paths: HashMap<P, Int>
+    ) {
+        val neighbors = arrayOf(p.key.up(), p.key.down(), p.key.left(), p.key.right())
+        for (neighbor in neighbors) {
+            if (isOpen(neighbor, num) && neighbor.x >= 0 && neighbor.y >= 0) {
+                if (paths.containsKey(neighbor)) {
+                    if (paths[neighbor]!! > p.value + 1) {
+                        paths[neighbor] = p.value + 1
+                    }
+                }
+                paths.computeIfAbsent(neighbor) { p.value + 1 }
+            }
+        }
+        p.key.neighborsChecked = true
     }
 
-    fun magicNum(p: P): Long {
+    private fun isOpen(p: P, num: Int): Boolean {
+        return (magicNum(p) + num).toString(2).count { it != '0' } % 2 == 0
+    }
+
+    private fun magicNum(p: P): Long {
         return p.x * p.x + 3 * p.x + 2 * p.x * p.y + p.y + p.y * p.y
     }
 

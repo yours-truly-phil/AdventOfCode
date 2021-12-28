@@ -2,7 +2,6 @@ package aoc2018
 
 import org.junit.jupiter.api.Test
 import java.io.File
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.test.assertEquals
@@ -23,7 +22,7 @@ class Day13 {
 
     private fun crashLocation(cars: List<Car>): String {
         val pos = HashSet<String>()
-        return cars.map { "${it.x},${it.y}" }.filter { !pos.add(it) }.first()
+        return cars.map { "${it.x},${it.y}" }.first { !pos.add(it) }
     }
 
     private fun printTrackAndCars(cars: List<Car>, track: Array<CharArray>) {
@@ -55,40 +54,10 @@ class Day13 {
         return "${last.x},${last.y}"
     }
 
-    private fun stepAndCheckCrash(cars: List<Car>, track: Array<CharArray>) {
-        Collections.sort(cars)
+    private fun stepAndCheckCrash(cars: MutableList<Car>, track: Array<CharArray>) {
+        cars.sort()
         cars.forEach {
-            when (it.dir) {
-                0 -> it.y--
-                1 -> it.x++
-                2 -> it.y++
-                3 -> it.x--
-            }
-            when {
-                track[it.y][it.x] == '+' -> {
-                    when (it.turns) {
-                        0 -> {
-                            it.dir += 3
-                            it.dir %= 4
-                        }
-                        2 -> {
-                            it.dir++
-                            it.dir %= 4
-                        }
-                    }
-                    it.turns++
-                    it.turns %= 3
-                }
-                track[it.y][it.x] == '\\' -> it.dir = 3 - it.dir
-                track[it.y][it.x] == '/' -> {
-                    when (it.dir) {
-                        0 -> it.dir = 1
-                        1 -> it.dir = 0
-                        2 -> it.dir = 3
-                        3 -> it.dir = 2
-                    }
-                }
-            }
+            stepCar(it, track)
             updateCrashes(cars)
         }
     }
@@ -141,35 +110,39 @@ class Day13 {
 
     fun step(cars: List<Car>, track: Array<CharArray>) {
         cars.forEach {
-            when (it.dir) {
-                0 -> it.y--
-                1 -> it.x++
-                2 -> it.y++
-                3 -> it.x--
-            }
-            when {
-                track[it.y][it.x] == '+' -> {
-                    when (it.turns) {
-                        0 -> {
-                            it.dir += 3
-                            it.dir %= 4
-                        }
-                        2 -> {
-                            it.dir++
-                            it.dir %= 4
-                        }
+            stepCar(it, track)
+        }
+    }
+
+    private fun stepCar(it: Car, track: Array<CharArray>) {
+        when (it.dir) {
+            0 -> it.y--
+            1 -> it.x++
+            2 -> it.y++
+            3 -> it.x--
+        }
+        when {
+            track[it.y][it.x] == '+' -> {
+                when (it.turns) {
+                    0 -> {
+                        it.dir += 3
+                        it.dir %= 4
                     }
-                    it.turns++
-                    it.turns %= 3
+                    2 -> {
+                        it.dir++
+                        it.dir %= 4
+                    }
                 }
-                track[it.y][it.x] == '\\' -> it.dir = 3 - it.dir
-                track[it.y][it.x] == '/' -> {
-                    when (it.dir) {
-                        0 -> it.dir = 1
-                        1 -> it.dir = 0
-                        2 -> it.dir = 3
-                        3 -> it.dir = 2
-                    }
+                it.turns++
+                it.turns %= 3
+            }
+            track[it.y][it.x] == '\\' -> it.dir = 3 - it.dir
+            track[it.y][it.x] == '/' -> {
+                when (it.dir) {
+                    0 -> it.dir = 1
+                    1 -> it.dir = 0
+                    2 -> it.dir = 3
+                    3 -> it.dir = 2
                 }
             }
         }
@@ -197,7 +170,7 @@ class Day13 {
     }
 
     @Test
-    fun `part 2 sample`() {
+    fun part2Sample() {
         assertEquals("6,4", lastCar("/>-<\\  \n" +
                 "|   |  \n" +
                 "| /<+-\\\n" +

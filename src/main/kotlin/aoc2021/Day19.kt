@@ -59,6 +59,7 @@ class Day19 {
         return fullMap.size
     }
 
+    @Suppress("SameParameterValue")
     private fun solvePart2(input: String, numOverlaps: Int = 12): Int {
         val scanners = input.split("\n\n").map { Scanner(it) }
         getFullMap(scanners, numOverlaps)

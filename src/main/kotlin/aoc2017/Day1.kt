@@ -9,7 +9,7 @@ class Day1 {
         val nums = parse(input)
         return nums.indices
             .filter { nums[it] == nums[(it + 1) % nums.size] }
-            .sumBy { nums[it] }
+            .sumOf { nums[it] }
     }
 
     private fun parse(input: String) = input.map { it.toString().toInt() }.toIntArray()
@@ -18,7 +18,7 @@ class Day1 {
         val nums = parse(input)
         return nums.indices
             .filter { nums[it] == nums[(it + nums.size / 2) % nums.size] }
-            .sumBy { nums[it] }
+            .sumOf { nums[it] }
     }
 
     @Test
@@ -30,7 +30,7 @@ class Day1 {
     }
 
     @Test
-    fun `samples part2`() {
+    fun samplesPart2() {
         assertEquals(6, solveNewCaptcha("1212"))
         assertEquals(0, solveNewCaptcha("1221"))
         assertEquals(4, solveNewCaptcha("123425"))

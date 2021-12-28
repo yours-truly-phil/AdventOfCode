@@ -7,12 +7,14 @@ import java.util.*
 import kotlin.test.assertEquals
 
 class Day16 {
-    fun behavesLikeMinOpCodes(input: String, num: Int): Int = input
+    @Suppress("SameParameterValue")
+    private fun behavesLikeMinOpCodes(input: String, num: Int): Int = input
         .split("\n\n\n\n")[0]
         .split("\n\n")
         .count { possibleOpCodes(it) >= num }
 
-    fun valueInRegister(input: String, register: Int): Int {
+    @Suppress("SameParameterValue")
+    private fun valueInRegister(input: String, register: Int): Int {
         val parts = input.split("\n\n\n\n")
         val samples = parts[0].split("\n\n")
         val program = parts[1].lines()
@@ -285,7 +287,7 @@ class Day16 {
                 possibleCodes.forEach { it.value.remove(opCodes[code.key]) }
             }
         }
-        possibleCodes.forEach { k, v -> opCodes[k] = v.first() }
+        possibleCodes.forEach { (k, v) -> opCodes[k] = v.first() }
         opCodes.forEach { (k, v) -> println("$k -> $v") }
         /*
         0 -> ADDI
@@ -407,7 +409,7 @@ class Day16 {
     }
 
     @Test
-    fun `test is addr`() {
+    fun testIsAddr() {
         assertEquals(true, isAddr(intArrayOf(9, 1, 2, 3), intArrayOf(3, 2, 1, 1), intArrayOf(3, 2, 1, 3)))
         assertEquals(false, isAddr(intArrayOf(9, 1, 2, 3), intArrayOf(3, 2, 1, 1), intArrayOf(3, 2, 1, 4)))
         assertEquals(false, isAddr(intArrayOf(9, 4, 2, 3), intArrayOf(3, 2, 1, 1), intArrayOf(3, 2, 1, 4)))
@@ -424,7 +426,7 @@ class Day16 {
     }
 
     @Test
-    fun `test is addi`() {
+    fun testIsAddi() {
         assertEquals(true, isAddi(intArrayOf(9, 0, 5, 3), intArrayOf(3, 2, 1, 1), intArrayOf(3, 2, 1, 8)))
         assertEquals(false, isAddi(intArrayOf(9, 1, 5, 3), intArrayOf(3, 2, 1, 1), intArrayOf(3, 2, 1, 0)))
         assertEquals(false, isAddi(intArrayOf(9, 4, 2, 3), intArrayOf(3, 2, 1, 1), intArrayOf(3, 2, 1, 4)))

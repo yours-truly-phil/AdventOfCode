@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class Day21 {
-    fun scramble(s: String, input: String): String {
+    private fun scramble(s: String, input: String): String {
         val pw = s.toCharArray()
         input.lines().forEach {
             val parts = it.split(" ")
@@ -35,7 +35,8 @@ class Day21 {
         return pw.joinToString("")
     }
 
-    fun unscramble(s: String, input: String): String {
+    @Suppress("SameParameterValue")
+    private fun unscramble(s: String, input: String): String {
         val pw = s.toCharArray()
         input.lines().reversed().forEach {
             val parts = it.split(" ")
@@ -64,7 +65,8 @@ class Day21 {
         return pw.joinToString("")
     }
 
-    fun unscrambleBruteforce(s: String, input: String): String {
+    @Suppress("SameParameterValue")
+    private fun unscrambleBruteforce(s: String, input: String): String {
         val perms = ArrayList<String>()
         perms(s, "", perms)
         perms.forEach {
@@ -76,7 +78,7 @@ class Day21 {
     }
 
     fun perms(s: String, ans: String, res: ArrayList<String>) {
-        if (s.length == 0) {
+        if (s.isEmpty()) {
             res += ans
             return
         }
@@ -183,7 +185,7 @@ class Day21 {
     }
 
     @Test
-    fun `rotate based reversed`() {
+    fun rotateBasedReversedTest() {
         var arr = "xbcdefgh".toCharArray()
         rotateBased(arr, 'x')
         assertEquals("hxbcdefg", arr.joinToString(""))
@@ -234,7 +236,7 @@ class Day21 {
     }
 
     @Test
-    fun `rotate right reversed`() {
+    fun rotateRightReversedTest() {
         val arr = "abcdefgh".toCharArray()
         rotateRight(arr, 10)
         rotateRightReversed(arr, 10)
@@ -242,7 +244,7 @@ class Day21 {
     }
 
     @Test
-    fun `rotate left reversed`() {
+    fun rotateLeftReversedTest() {
         val arr = "abcdefgh".toCharArray()
         rotateLeft(arr, 10)
         rotateLeftReversed(arr, 10)
@@ -250,18 +252,43 @@ class Day21 {
     }
 
     @Test
-    fun `permutations of string`() {
+    fun permutationsOfStringTest() {
         val perms = ArrayList<String>()
         perms("abcd", "", perms)
-        assertTrue(perms.containsAll(
-            arrayListOf("abcd", "abdc", "acbd", "acdb", "adbc", "adcb", "bacd",
-                "badc", "bcad", "bcda", "bdac", "bdca", "cabd", "cadb", "cbad",
-                "cbda", "cdab", "cdba", "dabc", "dacb", "dbac", "dbca", "dcab", "dcba")
-        ))
+        assertTrue(
+            perms.containsAll(
+                arrayListOf(
+                    "abcd",
+                    "abdc",
+                    "acbd",
+                    "acdb",
+                    "adbc",
+                    "adcb",
+                    "bacd",
+                    "badc",
+                    "bcad",
+                    "bcda",
+                    "bdac",
+                    "bdca",
+                    "cabd",
+                    "cadb",
+                    "cbad",
+                    "cbda",
+                    "cdab",
+                    "cdba",
+                    "dabc",
+                    "dacb",
+                    "dbac",
+                    "dbca",
+                    "dcab",
+                    "dcba"
+                )
+            )
+        )
     }
 
     @Test
-    fun `reverse move`() {
+    fun reverseMoveTest() {
         val arr = "abcdefgh".toCharArray()
         move(arr, 1, 5)
         reverseMove(arr, 1, 5)
@@ -269,21 +296,21 @@ class Day21 {
     }
 
     @Test
-    fun `move pos to lower idx pos`() {
+    fun movePosToLowerIdxPosTest() {
         val arr = "abcdefg".toCharArray()
         move(arr, 5, 1)
         assertEquals("afbcdeg", arr.joinToString(""))
     }
 
     @Test
-    fun `move pos to pos`() {
+    fun movePosToPosTest() {
         val arr = "abcdefg".toCharArray()
         move(arr, 1, 5)
         assertEquals("acdefbg", arr.joinToString(""))
     }
 
     @Test
-    fun `reverse reverse`() {
+    fun reverseReverseTest() {
         val arr = "abcdefgh".toCharArray()
         reverse(arr, 3, 6)
         reverse(arr, 3, 6)
@@ -291,21 +318,21 @@ class Day21 {
     }
 
     @Test
-    fun `reverse from to index odd`() {
+    fun reverseFromToIndexOddTest() {
         val arr = "abcdefg".toCharArray()
         reverse(arr, 2, 5)
         assertEquals("abfedcg", arr.joinToString(""))
     }
 
     @Test
-    fun `reverse from to index even`() {
+    fun reverseFromToIndexEvenTest() {
         val arr = "abcdefg".toCharArray()
         reverse(arr, 2, 4)
         assertEquals("abedcfg", arr.joinToString(""))
     }
 
     @Test
-    fun `rotate based on position of letter`() {
+    fun rotateBasedOnPositionOfLetterTest() {
         val arr = "abdec".toCharArray()
         rotateBased(arr, 'b')
         assertEquals("ecabd", arr.joinToString(""))
@@ -315,28 +342,28 @@ class Day21 {
     }
 
     @Test
-    fun `rotate left`() {
+    fun rotateLeftTest() {
         val arr = "abcd".toCharArray()
         rotateLeft(arr, 1)
         assertEquals("bcda", arr.joinToString(""))
     }
 
     @Test
-    fun `rotate right`() {
+    fun rotateRightTest() {
         val arr = "abcd".toCharArray()
         rotateRight(arr, 1)
         assertEquals("dabc", arr.joinToString(""))
     }
 
     @Test
-    fun `swap position`() {
+    fun swapPositionTest() {
         val arr = "abc".toCharArray()
         swapPosition(arr, 0, 2)
         assertEquals("cba", arr.joinToString(""))
     }
 
     @Test
-    fun `swap chars`() {
+    fun swapCharsTest() {
         val arr = "abc".toCharArray()
         swapChars(arr, 'a', 'c')
         assertEquals("cba", arr.joinToString(""))
@@ -344,14 +371,8 @@ class Day21 {
 
     @Test
     fun sample() {
-        val instructions = "swap position 4 with position 0\n" +
-                "swap letter d with letter b\n" +
-                "reverse positions 0 through 4\n" +
-                "rotate left 1 step\n" +
-                "move position 1 to position 4\n" +
-                "move position 3 to position 0\n" +
-                "rotate based on position of letter b\n" +
-                "rotate based on position of letter d"
+        val instructions =
+            "swap position 4 with position 0\n" + "swap letter d with letter b\n" + "reverse positions 0 through 4\n" + "rotate left 1 step\n" + "move position 1 to position 4\n" + "move position 3 to position 0\n" + "rotate based on position of letter b\n" + "rotate based on position of letter d"
         assertEquals("decab", scramble("abcde", instructions))
     }
 
@@ -366,7 +387,7 @@ class Day21 {
     }
 
     @Test
-    fun `part2 bruteforce`() {
+    fun part2Bruteforce() {
         assertEquals("afhdbegc", unscrambleBruteforce("fbgdceah", File("files/2016/day21.txt").readText()))
     }
 }

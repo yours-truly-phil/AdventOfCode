@@ -94,7 +94,7 @@ class Day19 {
     }
 
     @Test
-    fun `part 2 sample`() {
+    fun part2Sample() {
         assertEquals(38, countSteps("     |          \n" +
                 "     |  +--+    \n" +
                 "     A  |  C    \n" +

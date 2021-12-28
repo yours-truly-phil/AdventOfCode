@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
 
+@Suppress("UnstableApiUsage")
 class Day8 {
     private fun countUniqueSegmentOutputNums(input: List<String>): Int = parseInput(input).sumOf {
         it.second.count { num -> num.length == 2 || num.length == 3 || num.length == 4 || num.length == 7 }

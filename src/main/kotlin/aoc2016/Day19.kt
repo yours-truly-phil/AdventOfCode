@@ -4,16 +4,8 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day19 {
-    fun elfThatGetsAllPresents(input: Int): Int {
-        var elf = Elf(1)
-        val first = elf
-        for (i in 2..input) {
-            val new = Elf(i)
-            elf.next = new
-            elf = new
-        }
-        elf.next = first
-        elf = first
+    private fun elfThatGetsAllPresents(input: Int): Int {
+        var elf = parseElves(input)
         while (elf.next != elf) {
             elf.next = elf.next.next
             elf = elf.next
@@ -21,16 +13,9 @@ class Day19 {
         return elf.id
     }
 
-    fun elfWithAllPresentsCircle(input: Int): Int {
-        var elf = Elf(1)
-        val first = elf
-        for (i in 2..input) {
-            val new = Elf(i)
-            elf.next = new
-            elf = new
-        }
-        elf.next = first
-        elf = first
+    @Suppress("SameParameterValue")
+    private fun elfWithAllPresentsCircle(input: Int): Int {
+        var elf = parseElves(input)
         var total = input
         while (elf.next != elf) {
             var targetElf = elf
@@ -46,8 +31,22 @@ class Day19 {
         return elf.id
     }
 
+    private fun parseElves(input: Int): Elf {
+        var elf = Elf(1)
+        val first = elf
+        for (i in 2..input) {
+            val new = Elf(i)
+            elf.next = new
+            elf = new
+        }
+        elf.next = first
+        elf = first
+        return elf
+    }
+
     // solution stolen, but it's just soo much better than my (very) long running removing from lists for part2
-    fun elfEraseOppositeInCircle(n: Int): Int {
+    @Suppress("SameParameterValue")
+    private fun elfEraseOppositeInCircle(n: Int): Int {
         var w = 1
         (1 until n).forEach {
             w = w % it + 1

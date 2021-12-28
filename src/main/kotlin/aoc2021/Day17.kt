@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 class Day17 {
     private fun solvePart1(input: String): Int = parseInput(input).let { it.maxYVelocity * (it.maxYVelocity + 1) / 2 }
 
-    class Probe(var x: Int, var y: Int, var vX: Int, var vY: Int) {
+    class Probe(var x: Int, var y: Int, private var vX: Int, private var vY: Int) {
         fun next() {
             x += vX
             y += vY

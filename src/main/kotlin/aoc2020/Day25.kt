@@ -13,8 +13,8 @@ fun main() {
 
 class Day25 {
 
-    val initSubjNum = 7
-    val divNum = 20201227
+    private val initSubjNum = 7
+    private val divNum = 20201227
 
     fun part1(cardPubKey: Long, doorPubKey: Long): Long {
         val loopSizeDoor = loopSize(doorPubKey)

@@ -2,10 +2,11 @@ package aoc2018
 
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.util.*
 import kotlin.test.assertEquals
 
 class Day5 {
-    fun remainingUnits(input: String): Int {
+    private fun remainingUnits(input: String): Int {
         var s = input
         var noChanges = false
         while (!noChanges) {
@@ -26,8 +27,8 @@ class Day5 {
         return s.length
     }
 
-    fun shortestPossible(input: String): Int {
-        val chars = input.toLowerCase().toCharArray().distinct()
+    private fun shortestPossible(input: String): Int {
+        val chars = input.lowercase(Locale.getDefault()).toCharArray().distinct()
         var shortest = Int.MAX_VALUE
         chars.asSequence()
             .map { char -> input.filter { !it.equals(char, ignoreCase = true) } }
@@ -41,7 +42,7 @@ class Day5 {
     }
 
     @Test
-    fun `part 2 sample`() {
+    fun part2Sample() {
         assertEquals(4, shortestPossible("dabAcCaCBAcCcaDA"))
     }
 

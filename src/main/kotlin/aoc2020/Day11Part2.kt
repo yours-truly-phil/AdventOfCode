@@ -3,7 +3,6 @@ package aoc2020
 import aoc2020.SeatType.*
 import micros
 import java.io.File
-import java.util.concurrent.Callable
 
 fun main() {
     runDay11Part2()
@@ -13,14 +12,12 @@ fun runDay11Part2() {
     val lines = File("files/2020/day11.txt").readLines()
 
     val day11part2 = Day11Part2()
-    println("day11part1=${micros(Callable { day11part2.day11part2(lines) })}")
+    println("day11part1=${micros { day11part2.day11part2(lines) }}")
 }
 
 class Day11Part2 {
     private val dirs = arrayOf(
-        Vec2i(-1, -1), Vec2i(0, -1), Vec2i(1, -1),
-        Vec2i(-1, 0), Vec2i(1, 0),
-        Vec2i(-1, 1), Vec2i(0, 1), Vec2i(1, 1)
+        Vec2i(-1, -1), Vec2i(0, -1), Vec2i(1, -1), Vec2i(-1, 0), Vec2i(1, 0), Vec2i(-1, 1), Vec2i(0, 1), Vec2i(1, 1)
     )
 
     fun day11part2(lines: List<String>): Int {
@@ -66,10 +63,7 @@ class Day11Part2 {
     }
 
     private fun countFullSeats(x: Int, y: Int, grid: Array<Array<Seat>>): Int {
-        return dirs
-            .map { getTypeInDirection(x, y, grid, it) }
-            .filter { it == FULL }
-            .count()
+        return dirs.map { getTypeInDirection(x, y, grid, it) }.count { it == FULL }
     }
 
     private fun getTypeInDirection(xx: Int, yy: Int, grid: Array<Array<Seat>>, dir: Vec2i): SeatType {

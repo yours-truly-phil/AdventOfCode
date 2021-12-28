@@ -1,7 +1,6 @@
 package aoc2020
 
 import micros
-import java.util.concurrent.Callable
 
 fun main() {
     runDay15()
@@ -10,8 +9,8 @@ fun main() {
 fun runDay15() {
     val input = "0,1,5,10,3,12,19"
 
-    println("day15part1=${micros(Callable { findLastNumber(input, 2020) })}")
-    println("day15part2=${micros(Callable { findLastNumber(input, 30000000) })}")
+    println("day15part1=${micros { findLastNumber(input, 2020) }}")
+    println("day15part2=${micros { findLastNumber(input, 30000000) }}")
 }
 
 fun findLastNumber(input: String, goal: Int): Int {

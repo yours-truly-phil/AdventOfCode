@@ -8,8 +8,7 @@ fun main() {
 }
 
 class Day18 {
-    fun part1(input: String, part2: Boolean): Int = parseInput(input, part2)
-        .also { grid ->
+    fun part1(input: String, part2: Boolean): Int = parseInput(input, part2).also { grid ->
             repeat(100) {
                 for (y in grid.indices) {
                     for (x in grid.indices) {
@@ -23,7 +22,7 @@ class Day18 {
                     }
                 }
             }
-        }.map { row -> row.filter { light -> light.on }.count() }.sum()
+        }.sumOf { row -> row.count { light -> light.on } }
 
     private fun setNext(tileY: Int, tileX: Int, grid: Array<Array<Light>>) {
         var countNeighborsOn = 0

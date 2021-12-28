@@ -6,7 +6,7 @@ import kotlin.math.abs
 import kotlin.test.assertEquals
 
 class Day6 {
-    fun maxArea(input: String): Int {
+    private fun maxArea(input: String): Int {
         val coords = parseCoordinates(input)
         val grid = fillGridWithShortestIndices(coords)
         val borderIndices = indicesThatGoToInfinity(grid)
@@ -22,7 +22,7 @@ class Day6 {
         return coords
     }
 
-    fun sizeOfLoocationsWithDistToAllLessThen(input: String, maxDist: Int): Int {
+    private fun sizeOfLoocationsWithDistToAllLessThen(input: String, maxDist: Int): Int {
         val coords = parseCoordinates(input)
 
         val maxX = coords.maxOf { it.x }
@@ -108,7 +108,7 @@ class Day6 {
     }
 
     @Test
-    fun `manhatten distance one point to another`() {
+    fun manhattanDistanceOnePointToAnother() {
         val a = Loc(8, 9)
         val b = Loc(1, 1)
         assertEquals(15, a.distFrom(b))
@@ -117,22 +117,30 @@ class Day6 {
 
     @Test
     fun sample() {
-        assertEquals(17, maxArea("1, 1\n" +
-                "1, 6\n" +
-                "8, 3\n" +
-                "3, 4\n" +
-                "5, 5\n" +
-                "8, 9"))
+        assertEquals(
+            17, maxArea(
+                """1, 1
+1, 6
+8, 3
+3, 4
+5, 5
+8, 9"""
+            )
+        )
     }
 
     @Test
-    fun `part 2 sample`() {
-        assertEquals(16, sizeOfLoocationsWithDistToAllLessThen("1, 1\n" +
-                "1, 6\n" +
-                "8, 3\n" +
-                "3, 4\n" +
-                "5, 5\n" +
-                "8, 9", 32))
+    fun part2Sample() {
+        assertEquals(
+            16, sizeOfLoocationsWithDistToAllLessThen(
+                """1, 1
+1, 6
+8, 3
+3, 4
+5, 5
+8, 9""", 32
+            )
+        )
     }
 
     @Test

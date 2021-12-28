@@ -9,11 +9,11 @@ fun main() {
 
 class Day7 {
     fun part1(input: String): Int {
-        return input.lines().filter { supportsTls(it) }.count()
+        return input.lines().count { supportsTls(it) }
     }
 
     fun part2(input: String): Int {
-        return input.lines().filter { supportSsl(it) }.count()
+        return input.lines().count { supportSsl(it) }
     }
 
     private fun supportSsl(line: String): Boolean {

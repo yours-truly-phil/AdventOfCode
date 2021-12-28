@@ -5,14 +5,10 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day12 {
-    fun sumOfNumsOfPotsContainingPlant(input: String, gens: Int): Int {
-        val paragraphs = input.split("\n\n")
-        var state = paragraphs[0].split(" ")[2]
-        val mappings = paragraphs[1].lines()
-            .map { it.split(" => ") }
-            .map { it[0] to it[1] }
-            .toMap()
-        println("0: $state")
+    private fun sumOfNumsOfPotsContainingPlant(input: String, gens: Int): Int {
+        val pair = getState(input)
+        var state = pair.first
+        val mappings = pair.second
         val iLeftPtr = intArrayOf(0)
         repeat(gens) {
             state = step(state, mappings, iLeftPtr)
@@ -27,18 +23,14 @@ class Day12 {
         return count
     }
 
-    fun getPotsAfterIterations(input: String, gens: Long): Long {
-        val paragraphs = input.split("\n\n")
-        var state = paragraphs[0].split(" ")[2]
-        val mappings = paragraphs[1].lines()
-            .map { it.split(" => ") }
-            .map { it[0] to it[1] }
-            .toMap()
-        println("0: $state")
+    private fun getPotsAfterIterations(input: String, gens: Long): Long {
+        val pair = getState(input)
+        var state = pair.first
+        val mappings = pair.second
         val iLeftPtr = intArrayOf(0)
         for (i in 0 until 200) {
             state = step(state, mappings, iLeftPtr)
-//            println("${i + 1}: $state | ${iLeftPtr[0]}")
+            println("${i + 1}: $state | ${iLeftPtr[0]}")
         }
 
         val potsIndices = ArrayList<Long>()
@@ -48,7 +40,16 @@ class Day12 {
                 potsIndices += i + leftMostIdx.toLong()
             }
         }
-        return potsIndices.map { it + (gens - 200) }.sum()
+        return potsIndices.sumOf { it + (gens - 200) }
+    }
+
+    private fun getState(input: String): Pair<String, Map<String, String>> {
+        val paragraphs = input.split("\n\n")
+        val state = paragraphs[0].split(" ")[2]
+        val mappings = paragraphs[1].lines()
+            .map { it.split(" => ") }.associate { it[0] to it[1] }
+        println("0: $state")
+        return Pair(state, mappings)
     }
 
     fun step(state: String, mappings: Map<String, String>, iLeftPtr: IntArray): String {
@@ -76,22 +77,23 @@ class Day12 {
 
     @Test
     fun sample() {
-        assertEquals(325, sumOfNumsOfPotsContainingPlant("initial state: #..#.#..##......###...###\n" +
-                "\n" +
-                "...## => #\n" +
-                "..#.. => #\n" +
-                ".#... => #\n" +
-                ".#.#. => #\n" +
-                ".#.## => #\n" +
-                ".##.. => #\n" +
-                ".#### => #\n" +
-                "#.#.# => #\n" +
-                "#.### => #\n" +
-                "##.#. => #\n" +
-                "##.## => #\n" +
-                "###.. => #\n" +
-                "###.# => #\n" +
-                "####. => #", 20))
+        assertEquals(325, sumOfNumsOfPotsContainingPlant(
+            """initial state: #..#.#..##......###...###
+
+...## => #
+..#.. => #
+.#... => #
+.#.#. => #
+.#.## => #
+.##.. => #
+.#### => #
+#.#.# => #
+#.### => #
+##.#. => #
+##.## => #
+###.. => #
+###.# => #
+####. => #""", 20))
     }
 
     @Test

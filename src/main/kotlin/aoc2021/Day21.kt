@@ -4,13 +4,14 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class Day21 {
+    @Suppress("SameParameterValue")
     private fun solvePart1(input: String, sides: Int, maxScore: Int): Int {
         val players = input.lines().map { it.split(": ")[1].toInt() }
             .map { Player(0, it) }
         val die = DeterministicDie(sides)
         for (round in 1..Int.MAX_VALUE) {
             players.forEachIndexed { _, player ->
-                val rollSum = (0 until 3).sumBy { die.roll() }
+                val rollSum = (0 until 3).sumOf { die.roll() }
                 player.move(rollSum)
                 if (player.score >= maxScore) {
                     return players.minOf { it.score } * die.rolls

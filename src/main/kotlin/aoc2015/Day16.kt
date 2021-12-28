@@ -10,8 +10,15 @@ fun main() {
 class Day16 {
     private val present = hashMapOf(
         "children" to 3,
-        "cats" to 7, "samoyeds" to 2, "pomeranians" to 3, "akitas" to 0, "vizslas" to 0,
-        "goldfish" to 5, "trees" to 3, "cars" to 2, "perfumes" to 1
+        "cats" to 7,
+        "samoyeds" to 2,
+        "pomeranians" to 3,
+        "akitas" to 0,
+        "vizslas" to 0,
+        "goldfish" to 5,
+        "trees" to 3,
+        "cars" to 2,
+        "perfumes" to 1
     )
 
     fun part1(input: String): Sue {
@@ -36,14 +43,11 @@ class Day16 {
 
         init {
             // Sue 7: pomeranians: 5, samoyeds: 0, perfumes: 10
-            input.substring(input.indexOf(" ") + 1, input.indexOf(":"))
-                .toInt().also { id = it }
-            input.substring(input.indexOf(":") + 2)
-                .split(", ").map {
+            input.substring(input.indexOf(" ") + 1, input.indexOf(":")).toInt().also { id = it }
+            input.substring(input.indexOf(":") + 2).split(", ").associate {
                     val attribute = it.split(": ")
                     attribute[0] to attribute[1].toInt()
-                }
-                .toMap().also { attributes = it }
+                }.also { attributes = it }
         }
 
         override fun toString(): String {

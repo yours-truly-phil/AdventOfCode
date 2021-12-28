@@ -5,9 +5,9 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day1 {
-    fun resultingFrequency(input: String): Int = input.lines().map { it.toInt() }.sum()
+    private fun resultingFrequency(input: String): Int = input.lines().sumOf { it.toInt() }
 
-    fun firstRepeatedFrequency(input: String): Int {
+    private fun firstRepeatedFrequency(input: String): Int {
         val nums = input.lines().map { it.toInt() }.toIntArray()
         val memo = HashSet<Int>()
         var sum = 0
@@ -23,7 +23,7 @@ class Day1 {
     }
 
     @Test
-    fun `part 2 sample`() {
+    fun part2Sample() {
         assertEquals(0, firstRepeatedFrequency("+1\n-1"))
         assertEquals(10, firstRepeatedFrequency("+3\n+3\n+4\n-2\n-4"))
     }

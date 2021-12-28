@@ -5,7 +5,7 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class Day4 {
-    fun noPassphrases(input: String): Int {
+    private fun noPassphrases(input: String): Int {
         val passphrases = input.lines().map { it.split(" ") }
         var count = 0
         for (phrase in passphrases) {
@@ -26,7 +26,7 @@ class Day4 {
         return count
     }
 
-    fun noPassphraseAddedSecurity(input: String): Int {
+    private fun noPassphraseAddedSecurity(input: String): Int {
         val passphrases = input.lines().map { it.split(" ") }
         var count = 0
         for (phrase in passphrases) {

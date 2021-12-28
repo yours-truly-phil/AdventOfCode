@@ -22,7 +22,7 @@ class Day12 {
     private fun parse(input: JsonElement): Int {
         if (input.isJsonPrimitive && input.asJsonPrimitive.isNumber) return input.asJsonPrimitive.asInt
         if (input.isJsonPrimitive) return 0
-        if (input.isJsonArray) return input.asJsonArray.map { parse(it) }.sum()
+        if (input.isJsonArray) return input.asJsonArray.sumOf { parse(it) }
         if (input.isJsonNull) return 0
         var res = 0
         if (input.isJsonObject) {
