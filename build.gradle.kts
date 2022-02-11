@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.6.20-M1"
     application
 }
 
@@ -10,22 +10,20 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.google.guava:guava:31.0.1-jre")
-    implementation("org.jetbrains.kotlin:kotlin-test-junit5:1.5.31")
+    implementation("org.jetbrains.kotlin:kotlin-test-junit5:1.6.20-M1")
     implementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     runtimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.5.31")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.6.20-M1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
-    implementation("khttp:khttp:1.0.0")
     implementation("org.jetbrains.kotlinx:multik-api:0.1.1")
-    implementation("org.jetbrains.kotlinx:multik-default:0.1.1")
+    implementation("org.jetbrains.kotlinx:multik-jvm:0.1.1")
 }
 
 sourceSets.test {
@@ -37,9 +35,17 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "14"
+    kotlinOptions.jvmTarget = "17"
 }
 
 application {
-    mainClassName = "MainKt"
+    mainClass.set("MainKt")
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "17"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+    jvmTarget = "17"
 }
